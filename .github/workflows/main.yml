@@ -1,0 +1,63 @@
+# This is the name of the workflow, which will be displayed in the GitHub Actions dashboard.
+name: Deploy to Render
+
+# Define when the workflow should be triggered.
+on:
+  # Trigger the workflow on any push event to the specified branches.
+  push:
+    branches:
+      - main  # Replace 'main' with your preferred deployment branch if different.
+
+# Define the jobs to run as part of this workflow.
+jobs:
+  # The 'build' job is responsible for building and deploying the Docker image.
+  build:
+    # Specify the type of machine to run the job on. 'ubuntu-latest' is a commonly used virtual environment.
+    runs-on: ubuntu-latest
+
+    # The sequence of steps to perform in this job.
+    steps:
+      # Step 1: Check out the repository code
+      - name: Checkout code
+        # Use the official GitHub Actions checkout action to clone the repository.
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Docker Buildx
+      - name: Set up Docker Buildx
+        # Use the Docker Buildx setup action to enable advanced build capabilities, such as multi-platform builds.
+        uses: docker/setup-buildx-action@v3
+
+      # Step 3: Log in to Docker Hub
+      - name: Log in to Docker Hub
+        # Use the Docker login action to authenticate to Docker Hub. This is necessary for pushing the image to Docker Hub.
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}  # Use the Docker Hub username stored as a secret in the repository settings.
+          password: ${{ secrets.DOCKER_PASSWORD }}  # Use the Docker Hub password or access token stored as a secret.
+
+      # Step 4: Build and push Docker image to Docker Hub
+      - name: Build and push Docker image to Docker Hub
+        # Use the Docker build-push action to build the Docker image and push it to Docker Hub.
+        uses: docker/build-push-action@v5
+        with:
+          context: .  # The build context is the root of the repository.
+          push: true  # Push the image to the specified registry.
+          tags: your-docker-username/your-image-name:latest  # Replace with your Docker Hub username and image name.
+
+      # Step 5: Log in to Render's Docker registry
+      - name: Log in to Render Registry
+        # Use the Docker login action to authenticate to Render's private Docker registry.
+        uses: docker/login-action@v3
+        with:
+          registry: registry.render.com  # Render's Docker registry URL.
+          username: ${{ secrets.RENDER_REGISTRY_USERNAME }}  # Render registry username or service ID stored as a secret.
+          password: ${{ secrets.RENDER_REGISTRY_PASSWORD }}  # Render registry password stored as a secret.
+
+      # Step 6: Build and push Docker image to Render's registry
+      - name: Build and push Docker image to Render
+        # Use the Docker build-push action to build the Docker image and push it to Render's registry.
+        uses: docker/build-push-action@v5
+        with:
+          context: .  # The build context remains the root of the repository.
+          push: true  # Push the image to Render's registry.
+          tags: registry.render.com/your-service-id/your-image-name:latest  # Replace with Render's service ID and image name.
