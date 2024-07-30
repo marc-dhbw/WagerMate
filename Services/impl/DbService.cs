@@ -12,7 +12,7 @@ public class DbService : IDbService
         db = new NpgsqlConnection(configuration.GetConnectionString("Wagerdb"));
         db.Open();
     }
-    public T Create<T>(string sql,string p)
+    public T Create<T>(string sql,object p)
     {
         var result =db.Query<T>(sql, p).FirstOrDefault();
         return result;
