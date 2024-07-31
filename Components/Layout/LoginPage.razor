@@ -1,0 +1,74 @@
+@page "/login"
+@using System.ComponentModel.DataAnnotations
+
+<div class="column">
+    <h1>WagerMate</h1>
+
+    <p>Welcome Back!</p>
+
+    <EditForm Model="@existingUserData" FormName="test">
+        <div>
+            <label>E-mail address:</label>
+            <InputText @bind-Value="existingUserData.EMail"/>
+        </div>
+        <div>
+            <label>Password:</label>
+            <InputText @bind-Value="existingUserData.Password"/>
+        </div>
+        <div><input type="submit" value="submit" @onclick="@Save"/></div>
+    </EditForm>
+</div>
+
+<div class="column">
+    <h1>WagerMate</h1>
+
+    <p>Welcome Mate!</p>
+
+    <EditForm Model="@newUserData" FormName="test">
+        <div>
+            <label>Username:</label>
+            <InputText @bind-Value="newUserData.Username"/>
+        </div>
+        <div>
+            <label>E-mail address:</label>
+            <InputText @bind-Value="newUserData.EMail"/>
+        </div>
+        <div>
+            <label>Password:</label>
+            <InputText @bind-Value="newUserData.Password"/>
+        </div>
+        <div>
+            <label>Repeat Password:</label>
+            <InputText @bind-Value="newUserData.PasswordRepeat"/>
+        </div>
+        <div><input type="submit" value="submit" @onclick="@Save"/></div>
+    </EditForm>
+</div>
+
+
+
+@code {
+    private ExistingUserData existingUserData = new ExistingUserData();
+    
+    public class ExistingUserData
+    {
+        public string EMail { get; set; }
+        public string Password { get; set; }
+    }
+
+    private NewUserData newUserData = new NewUserData();
+
+    public class NewUserData
+    {
+        public string EMail { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public string PasswordRepeat { get; set; }
+    }
+    
+    public void Save()
+    {
+        Console.WriteLine(existingUserData.EMail);
+        Console.WriteLine(existingUserData.Password);
+    }
+}
