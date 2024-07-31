@@ -15,7 +15,7 @@ public class UserService : IUserService
     {
         try
         {
-            _service.Create<User>("INSERT INTO public.users(id, name, email) VALUES(@Id, @Name,@Email)", user);
+            _service.Create<User>("INSERT INTO public.users(name, email, password) VALUES(@Name, @Email, @Password)", user);
             return user;
         }
         catch (Exception e)
@@ -73,7 +73,7 @@ public class UserService : IUserService
     {
         try
         {
-            var result = _service.Delete<User>("DELETE FROM public.users WHERE Id = @Id", key);
+            var result = _service.Delete<User>("DELETE FROM public.users WHERE users.id = @Id", key);
             return result;
         }
         catch (Exception e)

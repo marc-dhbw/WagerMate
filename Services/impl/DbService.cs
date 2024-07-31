@@ -20,7 +20,7 @@ public class DbService : IDbService
     
     public T GetByKey<T>(string sql, int key)
     {
-        T result = _db.Query(sql, key).FirstOrDefault();
+        T result = _db.Query<T>(sql, key).FirstOrDefault();
         if (result != null) return result;
         Console.WriteLine("DbService: GetByKey: empty querry result");
         throw new Exception();
@@ -35,8 +35,8 @@ public class DbService : IDbService
 
     public bool Delete<T>(string sql, int key)
     {
-        var queryResult = _db.Execute(sql, key);
-        if (queryResult > 0) return true;
+        var queryResult = _db.Query<T>(sql, key);
+        if (queryResult != null) return true;
         return false;
     }
     
