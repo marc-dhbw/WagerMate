@@ -11,32 +11,76 @@ public class UserService : IUserService
         _service = service;
     }
 
-    public bool CreateUser(User user)
+    public User CreateUser(User user)
     {
         try
         {
-            var result = _service.Create<User>("INSERT INTO public.users(id, name, email) VALUES(@Id, @Name,@Email)", user);
-            return true;
+            _service.Create<User>("INSERT INTO public.users(id, name, email) VALUES(@Id, @Name,@Email)", user);
+            return user;
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
-            return false;
+            return user;
         }
     }
 
-    public List<User> GetEmployeeList()
+    public List<User> GetAllUsers()
     {
-        throw new NotImplementedException();
+        try
+        {
+            var result = _service.GetAll<User>("SELECT * FROM public.users");
+            return result;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("UserServie: GetAllUsers failed");
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
-    public User UpdateEmployee(User user)
+    public bool UpdateUser(User user)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var result = _service.Update<User>("UPDATE public.users SET name = @Name, email=@Email, password=@Passoword WHERE users.Id = @Id", user);
+            return result;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
-    public bool DeleteEmployee(int key)
+    public User GetUserByID(int key)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var result = _service.GetByKey<User>("SELECT name, email, password FROM public.users WHERE users.Id = @Id", key);
+            return result;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("UserService: GetUserByID failed");
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public bool DeleteUser(int key)
+    {
+        try
+        {
+            var result = _service.Delete<User>("DELETE FROM public.users WHERE Id = @Id", key);
+            return result;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("UserService: DeleteUser failed");
+            Console.WriteLine(e);
+            throw;
+        }
     }
 }

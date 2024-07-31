@@ -2,8 +2,10 @@
 
 public interface IDbService
 {
-   public T Create<T>(String sql, object p);
-   public T Read<T>(String sql);
-   public T Update<T>(String sql);
-   public T Delete<T>(String sql);
+   public bool Create<T>(string sql, object p);
+   public T GetByKey<T>(string sql, int key);
+   public List<T> GetAll<T>(string sql);
+   public bool Delete<T>(string sql, int key);
+   public bool Update<T>(string sql, object obj);
+   
 }
