@@ -1,3 +1,57 @@
-.column{
-    flex: 50%
+:root{
+    --CustomOrange: #e67e22;
+    --CustomWhite: #ffffff;
 }
+
+*{
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.5em;
+}
+
+h1{
+    font-weight: bold;
+}
+
+p{
+    font-size: 1.5em;
+}
+
+.column{
+    display:flex;
+    flex: 1;
+    align-items: stretch;
+    width: 100%;
+    height: 100%;
+}
+
+.field{
+    margin-bottom: 1.5em;
+}
+
+::deep .input{
+    width: 60%;
+}
+
+#rightSide{
+    background: var(--CustomOrange) !important;
+    color: var(--CustomWhite) !important;
+    width: 50%;
+    height: 100%;
+    
+}
+
+#leftSide{
+    background: var(--CustomWhite) !important;
+    color: var(--CustomOrange) !important;
+    width: 50%;
+    height: 100%;
+}
+
+#login{
+    background-color: var(--CustomOrange);
+}
+
+#register{
+    background-color: var(--CustomWhite);
+}
+
