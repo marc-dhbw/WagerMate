@@ -17,13 +17,14 @@ public class DbService : IDbService
         var result =_db.Query<T>(sql, p).FirstOrDefault();
         return true;
     }
-    
-    public T GetByKey<T>(string sql, int key)
+
+
+    public T GetByKey<T>(string sql, object key)
     {
-        T result = _db.Query(sql, key).FirstOrDefault();
-        if (result != null) return result;
-        Console.WriteLine("DbService: GetByKey: empty querry result");
-        throw new Exception();
+        T result = _db.QuerySingleOrDefault<T>(sql,key);
+        if(result == null)
+            throw new Exception();
+        return result;
     }
 
     public List<T> GetAll<T>(string sql)

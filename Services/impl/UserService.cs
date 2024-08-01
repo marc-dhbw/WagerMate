@@ -58,7 +58,7 @@ public class UserService : IUserService
     {
         try
         {
-            var result = _service.GetByKey<User>("SELECT name, email, password FROM public.users WHERE users.Id = @Id", key);
+            var result = _service.GetByKey<User>("SELECT * FROM public.users WHERE users.Id = @Id",new{id = key});
             return result;
         }
         catch (Exception e)
