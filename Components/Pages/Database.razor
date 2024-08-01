@@ -9,21 +9,21 @@
 <p>This page displays data from Postgresdb</p>
 
 @inject IUserService service;
-
 <button class="btn btn-primary" @onclick="DeleteUser">DeleteUser</button>
 <button class="btn btn-primary" @onclick="CreateUser">CreateUser</button>
 <button class="btn btn-primary" @onclick="CreateUser2">CreateUser2</button>
 <button class="btn btn-primary" @onclick="GetAllUsers">getAllUsers(Console)</button>
 <button class="btn btn-primary" @onclick="UpdateUser">UpdateUser</button>
-<button class="btn btn-primary" @onclick="GetUserByIDConsole">GetUserByIDConsole</button>
+<button class="btn btn-primary" @onclick="GetUserByIDConsole">GetUserByIdConsole</button>
 @code {
 
     public void GetUserByIDConsole()
     {
         try
         {
-            var result = service.GetUserByID(50);
+            var result = service.GetUserById(47);
             Console.WriteLine(result.Name);
+            Console.WriteLine(result.Id);
         }
         catch (Exception e)
         {
@@ -36,10 +36,10 @@
     public void UpdateUser()
     {
         User updatedU = new User();
-        updatedU.Name = "update";
-        updatedU.Email = "updat@email";
-        updatedU.Password = "updatedPW";
-        updatedU.Id = 50;
+        updatedU.Name = "1update";
+        updatedU.Email = "1updat@email";
+        updatedU.Password = "1updatedPW";
+        updatedU.Id = 47;
         
         var result = service.UpdateUser(updatedU);
         Console.WriteLine($"Updating User succesful: {result}");
@@ -57,7 +57,7 @@
     private void DeleteUser()
     {
         Console.WriteLine("DeleteUser");
-        service.DeleteUser(40);
+        service.DeleteUser(51);
     }
     
     private void CreateUser()

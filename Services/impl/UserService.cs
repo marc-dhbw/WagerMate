@@ -13,74 +13,32 @@ public class UserService : IUserService
 
     public User CreateUser(User user)
     {
-        try
-        {
-            _service.Create<User>("INSERT INTO public.users(name, email, password) VALUES(@Name, @Email, @Password)", user);
-            return user;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return user;
-        }
+        _service.Create<User>("INSERT INTO public.users(name, email, password) VALUES(@Name, @Email, @Password)", user);
+        return user;
     }
 
     public List<User> GetAllUsers()
     {
-        try
-        {
-            var result = _service.GetAll<User>("SELECT * FROM public.users");
-            return result;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("UserServie: GetAllUsers failed");
-            Console.WriteLine(e);
-            throw;
-        }
+        var result = _service.GetAll<User>("SELECT * FROM public.users");
+        return result;
     }
 
     public bool UpdateUser(User user)
     {
-        try
-        {
-            var result = _service.Update<User>("UPDATE public.users SET name = @Name, email=@Email, password=@Passoword WHERE users.Id = @Id", user);
-            return result;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+        var result = _service.Update<User>("UPDATE public.users SET Id=@Id, name = @Name, email=@Email, password=@Password WHERE users.Id = @Id", user);
+        return result;
     }
 
-    public User GetUserByID(int key)
+    public User GetUserById(int key)
     {
-        try
-        {
-            var result = _service.GetByKey<User>("SELECT * FROM public.users WHERE users.Id = @Id",new{id = key});
-            return result;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("UserService: GetUserByID failed");
-            Console.WriteLine(e);
-            throw;
-        }
+        var result = _service.GetById<User>("SELECT * FROM public.users WHERE users.Id = @Id",new{id = key});
+        return result;
     }
 
     public bool DeleteUser(int key)
     {
-        try
-        {
-            var result = _service.Delete<User>("DELETE FROM public.users WHERE users.id = @Id", key);
-            return result;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("UserService: DeleteUser failed");
-            Console.WriteLine(e);
-            throw;
-        }
+        var result = _service.Delete<User>("DELETE FROM public.users WHERE users.Id = @Id", new{id = key});
+        return result;
+    
     }
 }

@@ -23,7 +23,7 @@ public interface IUserService
     /// </summary>
     /// <param name="key">Key of the User</param>
     /// <returns>User</returns>
-    public User GetUserByID(int key);
+    public User GetUserById(int key);
     
     bool UpdateUser(User user);
 
