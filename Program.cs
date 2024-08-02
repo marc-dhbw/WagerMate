@@ -1,10 +1,15 @@
 using WagerMate.Components;
+using WagerMate.Data;
+using WagerMate.Services;
+using WagerMate.Services.impl;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddScoped<IDbService, DbService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
