@@ -12,7 +12,7 @@
     <EditForm Model="@existingUserData" FormName="test1">
         <DataAnnotationsValidator/>
         <div class="field">
-            <div><label>E-mail address or Username:</label></div>
+            <div><label>E-mail address:</label></div>
             <InputText class="input" @bind-Value="existingUserData.EMail"/>
             <ValidationMessage For=@(() => existingUserData.EMail) />
         </div>
@@ -21,7 +21,7 @@
             <InputText class="input" type="password" @bind-Value="existingUserData.Password"/>
             <ValidationMessage For=@(() => existingUserData.Password) />
         </div>
-        <div><input id="login" type="submit" value="Log in" @onclick="@Save"/></div>
+        <div id="loginspace"><input id="login" type="submit" value="Log in" @onclick="@Save"/></div>
     </EditForm>
 </div>
 
@@ -52,7 +52,7 @@
             <InputText class="input" type="password" @bind-Value="newUserData.PasswordRepeat"/>
             <ValidationMessage For=@(() => newUserData.PasswordRepeat) />
         </div>
-        <div><input id="register" type="submit" value="Register" @onclick="@Save"/></div>
+        <div id="registerspace"><input id="register" type="submit" value="Register" @onclick="@Save"/></div>
     </EditForm>
 </div>
 </div>
