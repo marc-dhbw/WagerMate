@@ -20,22 +20,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-// Middleware to redirect to /login if the root URL is accessed
-bool checklogin = false;
-if (checklogin == false) {
-    app.Use(async (context, next) => {
-
-        if (context.Request.Path == "/") {
-            context.Response.Redirect("/login");
-        }
-        else {
-            await next.Invoke();
-        }
-
-    });
-}
-//set cecklogin to false to land on the loginpage
-
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
