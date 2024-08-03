@@ -13,7 +13,7 @@
         <DataAnnotationsValidator/>
         <div class="field">
             <div><label>E-mail address:</label></div>
-            <InputText class="input" @bind-Value="existingUserData.EMail"/>
+            <InputText class="input" type="email" @bind-Value="existingUserData.EMail"/>
             <ValidationMessage For=@(() => existingUserData.EMail) />
         </div>
         <div class="field">
@@ -39,7 +39,7 @@
         </div>
         <div class="field">
             <div><label>E-mail address:</label></div>
-            <InputText class="input" @bind-Value="newUserData.EMail"/>
+            <InputText class="input" type="email" @bind-Value="newUserData.EMail"/>
             <ValidationMessage For=@(() => newUserData.EMail) />
         </div>
         <div class="field">
