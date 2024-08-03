@@ -7,16 +7,19 @@ namespace WagerMate.Services.impl;
 public class DbService : IDbService
 {
     private IDbConnection _db;
-    public DbService(IConfiguration configuration)
+
+    public DbService(IDbConnection dbConnection)
     {
-        _db = new NpgsqlConnection(configuration.GetConnectionString("Wagerdb"));
+        // _db = new NpgsqlConnection(configuration.GetConnectionString("Wagerdb"));
+        _db = dbConnection;
         _db.Open();
     }
-    public bool Create<T>(string sql,object p)
+
+    public bool Create<T>(string sql, object p)
     {
         try
         {
-            var result =_db.Query<T>(sql, p).FirstOrDefault();
+            var result = _db.Query<T>(sql, p).FirstOrDefault();
             return true;
         }
         catch (Exception e)
@@ -32,8 +35,8 @@ public class DbService : IDbService
     {
         try
         {
-            T result = _db.QuerySingleOrDefault<T>(sql,id);
-            if(result == null)
+            T result = _db.QuerySingleOrDefault<T>(sql, id);
+            if (result == null)
                 throw new Exception();
             return result;
         }
@@ -49,9 +52,9 @@ public class DbService : IDbService
     {
         try
         {
-        var queryResult = _db.Query<T>(sql);
-        var result = queryResult.AsList();
-        return result;
+            var queryResult = _db.Query<T>(sql);
+            var result = queryResult.AsList();
+            return result;
         }
         catch (Exception e)
         {
@@ -76,8 +79,8 @@ public class DbService : IDbService
             throw;
         }
     }
-    
-    
+
+
     public bool Update<T>(string sql, object obj)
     {
         try
@@ -92,6 +95,4 @@ public class DbService : IDbService
             throw;
         }
     }
-    
-
 }
