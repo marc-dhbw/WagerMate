@@ -1,4 +1,5 @@
 using System.Data;
+using dotenv.net;
 using Npgsql;
 using WagerMate.Components;
 using WagerMate.Data;
@@ -7,15 +8,14 @@ using WagerMate.Services.impl;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add environment variables to the configuration
-builder.Configuration.AddEnvironmentVariables();
-
+DotEnv.Load();
 // Retrieve the connection string from the environment variable
-var connectionString = Environment.GetEnvironmentVariable("Wagerdb");
+var connectionString = Environment.GetEnvironmentVariable("CON_STR");
+Console.WriteLine(connectionString);
 
 if (string.IsNullOrEmpty(connectionString))
 {
-    throw new InvalidOperationException("The connection string is not set. Please configure the environment variable 'MYAPP_CONNECTIONSTRING'.");
+    throw new InvalidOperationException("The connection string is not set. Please configure the environment variable CON_STR");
 }
 
 
@@ -25,8 +25,6 @@ builder.Services.AddRazorComponents()
 
 // Register the IDbConnection service for Dapper
 builder.Services.AddScoped<IDbConnection>(sp => new NpgsqlConnection(connectionString));
-
-
 builder.Services.AddScoped<IDbService, DbService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
