@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
 
 // Retrieve the connection string from the environment variable
-var connectionString = Environment.GetEnvironmentVariable("CON_STR");
+var connectionString = Environment.GetEnvironmentVariable("Wagerdb");
 
 if (string.IsNullOrEmpty(connectionString))
 {
