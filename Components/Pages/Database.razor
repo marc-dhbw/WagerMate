@@ -1,8 +1,7 @@
 ﻿@page "/db"
-@rendermode InteractiveServer
 @using WagerMate.Data
 @using WagerMate.Services
-@using WagerMate.Services.impl
+@rendermode InteractiveServer
 <PageTitle>Database</PageTitle>
 <h3>Database</h3>
 
@@ -15,6 +14,7 @@
 <button class="btn btn-primary" @onclick="GetAllUsers">getAllUsers(Console)</button>
 <button class="btn btn-primary" @onclick="UpdateUser">UpdateUser</button>
 <button class="btn btn-primary" @onclick="GetUserByIDConsole">GetUserByIdConsole</button>
+
 @code {
 
     public void GetUserByIDConsole()
@@ -29,7 +29,6 @@
         {
             Console.WriteLine("Getuserbyid failed");
             Console.WriteLine(e);
-            
         }
     }
 
@@ -40,11 +39,11 @@
         updatedU.Email = "1updat@email";
         updatedU.Password = "1updatedPW";
         updatedU.Id = 47;
-        
+
         var result = service.UpdateUser(updatedU);
         Console.WriteLine($"Updating User succesful: {result}");
     }
-    
+
     private void GetAllUsers()
     {
         Console.WriteLine("Get ALl Users executing: ");
@@ -54,26 +53,29 @@
             Console.WriteLine(user.Name);
         }
     }
+
     private void DeleteUser()
     {
         Console.WriteLine("DeleteUser");
         service.DeleteUser(51);
     }
-    
+
     private void CreateUser()
     {
         Console.WriteLine("CreateUser");
         service.CreateUser(init());
     }
+
     private void CreateUser2()
     {
         Console.WriteLine("CreateUser2");
         // create dummy user
         User user2 = new User();
+        
         user2.Name = "user2";
         user2.Email = "user2@gmail.com";
         user2.Password = "12345";
-        
+
         Console.WriteLine("user locally created");
         try
         {
@@ -82,10 +84,9 @@
         catch (Exception e)
         {
             Console.WriteLine("service failldasdjmlksa");
-            
         }
     }
-    
+
     public User init()
     {
         User user = new User();
@@ -94,4 +95,5 @@
         user.Password = "1234";
         return user;
     }
+
 }
