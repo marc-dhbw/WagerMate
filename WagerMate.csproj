@@ -13,4 +13,10 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="dapper" Version="2.1.35" />
+      <PackageReference Include="dotenv.net" Version="3.2.0" />
+      <PackageReference Include="npgsql" Version="8.0.3" />
+    </ItemGroup>
+
 </Project>
