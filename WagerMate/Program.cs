@@ -24,7 +24,6 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 // Register the IDbConnection service for Dapper
-builder.Services.AddScoped<IDbConnection>(sp => new NpgsqlConnection(connectionString));
 builder.Services.AddScoped<IDbService, DbService>();
 builder.Services.AddScoped<IUserService, UserService>();
 

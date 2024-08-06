@@ -1,4 +1,4 @@
-﻿using System.Data;
+﻿﻿using System.Data;
 using Dapper;
 using Npgsql;
 
@@ -6,20 +6,23 @@ namespace WagerMate.Services.impl;
 
 public class DbService : IDbService
 {
-    private IDbConnection _db;
+    private IConfiguration _config;
 
-    public DbService(IDbConnection dbConnection)
+    private const string Conname = "Wagerdb";
+    private string? ConnectionString;
+
+    public DbService(IConfiguration configuration)
     {
-        // _db = new NpgsqlConnection(configuration.GetConnectionString("Wagerdb"));
-        _db = dbConnection;
-        _db.Open();
+        _config = configuration;
+        ConnectionString = _config.GetConnectionString(Conname);
     }
 
     public bool Create<T>(string sql, object p)
     {
+        using var connection = new NpgsqlConnection(ConnectionString);
         try
         {
-            var result = _db.Query<T>(sql, p).FirstOrDefault();
+            var result = connection.Query<T>(sql, p).FirstOrDefault();
             return true;
         }
         catch (Exception e)
@@ -33,9 +36,10 @@ public class DbService : IDbService
 
     public T GetById<T>(string sql, object id)
     {
+        using var connection = new NpgsqlConnection(ConnectionString);
         try
         {
-            T result = _db.QuerySingleOrDefault<T>(sql, id);
+            T result = connection.QuerySingleOrDefault<T>(sql, id);
             if (result == null)
                 throw new Exception();
             return result;
@@ -50,9 +54,10 @@ public class DbService : IDbService
 
     public List<T> GetAll<T>(string sql)
     {
+        using var connection = new NpgsqlConnection(ConnectionString);
         try
         {
-            var queryResult = _db.Query<T>(sql);
+            var queryResult = connection.Query<T>(sql);
             var result = queryResult.AsList();
             return result;
         }
@@ -66,9 +71,10 @@ public class DbService : IDbService
 
     public bool Delete<T>(string sql, object id)
     {
+        using var connection = new NpgsqlConnection(ConnectionString);
         try
         {
-            var queryResult = _db.Execute(sql, id);
+            var queryResult = connection.Execute(sql, id);
             if (queryResult > 0) return true;
             return false;
         }
@@ -80,12 +86,12 @@ public class DbService : IDbService
         }
     }
 
-
     public bool Update<T>(string sql, object obj)
     {
+        using var connection = new NpgsqlConnection(ConnectionString);
         try
         {
-            var queryResult = _db.Execute(sql, obj);
+            var queryResult = connection.Execute(sql, obj);
             return queryResult > 0;
         }
         catch (Exception e)
