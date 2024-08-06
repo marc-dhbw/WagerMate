@@ -2,6 +2,9 @@
 @layout LoginLayout
 @using System.ComponentModel.DataAnnotations
 @rendermode InteractiveServer
+@using WagerMate.Data
+@using WagerMate.Services
+@inject IUserService service;
 
 <div class="column">
 <div id="leftSide" class="half">
@@ -52,7 +55,7 @@
             <InputText class="input" type="password" @bind-Value="newUserData.PasswordRepeat"/>
             <ValidationMessage For=@(() => newUserData.PasswordRepeat) />
         </div>
-        <div id="registerspace"><input id="register" type="submit" value="Register" @onclick="@Save"/></div>
+        <div id="registerspace"><input id="register" type="submit" value="Register" @onclick="@CreateUser"/></div>
     </EditForm>
 </div>
 </div>
@@ -83,6 +86,26 @@
         [Required (ErrorMessage = "Repetition of password is required!")]
         [Compare("Password", ErrorMessage = "Must match Password!")]
         public string PasswordRepeat { get; set; }
+    }
+    
+    private void CreateUser()
+    {
+        Console.WriteLine("CreateUser2");
+        User user2 = new User();
+        
+        user2.Name = newUserData.Username;
+        user2.Email = newUserData.EMail;
+        user2.Password = newUserData.Password;
+
+        Console.WriteLine("user locally created");
+        try
+        {
+            service.CreateUser(user2);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("service failldasdjmlksa");
+        }
     }
     
     public void Save()
