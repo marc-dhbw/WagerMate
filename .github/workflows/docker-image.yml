@@ -15,7 +15,6 @@ env:
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
-    working-directory: ./WagerMate/
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
       contents: read
@@ -46,7 +45,7 @@ jobs:
         id: push
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: .\WagerMate\
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
