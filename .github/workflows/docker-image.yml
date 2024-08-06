@@ -48,9 +48,9 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Deploy to Render  # Neuer Schritt für das Deployment auf Render
+      - name: Deploy to Render  # Deployment on Render
         env:
-          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}  # Render API Key aus GitHub Secrets .
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}  # Render API Key from GitHub Secrets .
         run: |
           curl -X POST -H "Accept: application/json" \
           -H "Authorization: Bearer $RENDER_API_KEY" \
