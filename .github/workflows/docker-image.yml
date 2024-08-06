@@ -1,13 +1,11 @@
 name: Create and publish a Docker image
 
-# Configures this workflow to run every time a change is pushed to the branch called `main`.
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
-# Defines two custom environment variables for the workflow. These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -15,7 +13,6 @@ env:
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
-    # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
       contents: read
       packages: write
@@ -48,9 +45,9 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Deploy to Render  # Deployment on Render
+      - name: Deploy to Render  
         env:
-          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}  # Render API Key from GitHub Secrets .
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }} 
         run: |
           curl -X POST -H "Accept: application/json" \
           -H "Authorization: Bearer $RENDER_API_KEY" \
