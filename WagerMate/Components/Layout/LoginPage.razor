@@ -5,6 +5,10 @@
 @using WagerMate.Data
 @using WagerMate.Services
 @inject IUserService service;
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@inject IHttpContextAccessor HttpContextAccessor
+@inject NavigationManager Navigation
 
 <div class="column">
 <div id="leftSide" class="half">
@@ -108,9 +112,33 @@
         }
     }
     
-    public void Save()
+    private LoginModel loginModel = new LoginModel();
+ 
+    private async Task HandleLogin()
     {
-        Console.WriteLine(existingUserData.EMail);
-        Console.WriteLine(existingUserData.Password);
+        if (loginModel.Username == "admin" && loginModel.Password == "password") // Replace with real authentication logic
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, loginModel.Username)
+            };
+ 
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+ 
+            await HttpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+ 
+            Navigation.NavigateTo("/");
+        }
+        else
+        {
+            // Handle invalid login
+        }
+    }
+ 
+    private class LoginModel
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
     }
 }

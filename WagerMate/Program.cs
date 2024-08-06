@@ -5,6 +5,9 @@ using WagerMate.Components;
 using WagerMate.Data;
 using WagerMate.Services;
 using WagerMate.Services.impl;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +25,25 @@ if (string.IsNullOrEmpty(connectionString))
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+// Configure Cookie Authentication
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/login"; // The path for the login page
+        // Doesn't exist yet
+        // options.LogoutPath = "/logout"; // The path for the logout page
+        options.Cookie.Name = "LoginUserCookie";
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+        options.SlidingExpiration = true;
+    });
+ 
+// Authorization policy
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("MustBeLoggedIn", policy =>
+        policy.RequireAuthenticatedUser());
+});
 
 // Register the IDbConnection service for Dapper
 builder.Services.AddScoped<IDbService, DbService>();
@@ -41,6 +63,10 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
+
+// Enable authentication and authorization
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
