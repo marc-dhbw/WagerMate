@@ -40,9 +40,10 @@ jobs:
         id: push
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ./WagerMate
           push: true
           tags: ${{ steps.meta.outputs.tags }}
+
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Deploy to Render  
@@ -53,5 +54,4 @@ jobs:
           -H "Authorization: Bearer $RENDER_API_KEY" \
           -H "Content-Type: application/json" \
           --data '{}' \
-          https://api.render.com/v1/services/srv-cqmg1bbqf0us73acfcf0/deploys 
-
+          https://api.render.com/v1/services/srv-cqmg1bbqf0us73acfcf0/deploys
