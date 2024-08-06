@@ -25,7 +25,17 @@ public interface IUserService
     /// <returns>User</returns>
     public User GetUserById(int key);
     
+    /// <summary>
+    /// Returns updated user
+    /// </summary>
+    /// <param name="user">User</param>
+    /// <returns></returns>
     bool UpdateUser(User user);
-
+    
+    /// <summary>
+    /// Deletes a user in the DB
+    /// </summary>
+    /// <param name="key">Key of the user</param>
+    /// <returns></returns>
     bool DeleteUser(int key);
 }
