@@ -56,5 +56,5 @@ jobs:
           -H "Authorization: Bearer $RENDER_API_KEY" \
           -H "Content-Type: application/json" \
           --data '{}' \
-          https://api.render.com/v1/services/srv-cql1cljqf0us73bruuog/deploys 
+          https://api.render.com/v1/services/srv-cqmg1bbqf0us73acfcf0/deploys 
 
