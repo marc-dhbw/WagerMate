@@ -5,10 +5,9 @@
 @using WagerMate.Data
 @using WagerMate.Services
 @inject IUserService service;
-@using Microsoft.AspNetCore.Authentication
-@using Microsoft.AspNetCore.Authentication.Cookies
 @inject IHttpContextAccessor HttpContextAccessor
 @inject NavigationManager Navigation
+
 
 <div class="column">
 <div id="leftSide" class="half">
@@ -28,7 +27,7 @@
             <InputText class="input" type="password" @bind-Value="existingUserData.Password"/>
             <ValidationMessage For=@(() => existingUserData.Password) />
         </div>
-        <div id="loginspace"><input id="login" type="submit" value="Log in" @onclick="@Save"/></div>
+        <div id="loginspace"><input id="login" type="submit" value="Log in" /></div>
     </EditForm>
 </div>
 
@@ -116,11 +115,11 @@
  
     private async Task HandleLogin()
     {
-        if (loginModel.Username == "admin" && loginModel.Password == "password") // Replace with real authentication logic
+        if (loginModel.EMail == "admin" && loginModel.Password == "password") // Replace with real authentication logic
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, loginModel.Username)
+                new Claim(ClaimTypes.Name, loginModel.EMail)
             };
  
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -138,7 +137,7 @@
  
     private class LoginModel
     {
-        public string Username { get; set; }
+        public string EMail { get; set; }
         public string Password { get; set; }
     }
 }
