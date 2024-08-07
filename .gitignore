@@ -1,0 +1,10 @@
+# file types and folders
+*exe
+obj/
+bin/
+.idea/
+.env
+.dockerignore
+
+# individual files
+WagerMate.sln.DotSettings.user

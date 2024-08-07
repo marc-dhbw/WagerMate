@@ -28,6 +28,7 @@ public class DbService : IDbService
                 return true;
             else
                 return false;
+
         }
         catch (Exception e)
         {
@@ -78,7 +79,7 @@ public class DbService : IDbService
     public bool Delete<T>(string sql, object id)
     {
         using var connection = new NpgsqlConnection(ConnectionString);
-        connection.Open();
+        connection.Open()
         try
         {
             var queryResult = connection.Execute(sql, id);
@@ -96,7 +97,9 @@ public class DbService : IDbService
     public bool Update<T>(string sql, object obj)
     {
         using var connection = new NpgsqlConnection(ConnectionString);
+
         connection.Open();
+
         try
         {
             var queryResult = connection.Execute(sql, obj);
