@@ -1,4 +1,4 @@
-name: Create and publish a Docker image
+name: Create, test and publish a Docker image
 
 on:
   push:
@@ -19,23 +19,58 @@ jobs:
       attestations: write
       id-token: write
 
+    services: 
+      postgres: 
+        image: postgres:latest 
+        env: 
+          POSTGRES_USER: postgres 
+          POSTGRES_PASSWORD: password 
+          POSTGRES_DB: mydatabase 
+        ports: 
+          - 5432:5432 
+        options: >- 
+          --health-cmd pg_isready 
+          --health-interval 10s 
+          --health-timeout 5s 
+          --health-retries 5 
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
+      - name: Setup .NET Core 
+        uses: actions/setup-dotnet@v3 
+        with: 
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies 
+        run: dotnet restore
+
+      - name: Create tables in PostgreSQL 
+        run: | 
+          psql -h localhost -U postgres -d mydatabase -c "CREATE TABLE mytable (id SERIAL PRIMARY KEY, name VARCHAR(50));" # Beispiel-Tabelle erstellen
+        env: 
+          PGPASSWORD: password 
+
+      - name: Build the project 
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Run tests 
+        run: dotnet test --no-restore --verbosity normal
+
       - name: Log in to the Container registry
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-      
+
       - name: Build and push Docker image
         id: push
         uses: docker/build-push-action@v6
@@ -43,15 +78,4 @@ jobs:
           context: ./WagerMate
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-
           labels: ${{ steps.meta.outputs.labels }}
-
-      - name: Deploy to Render  
-        env:
-          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }} 
-        run: |
-          curl -X POST -H "Accept: application/json" \
-          -H "Authorization: Bearer $RENDER_API_KEY" \
-          -H "Content-Type: application/json" \
-          --data '{}' \
-          https://api.render.com/v1/services/srv-cqmg1bbqf0us73acfcf0/deploys
