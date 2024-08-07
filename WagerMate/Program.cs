@@ -21,6 +21,8 @@ if (string.IsNullOrEmpty(connectionString))
     throw new InvalidOperationException("The connection string is not set. Please configure the environment variable CON_STR");
 }
 
+// Register IHttpContextAccessor
+builder.Services.AddHttpContextAccessor();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
@@ -59,7 +61,6 @@ if (!app.Environment.IsDevelopment()) {
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
 app.UseAntiforgery();
 
