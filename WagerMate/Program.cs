@@ -23,6 +23,8 @@ if (string.IsNullOrEmpty(connectionString))
 builder.Configuration.AddEnvironmentVariables();
 
 builder.Configuration["ConnectionStrings:Wagerdb"]=connectionString;
+// Register IHttpContextAccessor
+builder.Services.AddHttpContextAccessor();
 
 // Register IHttpContextAccessor
 builder.Services.AddHttpContextAccessor();
