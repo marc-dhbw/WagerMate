@@ -19,11 +19,16 @@ public class DbService : IDbService
 
     public bool Create<T>(string sql, object p)
     {
-        using var connection = new NpgsqlConnection(ConnectionString);
+        using var connection = new NpgsqlConnection(_config.GetConnectionString("Wagerdb"));
+        connection.Open();
         try
         {
             var result = connection.Query<T>(sql, p).FirstOrDefault();
-            return true;
+            if(result != null)
+                return true;
+            else
+                return false;
+
         }
         catch (Exception e)
         {
@@ -37,6 +42,7 @@ public class DbService : IDbService
     public T GetById<T>(string sql, object id)
     {
         using var connection = new NpgsqlConnection(ConnectionString);
+        connection.Open();
         try
         {
             T result = connection.QuerySingleOrDefault<T>(sql, id);
@@ -55,6 +61,7 @@ public class DbService : IDbService
     public List<T> GetAll<T>(string sql)
     {
         using var connection = new NpgsqlConnection(ConnectionString);
+        connection.Open();
         try
         {
             var queryResult = connection.Query<T>(sql);
@@ -72,6 +79,7 @@ public class DbService : IDbService
     public bool Delete<T>(string sql, object id)
     {
         using var connection = new NpgsqlConnection(ConnectionString);
+        connection.Open();
         try
         {
             var queryResult = connection.Execute(sql, id);
@@ -89,6 +97,9 @@ public class DbService : IDbService
     public bool Update<T>(string sql, object obj)
     {
         using var connection = new NpgsqlConnection(ConnectionString);
+
+        connection.Open();
+
         try
         {
             var queryResult = connection.Execute(sql, obj);
