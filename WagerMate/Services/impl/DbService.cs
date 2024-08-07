@@ -79,7 +79,7 @@ public class DbService : IDbService
     public bool Delete<T>(string sql, object id)
     {
         using var connection = new NpgsqlConnection(ConnectionString);
-        connection.Open()
+        connection.Open();
         try
         {
             var queryResult = connection.Execute(sql, id);
