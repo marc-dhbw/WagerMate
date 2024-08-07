@@ -11,13 +11,15 @@ var builder = WebApplication.CreateBuilder(args);
 DotEnv.Load();
 // Retrieve the connection string from the environment variable
 var connectionString = Environment.GetEnvironmentVariable("CON_STR");
-Console.WriteLine(connectionString);
 
 if (string.IsNullOrEmpty(connectionString))
 {
     throw new InvalidOperationException("The connection string is not set. Please configure the environment variable CON_STR");
 }
 
+builder.Configuration.AddEnvironmentVariables();
+
+builder.Configuration["ConnectionStrings:Wagerdb"]=connectionString;
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
