@@ -15,17 +15,17 @@
 
     <p>Welcome Back!</p>
 
-    <EditForm Model="@existingUserData" FormName="test1">
+    <EditForm Model="@_existingUserData" FormName="test1">
         <DataAnnotationsValidator/>
         <div class="field">
             <div><label>E-mail address:</label></div>
-            <InputText class="input" type="email" @bind-Value="existingUserData.EMail"/>
-            <ValidationMessage For=@(() => existingUserData.EMail) />
+            <InputText class="input" type="email" @bind-Value="_existingUserData.EMail"/>
+            <ValidationMessage For=@(() => _existingUserData.EMail) />
         </div>
         <div class="field">
             <div><label>Password:</label></div>
-            <InputText class="input" type="password" @bind-Value="existingUserData.Password"/>
-            <ValidationMessage For=@(() => existingUserData.Password) />
+            <InputText class="input" type="password" @bind-Value="_existingUserData.Password"/>
+            <ValidationMessage For=@(() => _existingUserData.Password) />
         </div>
         <div id="loginspace"><input id="login" type="submit" value="Log in" /></div>
     </EditForm>
@@ -36,27 +36,27 @@
 
     <p>Welcome Mate!</p>
 
-    <EditForm Model="@newUserData" FormName="test2">
+    <EditForm Model="@_newUserData" FormName="test2">
         <DataAnnotationsValidator/>
         <div class="field">
             <div><label>Username:</label></div>
-            <InputText class="input" @bind-Value="newUserData.Username"/>
-            <ValidationMessage For=@(() => newUserData.Username) />
+            <InputText class="input" @bind-Value="_newUserData.Username"/>
+            <ValidationMessage For=@(() => _newUserData.Username) />
         </div>
         <div class="field">
             <div><label>E-mail address:</label></div>
-            <InputText class="input" type="email" @bind-Value="newUserData.EMail"/>
-            <ValidationMessage For=@(() => newUserData.EMail) />
+            <InputText class="input" type="email" @bind-Value="_newUserData.EMail"/>
+            <ValidationMessage For=@(() => _newUserData.EMail) />
         </div>
         <div class="field">
             <div><label>Password:</label></div>
-            <InputText class="input" type="password" @bind-Value="newUserData.Password"/>
-            <ValidationMessage For=@(() => newUserData.Password) />
+            <InputText class="input" type="password" @bind-Value="_newUserData.Password"/>
+            <ValidationMessage For=@(() => _newUserData.Password) />
         </div>
         <div class="field">
             <div><label>Repeat Password:</label></div>
-            <InputText class="input" type="password" @bind-Value="newUserData.PasswordRepeat"/>
-            <ValidationMessage For=@(() => newUserData.PasswordRepeat) />
+            <InputText class="input" type="password" @bind-Value="_newUserData.PasswordRepeat"/>
+            <ValidationMessage For=@(() => _newUserData.PasswordRepeat) />
         </div>
         <div id="registerspace"><input id="register" type="submit" value="Register" @onclick="@CreateUser"/></div>
     </EditForm>
@@ -66,29 +66,29 @@
 
 
 @code {
-    private ExistingUserData existingUserData = new ExistingUserData();
+    private ExistingUserData _existingUserData = new ExistingUserData();
     
     public class ExistingUserData
     {
         [Required (ErrorMessage = "E-mail address is required!")]
-        public string EMail { get; set; }
+        public string? EMail { get; set; }
         [Required (ErrorMessage = "Password is required!")]
-        public string Password { get; set; }
+        public string? Password { get; set; }
     }
 
-    private NewUserData newUserData = new NewUserData();
+    private NewUserData _newUserData = new NewUserData();
 
     public class NewUserData
     {
         [Required (ErrorMessage = "E-mail address is required!")]
-        public string EMail { get; set; }
+        public string? EMail { get; set; }
         [Required (ErrorMessage = "Username is required!")]
-        public string Username { get; set; }
+        public string? Username { get; set; }
         [Required (ErrorMessage = "Password is required!")]
-        public string Password { get; set; }
+        public string? Password { get; set; }
         [Required (ErrorMessage = "Repetition of password is required!")]
         [Compare("Password", ErrorMessage = "Must match Password!")]
-        public string PasswordRepeat { get; set; }
+        public string? PasswordRepeat { get; set; }
     }
     
     private void CreateUser()
@@ -96,9 +96,9 @@
         Console.WriteLine("CreateUser2");
         User user2 = new User();
         
-        user2.Name = newUserData.Username;
-        user2.Email = newUserData.EMail;
-        user2.Password = newUserData.Password;
+        user2.Name = _newUserData.Username;
+        user2.Email = _newUserData.EMail;
+        user2.Password = _newUserData.Password;
 
         Console.WriteLine("user locally created");
         try
@@ -111,15 +111,15 @@
         }
     }
     
-    private LoginModel loginModel = new LoginModel();
+    private LoginModel _loginModel = new LoginModel();
  
     private async Task HandleLogin()
     {
-        if (loginModel.EMail == "admin" && loginModel.Password == "password") // Replace with real authentication logic
+        if (_loginModel.EMail == "admin" && _loginModel.Password == "password") // Replace with real authentication logic
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, loginModel.EMail)
+                new Claim(ClaimTypes.Name, _loginModel.EMail)
             };
  
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -137,7 +137,7 @@
  
     private class LoginModel
     {
-        public string EMail { get; set; }
-        public string Password { get; set; }
+        public string? EMail { get; set; }
+        public string? Password { get; set; }
     }
 }

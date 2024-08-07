@@ -6,20 +6,20 @@
 <h1>Profile Settings</h1>
 @if (!EditingUsername) {
     <div style="margin-top: 20px">
-        <b>Username:</b> @userData.Username
+        <b>Username:</b> @_userData.Username
     </div>
     <div style="margin-top: 10px; margin-bottom: 10px;">
         <input type="button" value="Edit Username" @onclick="@EnableEditingUsername"/>
     </div>
 }
 else {
-    <EditForm Model="@userData" FormName="testUsername">
+    <EditForm Model="@_userData" FormName="testUsername">
         <DataAnnotationsValidator/>
         <div>
             <div>
                 <label>Username:</label>
             </div>
-            <InputText @bind-Value="editedUserData.Username"/>
+            <InputText @bind-Value="_editedUserData.Username"/>
         </div>
         <div id="registerspace">
             <input type="button" value="Cancel" @onclick="@CancelEditingUsername"/>
@@ -30,20 +30,20 @@ else {
 
 @if (!EditingEMail) {
     <div style="margin-top: 20px">
-        <b>E-mail address:</b> @userData.EMail
+        <b>E-mail address:</b> @_userData.EMail
     </div>
     <div style="margin-top: 10px; margin-bottom: 10px;">
         <input type="button" value="Edit E-mail address" @onclick="@EnableEditingEMail"/>
     </div>
 }
 else {
-    <EditForm Model="@userData" FormName="testEMail">
+    <EditForm Model="@_userData" FormName="testEMail">
         <DataAnnotationsValidator/>
         <div>
             <div>
                 <label>E-mail address:</label>
             </div>
-            <InputText type="email" @bind-Value="editedUserData.EMail"/>
+            <InputText type="email" @bind-Value="_editedUserData.EMail"/>
         </div>
         <div id="registerspace">
             <input type="button" value="Cancel" @onclick="@CancelEditingEMail"/>
@@ -53,27 +53,27 @@ else {
 }
 @if (!EditingPassword) {
     <div style="margin-top: 20px">
-        <b>Password: @userData.EncodedPassword() </b>
+        <b>Password: @_userData.EncodedPassword() </b>
     </div>
     <div style="margin-top: 10px; margin-bottom: 10px;">
         <input type="button" value="Edit Password" @onclick="@EnableEditingPassword"/>
     </div>
 }
 else {
-    <EditForm Model="@userData" FormName="testPassword">
+    <EditForm Model="@_userData" FormName="testPassword">
         <DataAnnotationsValidator/>
         <div>
             <div>
                 <label>Password:</label>
             </div>
-            <InputText type="password" @bind-Value="editedUserData.Password"/>
+            <InputText type="password" @bind-Value="_editedUserData.Password"/>
         </div>
         <div>
             <div>
                 <label>Repeat Password:</label>
             </div>
-            <InputText type="password" @bind-Value="editedUserData.PasswordRepeat"/>
-            <ValidationMessage For=@(() => editedUserData.PasswordRepeat)/>
+            <InputText type="password" @bind-Value="_editedUserData.PasswordRepeat"/>
+            <ValidationMessage For=@(() => _editedUserData.PasswordRepeat)/>
         </div>
         <div id="registerspace">
             <input type="button" value="Cancel" @onclick="@CancelEditingPassword"/>
@@ -83,14 +83,14 @@ else {
 }
 
 @code{
-    private UserData userData = new UserData();
+    private UserData _userData = new UserData();
     //public string EPassword = userData.EncodedPassword();
 
 
     public class UserData {
-        public string Username { get; set; }
-        public string EMail { get; set; }
-        public string Password { get; set; }
+        public string? Username { get; set; }
+        public string? EMail { get; set; }
+        public string? Password { get; set; }
 
         // Test data
         public UserData() {
@@ -112,15 +112,15 @@ else {
         }
     }
 
-    EditedUserData editedUserData = new EditedUserData();
+    EditedUserData _editedUserData = new EditedUserData();
 
     public class EditedUserData {
-        public string Username { get; set; }
-        public string EMail { get; set; }
-        public string Password { get; set; }
+        public string? Username { get; set; }
+        public string? EMail { get; set; }
+        public string? Password { get; set; }
 
         [Compare("Password", ErrorMessage = "Must match Password!")]
-        public string PasswordRepeat { get; set; }
+        public string? PasswordRepeat { get; set; }
     }
 
     public bool EditingUsername = false;
@@ -153,17 +153,17 @@ else {
 
     // Needs to be replaced with a funtion to write values into a database
     public void EditUsername() {
-        userData.Username = editedUserData.Username;
+        _userData.Username = _editedUserData.Username;
         EditingUsername = false;
     }
 
     public void EditEMail() {
-        userData.EMail = editedUserData.EMail;
+        _userData.EMail = _editedUserData.EMail;
         EditingEMail = false;
     }
 
     public void EditPassword() {
-        userData.Password = editedUserData.Password;
+        _userData.Password = _editedUserData.Password;
         EditingPassword = false;
     }
 
