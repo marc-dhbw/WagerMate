@@ -112,4 +112,24 @@ public class DbService : IDbService
             throw;
         }
     }
+    
+    public T GetByEmail<T>(string sql, object email)
+    {
+        using var connection = new NpgsqlConnection(ConnectionString);
+        connection.Open();
+        try
+        {
+            T result = connection.QuerySingleOrDefault<T>(sql, email);
+            if (result == null)
+                throw new Exception("No user found with the provided email.");
+            return result;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("DbService GetByEmail failed");
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
 }

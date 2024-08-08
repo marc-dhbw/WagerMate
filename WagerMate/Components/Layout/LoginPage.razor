@@ -15,7 +15,7 @@
 
     <p>Welcome Back!</p>
 
-    <EditForm Model="@_existingUserData" FormName="test1">
+    <EditForm Model="@_existingUserData" OnValidSubmit="GetUserByEmailConsole" FormName="test1">
         <DataAnnotationsValidator/>
         <div class="field">
             <div><label>E-mail address:</label></div>
@@ -169,4 +169,22 @@
         public string? EMail { get; set; }
         public string? Password { get; set; }
     }
+    
+    public void GetUserByEmailConsole()
+    {
+        try
+        {
+            var result = service.GetUserByEmail(_existingUserData.EMail);
+            Console.WriteLine(result.Id);
+            Console.WriteLine(result.Name);
+            Console.WriteLine(result.Email);
+            Console.WriteLine(result.Password);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("GetUserByEmail failed");
+            Console.WriteLine(e);
+        }
+    }
+
 }

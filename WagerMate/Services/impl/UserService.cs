@@ -41,4 +41,11 @@ public class UserService : IUserService
         return result;
     
     }
+    
+    public User GetUserByEmail(string email)
+    {
+        var result = _service.GetById<User>("SELECT * FROM public.users WHERE users.email = @Email", new { Email = email });
+        return result;
+    }
+
 }

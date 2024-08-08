@@ -28,4 +28,5 @@ public interface IUserService
     bool UpdateUser(User user);
 
     bool DeleteUser(int key);
+    public User GetUserByEmail(string email);
 }

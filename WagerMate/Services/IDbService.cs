@@ -7,5 +7,5 @@ public interface IDbService
    public List<T> GetAll<T>(string sql);
    public bool Delete<T>(string sql, object id);
    public bool Update<T>(string sql, object obj);
-
+   T GetByEmail<T>(string sql, object email);
 }
