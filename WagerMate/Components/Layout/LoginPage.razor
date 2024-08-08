@@ -36,7 +36,7 @@
 
     <p>Welcome Mate!</p>
 
-    <EditForm Model="@_newUserData" FormName="test2">
+    <EditForm Model="@_newUserData" OnValidSubmit="CreateUser" FormName="test2">
         <DataAnnotationsValidator/>
         <div class="field">
             <div><label>Username:</label></div>
@@ -58,7 +58,12 @@
             <InputText class="input" type="password" @bind-Value="_newUserData.PasswordRepeat"/>
             <ValidationMessage For=@(() => _newUserData.PasswordRepeat) />
         </div>
-        <div id="registerspace"><input id="register" type="submit" value="Register" @onclick="@CreateUser"/></div>
+        <div class="field">
+            <div><label>Enter Invite Code:</label></div>
+            <InputText class="input"  @bind-Value="_newUserData.InviteCode"/>
+            <ValidationMessage For=@(() => _newUserData.InviteCode) />
+        </div>
+        <div id="registerspace"><input id="register" type="submit" value="Register"></div>
     </EditForm>
 </div>
 </div>
@@ -89,25 +94,49 @@
         [Required (ErrorMessage = "Repetition of password is required!")]
         [Compare("Password", ErrorMessage = "Must match Password!")]
         public string? PasswordRepeat { get; set; }
+        [Required (ErrorMessage = "Invite code is required!")]
+        [CompareInviteCode("42", ErrorMessage = "Invalid invite code!")]
+        public string? InviteCode { get; set; }
     }
+
+    public class CompareInviteCodeAttribute : ValidationAttribute
+    {
+        private readonly string _validCode;
+
+        public CompareInviteCodeAttribute(string validCode)
+        {
+            _validCode = validCode;
+        }
+
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+        {
+            if (value == null || value.ToString() != _validCode)
+            {
+                return new ValidationResult(ErrorMessage ?? "Invalid invite code!");
+            }
+
+            return ValidationResult.Success;
+        }
+    }
+
     
     private void CreateUser()
     {
-        Console.WriteLine("CreateUser2");
+        Console.WriteLine("Register New User");
         User user2 = new User();
         
         user2.Name = _newUserData.Username;
         user2.Email = _newUserData.EMail;
         user2.Password = _newUserData.Password;
 
-        Console.WriteLine("user locally created");
+        Console.WriteLine("user locally registered");
         try
         {
             service.CreateUser(user2);
         }
         catch (Exception e)
         {
-            Console.WriteLine("service failldasdjmlksa");
+            Console.WriteLine("service failled");
         }
     }
     
