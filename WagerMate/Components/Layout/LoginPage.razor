@@ -15,7 +15,7 @@
 
     <p>Welcome Back!</p>
 
-    <EditForm Model="@_existingUserData" OnValidSubmit="GetUserByEmailConsole" FormName="test1">
+    <EditForm Model="@_existingUserData" OnValidSubmit="LoginTest" FormName="test1">
         <DataAnnotationsValidator/>
         <div class="field">
             <div><label>E-mail address:</label></div>
@@ -36,7 +36,7 @@
 
     <p>Welcome Mate!</p>
 
-    <EditForm Model="@_newUserData" OnValidSubmit="CreateUser" FormName="test2">
+    <EditForm Model="@_newUserData" OnValidSubmit="RegisterTest" FormName="test2">
         <DataAnnotationsValidator/>
         <div class="field">
             <div><label>Username:</label></div>
@@ -169,22 +169,40 @@
         public string? EMail { get; set; }
         public string? Password { get; set; }
     }
-    
-    public void GetUserByEmailConsole()
-    {
-        try
-        {
+
+    public void LoginTest() {
+        try {
             var result = service.GetUserByEmail(_existingUserData.EMail);
-            Console.WriteLine(result.Id);
-            Console.WriteLine(result.Name);
-            Console.WriteLine(result.Email);
-            Console.WriteLine(result.Password);
+            if (result.Password == _existingUserData.Password)
+            {
+                Console.WriteLine("Login successful.");
+            }
+            else
+            {
+                Console.WriteLine("Invalid password.");
+            }
         }
-        catch (Exception e)
-        {
-            Console.WriteLine("GetUserByEmail failed");
+        catch (Exception e) {
             Console.WriteLine(e);
+            Console.WriteLine("Not registered E-Mail.");
         }
+        
     }
 
+    public void RegisterTest() {
+        try {
+            var result = service.GetUserByEmail(_newUserData.EMail);
+            if (result == null) {
+                CreateUser();
+            }
+
+            if (result != null) {
+                Console.WriteLine("E-Mail is already taken.");
+            }
+        }
+        catch (Exception e) {
+            Console.WriteLine(e);
+            Console.WriteLine("E-Mail is already registered.");
+        }
+    }
 }

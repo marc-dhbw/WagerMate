@@ -120,9 +120,8 @@ public class DbService : IDbService
         try
         {
             T result = connection.QuerySingleOrDefault<T>(sql, email);
-            if (result == null)
-                throw new Exception("No user found with the provided email.");
             return result;
+           
         }
         catch (Exception e)
         {
