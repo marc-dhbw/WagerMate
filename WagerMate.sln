@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WagerMate", "WagerMate\WagerMate.csproj", "{85B602F2-B1B3-45F8-927D-6FF43DE50549}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{E9764E25-3973-4008-84F1-0F7F3AC225E4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{85B602F2-B1B3-45F8-927D-6FF43DE50549}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{85B602F2-B1B3-45F8-927D-6FF43DE50549}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{85B602F2-B1B3-45F8-927D-6FF43DE50549}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9764E25-3973-4008-84F1-0F7F3AC225E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9764E25-3973-4008-84F1-0F7F3AC225E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9764E25-3973-4008-84F1-0F7F3AC225E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9764E25-3973-4008-84F1-0F7F3AC225E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
