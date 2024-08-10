@@ -95,7 +95,7 @@
         }
         catch (Exception e)
         {
-            Console.WriteLine("service failldasdjmlksa");
+            Console.WriteLine("service failed");
         }
     }
 
@@ -131,8 +131,8 @@
         updatedB.WageritemId = 3;
         updatedB.Description = "updated description";
         updatedB.Cases = new string[] { "updated case1", "updated case2" };
-        updatedB.BetAccess = Bet.Access.Restricted;
-        updatedB.BetState = Bet.State.Closed;
+        updatedB.BetAccess = Access.Restricted;
+        updatedB.BetState = State.Closed;
         updatedB.Id = 47;
 
         var result = Service2.UpdateBet(updatedB);
@@ -173,8 +173,8 @@
         bet2.Created = DateTime.Now;
         bet2.Expiration = DateTime.Now.AddYears(50);
         bet2.Cases = new string[] { "Testcase 1", "Testcase 2" };
-        bet2.BetAccess = Bet.Access.Public;
-        bet2.BetState = Bet.State.Pending;
+        bet2.BetAccess = Access.Public;
+        bet2.BetState = State.Pending;
 
         Console.WriteLine("bet locally created");
         try
@@ -183,7 +183,7 @@
         }
         catch (Exception e)
         {
-            Console.WriteLine("service failldasdjmlksa");
+            Console.WriteLine("service failed");
         }
     }
 
@@ -194,8 +194,8 @@
         bet.Created = DateTime.Now;
         bet.Expiration = DateTime.Now.AddYears(50);
         bet.Cases = new string[] { "Testcase 1", "Testcase 2" };
-        bet.BetAccess = Bet.Access.Private;
-        bet.BetState = Bet.State.Active;
+        bet.BetAccess = Access.Private;
+        bet.BetState = State.Active;
         return bet;
     }
 

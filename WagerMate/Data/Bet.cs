@@ -1,4 +1,3 @@
-
 namespace WagerMate.Data;
 
 public class Bet
@@ -14,20 +13,6 @@ public class Bet
     public DateTime Expiration { get; set; }
 
     public string[] Cases { get; set; }
-
-    public enum Access
-    {
-        Public,
-        Private,
-        Restricted
-    }
-
-    public enum State
-    {
-        Pending,
-        Active,
-        Closed
-    }
 
     public Access BetAccess { get; set; }
     public State BetState { get; set; }
