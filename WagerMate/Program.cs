@@ -28,6 +28,7 @@ builder.Services.AddRazorComponents()
 // Register the IDbConnection service for Dapper
 builder.Services.AddScoped<IDbService, DbService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IBetService, BetService>();
 
 
 var app = builder.Build();

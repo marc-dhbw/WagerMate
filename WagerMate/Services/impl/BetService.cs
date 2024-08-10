@@ -4,7 +4,7 @@ using WagerMate.Data;
 
 public class BetService: IBetService
 {
-    private readonly IDbService _service;
+    private IDbService _service;
 
     public BetService(IDbService service)
     {
@@ -12,13 +12,7 @@ public class BetService: IBetService
     }
     public Bet CreateBet(Bet bet)
     {
-        _service.Create<Bet>("INSERT INTO public.wagers(wageritemid, description, created, expiration, cases, access, state) VALUES(@Wageritemid, @Description, @Created, @Expiration, @Cases, @Access, @State)", bet);
-        return bet;
-    }
-    
-    public Bet CreateUser(Bet bet)
-    {
-        _service.Create<User>("INSERT INTO public.wagers(wageritemid, description, created, expiration, cases, access, state) VALUES(@Wageritemid, @Description, @Created, @Expiration, @Cases, @Access, @State)", bet);
+        _service.Create<Bet>("INSERT INTO public.wagers(wageritem_id, description, created, expiration, cases, access, state) VALUES(@Wageritem_id, @Description, @Created, @Expiration, @Cases, @Access, @State)", bet);
         return bet;
     }
 
@@ -30,7 +24,7 @@ public class BetService: IBetService
 
     public bool UpdateBet(Bet bet)
     {
-        var result = _service.Update<Bet>("UPDATE public.wagers SET Id=@Id, description = @Description, created=@Created, expiration=@Expiration, cases = @Cases, access=@Access, state=@State WHERE wagers.Id = @Id", bet);
+        var result = _service.Update<Bet>("UPDATE public.wagers SET Id=@Id, wageritem_id = @Wageritem_id, description = @Description, created=@Created, expiration=@Expiration, cases = @Cases, access=@Access, state=@State WHERE wagers.Id = @Id", bet);
         return result;
     }
 
