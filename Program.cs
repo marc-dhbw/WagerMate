@@ -27,6 +27,7 @@ builder.Services.AddRazorComponents()
 builder.Services.AddScoped<IDbConnection>(sp => new NpgsqlConnection(connectionString));
 builder.Services.AddScoped<IDbService, DbService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IBetService, BetService>();
 
 
 var app = builder.Build();
