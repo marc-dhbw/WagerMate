@@ -1,0 +1,202 @@
+﻿@page "/db"
+@using WagerMate.Data
+@using WagerMate.Services
+@rendermode InteractiveServer
+<PageTitle>Database</PageTitle>
+<h3>Database</h3>
+
+<p>This page displays data from Postgresdb</p>
+<br>
+<br>
+<p>These buttons display data for users</p>
+
+@inject IUserService Service;
+<button class="btn btn-primary" @onclick="DeleteUser">DeleteUser</button>
+<button class="btn btn-primary" @onclick="CreateUser">CreateUser</button>
+<button class="btn btn-primary" @onclick="CreateUser2">CreateUser2</button>
+<button class="btn btn-primary" @onclick="GetAllUsers">getAllUsers(Console)</button>
+<button class="btn btn-primary" @onclick="UpdateUser">UpdateUser</button>
+<button class="btn btn-primary" @onclick="GetUserByIdConsole">GetUserByIdConsole</button>
+@inject IBetService Service2;
+<br>
+<br>
+<p>These buttons display data for bets</p>
+<button class="btn btn-primary" @onclick="DeleteBet">DeleteBet</button>
+<button class="btn btn-primary" @onclick="CreateBet">CreateBet</button>
+<button class="btn btn-primary" @onclick="CreateBet2">CreateBet2</button>
+<button class="btn btn-primary" @onclick="GetAllBets">getAllBets(Console)</button>
+<button class="btn btn-primary" @onclick="UpdateBet">UpdateBet</button>
+<button class="btn btn-primary" @onclick="GetBetByIdConsole">GetBetByIdConsole</button>
+@code {
+
+    public void GetUserByIdConsole()
+    {
+        try
+        {
+            var result = Service.GetUserById(47);
+            Console.WriteLine(result.Name);
+            Console.WriteLine(result.Id);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Getuserbyid failed");
+            Console.WriteLine(e);
+        }
+    }
+
+    public void UpdateUser()
+    {
+        User updatedU = new User();
+        updatedU.Name = "1update";
+        updatedU.Email = "1updat@email";
+        updatedU.Password = "1updatedPW";
+        updatedU.Id = 47;
+
+        var result = Service.UpdateUser(updatedU);
+        Console.WriteLine($"Updating User succesful: {result}");
+    }
+
+    private void GetAllUsers()
+    {
+        Console.WriteLine("Get ALl Users executing: ");
+        var result = Service.GetAllUsers();
+        foreach (var user in result)
+        {
+            Console.WriteLine(user.Name);
+        }
+    }
+
+    private void DeleteUser()
+    {
+        Console.WriteLine("DeleteUser");
+        Service.DeleteUser(51);
+    }
+
+    private void CreateUser()
+    {
+        Console.WriteLine("CreateUser");
+        Service.CreateUser(InitUser());
+    }
+
+    private void CreateUser2()
+    {
+        Console.WriteLine("CreateUser2");
+        // create dummy user
+        User user2 = new User();
+        
+        user2.Name = "user2";
+        user2.Email = "user2@gmail.com";
+        user2.Password = "12345";
+
+        Console.WriteLine("user locally created");
+        try
+        {
+            Service.CreateUser(user2);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("service failed");
+        }
+    }
+
+    public User InitUser()
+    {
+        User user = new User();
+        user.Name = "tobi";
+        user.Email = "tobi@gmail.com";
+        user.Password = "1234";
+        return user;
+    }
+    
+    // Test for bets
+    public void GetBetByIdConsole()
+    {
+        try
+        {
+            var result = Service2.GetBetById(47);
+            Console.WriteLine(result.Id);
+            Console.WriteLine(result.Description);
+            Console.WriteLine(result.Cases);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Getbetbyid failed");
+            Console.WriteLine(e);
+        }
+    }
+
+    public void UpdateBet()
+    {
+        Bet updatedB = new Bet();
+        updatedB.WageritemId = 3;
+        updatedB.Description = "updated description";
+        updatedB.Cases = new string[] { "updated case1", "updated case2" };
+        updatedB.BetAccess = Access.Restricted;
+        updatedB.BetState = State.Closed;
+        updatedB.Id = 47;
+
+        var result = Service2.UpdateBet(updatedB);
+        Console.WriteLine($"Updating Bet succesful: {result}");
+    }
+
+    private void GetAllBets()
+    {
+        Console.WriteLine("Get ALl Bets executing: ");
+        var result = Service2.GetAllBets();
+        foreach (var bet in result)
+        {
+            Console.WriteLine(bet.Description);
+            Console.WriteLine(bet.Cases);
+        }
+    }
+
+    private void DeleteBet()
+    {
+        Console.WriteLine("DeleteBet");
+        Service.DeleteUser(51);
+    }
+
+    private void CreateBet()
+    {
+        Console.WriteLine("CreateBet");
+        Service2.CreateBet(InitBet());
+    }
+
+    private void CreateBet2()
+    {
+        Console.WriteLine("CreateBet2");
+        // create dummy bet
+        Bet bet2 = new Bet();
+        
+        bet2.WageritemId = 2;
+        bet2.Description = "This is a newwwwwww test description for a bet";
+        bet2.Created = DateTime.Now;
+        bet2.Expiration = DateTime.Now.AddYears(50);
+        bet2.Cases = new string[] { "Testcase 1", "Testcase 2" };
+        bet2.BetAccess = Access.Public;
+        bet2.BetState = State.Pending;
+
+        Console.WriteLine("bet locally created");
+        try
+        {
+            Service2.CreateBet(bet2);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("service failed");
+        }
+    }
+
+    public Bet InitBet()
+    {
+        Bet bet = new Bet();
+        bet.Description = "This is a test description for a bet";
+        bet.Created = DateTime.Now;
+        bet.Expiration = DateTime.Now.AddYears(50);
+        bet.Cases = new string[] { "Testcase 1", "Testcase 2" };
+        bet.BetAccess = Access.Private;
+        bet.BetState = State.Active;
+        return bet;
+    }
+
+}
