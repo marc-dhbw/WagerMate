@@ -12,7 +12,7 @@ public class BetService: IBetService
     }
     public Bet CreateBet(Bet bet)
     {
-        _service.Create<Bet>("INSERT INTO public.wagers(wageritem_id, description, created, expiration, cases, access, state) VALUES(@Wageritem_id, @Description, @Created, @Expiration, @Cases, @Access, @State)", bet);
+        _service.Create<Bet>("INSERT INTO public.wagers(wageritem_id, description, created, expiration, cases, access, state) VALUES(@WageritemId, @Description, @Created, @Expiration, @Cases, @BetAccess, @BetState)", bet);
         return bet;
     }
 
@@ -24,7 +24,7 @@ public class BetService: IBetService
 
     public bool UpdateBet(Bet bet)
     {
-        var result = _service.Update<Bet>("UPDATE public.wagers SET Id=@Id, wageritem_id = @Wageritem_id, description = @Description, created=@Created, expiration=@Expiration, cases = @Cases, access=@Access, state=@State WHERE wagers.Id = @Id", bet);
+        var result = _service.Update<Bet>("UPDATE public.wagers SET Id=@Id, wageritem_id = @WageritemId, description = @Description, created=@Created, expiration=@Expiration, cases = @Cases, access=@BetAccess, state=@BetState WHERE wagers.Id = @Id", bet);
         return result;
     }
 
