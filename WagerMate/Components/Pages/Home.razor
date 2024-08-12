@@ -4,7 +4,7 @@
 @inject NavigationManager Navigation
 
 @code {
-    protected override async Task OnInitializedAsync()
+    /*protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
@@ -13,7 +13,7 @@
         {
             Navigation.NavigateTo("/login");
         }
-    }
+    }*/ //Not in use yet, bc missing authenticationsState
 }
 
 <PageTitle>Home</PageTitle>

@@ -171,18 +171,6 @@
             if (result.Password == _existingUserData.Password)
             {
                 Console.WriteLine("Login successful.");
-                /*var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Email, result.Email)
-                };
- 
-                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var principal = new ClaimsPrincipal(identity);
- 
-                await HttpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);*/
-                
-                Authentication.MarkUserAsAuthenticated(result.Email);
- 
                 Navigation.NavigateTo("/");
             }
             else
@@ -198,64 +186,10 @@
             errorMessageEMail = "No account with this e-mail address exists!";
         }
     }
-
-    private CustomAuthenticationStateProvider Authentication = new CustomAuthenticationStateProvider();
     
-    public class CustomAuthenticationStateProvider : AuthenticationStateProvider
-    {
-        private ClaimsPrincipal _anonymous = new ClaimsPrincipal(new ClaimsIdentity());
-
-        public override Task<AuthenticationState> GetAuthenticationStateAsync()
-        {
-            return Task.FromResult(new AuthenticationState(_anonymous));
-        }
-
-        public void MarkUserAsAuthenticated(string email)
-        {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, email)
-            };
-
-            var authenticatedUser = new ClaimsPrincipal(new ClaimsIdentity(claims, "apiauth"));
-            var authState = Task.FromResult(new AuthenticationState(authenticatedUser));
-
-            NotifyAuthenticationStateChanged(authState);
-        }
-
-        public void MarkUserAsLoggedOut()
-        {
-            var anonymous = new ClaimsPrincipal(new ClaimsIdentity());
-            var authState = Task.FromResult(new AuthenticationState(anonymous));
-
-            NotifyAuthenticationStateChanged(authState);
-        }
-    }
-
     private string? errorMessageEMail;
     private string? errorMessagePassword;
-
-    public void LoginTest() {
-        try {
-            var result = service.GetUserByEmail(_existingUserData.EMail);
-            if (result.Password == _existingUserData.Password)
-            {
-                Console.WriteLine("Login successful.");
-            }
-            else
-            {
-                Console.WriteLine("Invalid password.");
-                errorMessagePassword = "Invalid Password!";
-            }
-        }
-        catch (Exception e) {
-            Console.WriteLine(e);
-            Console.WriteLine("Not registered E-Mail.");
-            errorMessageEMail = "No account with this e-mail address exists!";
-        }
-        
-    }
-
+    
     private string? errorMessageRegistrationEMail;
 
     public void RegisterTest() {

@@ -14,8 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
-builder.Services.AddAuthorizationCore();
+builder.Services.AddHttpContextAccessor();
 
 DotEnv.Load();
 // Retrieve the connection string from the environment variable
@@ -29,17 +28,12 @@ if (string.IsNullOrEmpty(connectionString))
 builder.Configuration.AddEnvironmentVariables();
 
 builder.Configuration["ConnectionStrings:Wagerdb"]=connectionString;
-// Register IHttpContextAccessor
-//builder.Services.AddHttpContextAccessor();
-
-// Register IHttpContextAccessor
-//builder.Services.AddHttpContextAccessor();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-// Configure Cookie Authentication
+// Configure Cookie Authentication //Not in use yet
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -51,7 +45,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.SlidingExpiration = true;
     });
  
-// Authorization policy
+// Authorization policy //Not in use yet
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("MustBeLoggedIn", policy =>
@@ -75,7 +69,7 @@ if (!app.Environment.IsDevelopment()) {
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-// Enable authentication and authorization
+// Enable authentication and authorization //Not in use yet
 app.UseAuthentication();
 app.UseAuthorization();
 
