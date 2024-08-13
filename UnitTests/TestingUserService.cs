@@ -1,15 +1,19 @@
 using Microsoft.Extensions.Configuration;
-using WagerMate.Data;
-using WagerMate.Services;
-using WagerMate.Services.impl;
 using Moq;
+using Npgsql;
 
 namespace UnitTests;
 
 [TestFixture]
 public class TestingUserService
 {
-    // example test
+    [SetUp]
+    public void Setup()
+    {
+        var TestConnection =
+            new NpgsqlConnection("Host=localhost;Port=5432;Database=mydatabase;UserId=postgres;Password=password");
+        TestConnection.Open();
+    }
     // [Test]
     public void TestCreateUserOld()
     {
@@ -31,22 +35,29 @@ public class TestingUserService
         Assert.That(TestUser, Is.EqualTo(TestUser));
     }
 
+    [Test]
     public void TestCreateUser()
     {
         User localUser = new User();
         localUser.Email = "Email";
         localUser.Name = "Name";
         localUser.Password = "Password";
+        
+        // builder.Configuration["ConnectionStrings:Wagerdb"]=connectionString;
 
         IConfiguration iconf = new ConfigurationManager();
+        iconf["ConnectionStrings:Wagerdb"] =
+            "Host=localhost;Port=5432;Database=mydatabase;UserId=postgres;Password=password";
         IDbService idb = new DbService(iconf);
         UserService TestUserService = new UserService(idb);
         var result = TestUserService.CreateUser(localUser);
+        Console.WriteLine("Result of Creating: ");
         
-        if (result != null){Assert.Pass();}
-        else
+        var r2= TestUserService.GetAllUsers();
+        foreach (var sUser in r2)
         {
-            Assert.Fail();
+            Console.WriteLine(sUser);
         }
+        Assert.IsNotNull(result);
     }
 }

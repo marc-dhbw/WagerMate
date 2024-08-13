@@ -1,4 +1,5 @@
 namespace UnitTests;
+using Npgsql;
 
 public class Tests
 {
@@ -6,4 +7,5 @@ public class Tests
     public void Setup()
     {
     }
+    
 }
