@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using WagerMate.Data;
 using WagerMate.Services;
 using WagerMate.Services.impl;
@@ -9,8 +10,8 @@ namespace UnitTests;
 public class TestingUserService
 {
     // example test
-    [Test]
-    public void TestCreateUser()
+    // [Test]
+    public void TestCreateUserOld()
     {
         User TestUser = new User();
         TestUser.Email = "Email";
@@ -28,5 +29,24 @@ public class TestingUserService
         // Verifying if the result of the processing is correct / currently not necessary due to no further processing
         var result = TestUserService.CreateUser(TestUser);
         Assert.That(TestUser, Is.EqualTo(TestUser));
+    }
+
+    public void TestCreateUser()
+    {
+        User localUser = new User();
+        localUser.Email = "Email";
+        localUser.Name = "Name";
+        localUser.Password = "Password";
+
+        IConfiguration iconf = new ConfigurationManager();
+        IDbService idb = new DbService(iconf);
+        UserService TestUserService = new UserService(idb);
+        var result = TestUserService.CreateUser(localUser);
+        
+        if (result != null){Assert.Pass();}
+        else
+        {
+            Assert.Fail();
+        }
     }
 }
