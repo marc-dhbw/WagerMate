@@ -190,6 +190,7 @@
     public Bet InitBet()
     {
         Bet bet = new Bet();
+        bet.WageritemId = 1;
         bet.Description = "This is a test description for a bet";
         bet.Created = DateTime.Now;
         bet.Expiration = DateTime.Now.AddYears(50);

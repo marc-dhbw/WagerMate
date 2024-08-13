@@ -1,8 +1,4 @@
-﻿-- Create ENUM types first
-CREATE TYPE access_enum AS ENUM ('public', 'private', 'restricted');
-CREATE TYPE state_enum AS ENUM ('pending', 'active', 'closed');
-
--- Create the "users" table
+﻿-- Create the "users" table
 CREATE TABLE "users" (
                          "id" serial PRIMARY KEY,
                          "name" varchar,
@@ -24,8 +20,8 @@ CREATE TABLE "wagers" (
                           "wageritem_id" integer,
                           "description" varchar,
                           "cases" varchar[],
-                          "access" access_enum,
-                          "state" state_enum,
+                          "access" int,
+                          "state" int,
                           "created" date,
                           "expiration" date,
                           FOREIGN KEY ("wageritem_id") REFERENCES "wageritem" ("id")
