@@ -7,9 +7,11 @@
 @inject IUserService service;
 @inject IHttpContextAccessor HttpContextAccessor
 @inject NavigationManager Navigation
+@*
 @using Microsoft.AspNetCore.Components.Authorization;
 @using System.Security.Claims;
 @using System.Threading.Tasks;
+*@
 
 <div class="column">
 <div id="leftSide" class="half">
@@ -17,7 +19,7 @@
 
     <p>Welcome Back!</p>
 
-    <EditForm Model="@_existingUserData" OnValidSubmit="HandleLogin" FormName="test1">
+    <EditForm Model="@_existingUserData" OnValidSubmit="HandleLogin" FormName="FormLogin">
         <DataAnnotationsValidator/>
         <div class="field">
             <div><label>E-mail address:</label></div>
@@ -46,7 +48,7 @@
 
     <p>Welcome Mate!</p>
 
-    <EditForm Model="@_newUserData" OnValidSubmit="RegisterTest" FormName="test2">
+    <EditForm Model="@_newUserData" OnValidSubmit="HandleRegister" FormName="FormRegister">
         <DataAnnotationsValidator/>
         <div class="field">
             <div><label>Username:</label></div>
@@ -115,13 +117,13 @@
         public string? InviteCode { get; set; }
     }
     
-    private LoginModel _loginModel = new LoginModel();
+    /*private LoginModel _loginModel = new LoginModel();
     
     private class LoginModel
     {
         public string? EMail { get; set; }
         public string? Password { get; set; }
-    }
+    }*/
 
     public class CompareInviteCodeAttribute : ValidationAttribute
     {
@@ -160,17 +162,18 @@
         }
         catch (Exception e)
         {
-            Console.WriteLine("service failled");
+            Console.WriteLine("service failed");
         }
     }
  
     private async Task HandleLogin()
     {
         try {
-            var result = service.GetUserByEmail(_existingUserData.EMail);
+            var result = service.GetUserByEmail(_existingUserData.EMail!);
             if (result.Password == _existingUserData.Password)
             {
                 Console.WriteLine("Login successful.");
+                await SignInUser(result);
                 Navigation.NavigateTo("/");
             }
             else
@@ -187,16 +190,38 @@
         }
     }
     
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+
+    private async Task SignInUser(User result)
+    {
+        if (HttpContext != null)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, result.Email!)
+            };
+            
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+            
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
+            
+            
+        }
+    }
+    
     private string? errorMessageEMail;
     private string? errorMessagePassword;
     
     private string? errorMessageRegistrationEMail;
 
-    public void RegisterTest() {
+    public void HandleRegister() {
         try {
             var result = service.GetUserByEmail(_newUserData.EMail);
             if (result == null) {
                 CreateUser();
+                Navigation.NavigateTo("/");
             }
 
             if (result != null) {
