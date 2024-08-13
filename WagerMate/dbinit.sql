@@ -11,6 +11,7 @@ CREATE TABLE "wageritem" (
                              "id" serial PRIMARY KEY,
                              "money" bool,
                              "amount" double precision,
+                             "has_item" bool,
                              "item" varchar
 );
 
