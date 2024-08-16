@@ -195,6 +195,7 @@
 
     private async Task SignInUser(User result)
     {
+        HttpContext = HttpContextAccessor.HttpContext;
         if (HttpContext != null)
         {
             var claims = new List<Claim>
