@@ -100,7 +100,7 @@ else
         await sessionStorageObj.RedirectToLogin("SessionID", sessionStorage, navigation);
         var value = await sessionStorage.GetItemAsync<string>("SessionID");
         Console.WriteLine(value);
-        if (value != null) loggedInUser = userService.GetUserByPassword("timmi");
+        if (value != null) loggedInUser = userService.GetUserByPassword(value);
     }
 
     readonly EditedUserData _editedUserData = new();
