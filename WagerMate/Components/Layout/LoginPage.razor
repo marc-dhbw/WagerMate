@@ -191,12 +191,12 @@
     {
         try
         {
-            var result = service.GetUserByEmail(_existingUserData.EMail!);
-            if (result.Password == _existingUserData.Password)
+            var user = service.GetUserByEmail(_existingUserData.EMail!);
+            if (user.Password == _existingUserData.Password)
             {
                 Console.WriteLine("Login successful.");
                 var sessionStorageObj = new SessionStorage();
-                await sessionStorageObj.HandleSession("SessionID", result.Name, sessionStorage);
+                await sessionStorageObj.HandleSession("SessionID", user.Password, sessionStorage);
                 Navigation.NavigateTo("/");
             }
             else
