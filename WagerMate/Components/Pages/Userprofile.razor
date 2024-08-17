@@ -2,6 +2,7 @@
 @using System.ComponentModel.DataAnnotations
 @inject NavigationManager navigation
 @inject ISessionStorageService sessionStorage
+@inject IUserService userService;
 @rendermode InteractiveServer
 
 
@@ -9,7 +10,7 @@
 @if (!EditingUsername)
 {
     <div style="margin-top: 20px">
-        <b>Username:</b> @_userData.Username
+        <b>Username:</b> @loggedInUser.Name
     </div>
     <div style="margin-top: 10px; margin-bottom: 10px;">
         <input type="button" value="Edit Username" @onclick="@EnableEditingUsername"/>
@@ -17,7 +18,7 @@
 }
 else
 {
-    <EditForm Model="@_userData" FormName="testUsername">
+    <EditForm Model="@loggedInUser" FormName="testUsername">
         <DataAnnotationsValidator/>
         <div>
             <div>
@@ -35,7 +36,7 @@ else
 @if (!EditingEMail)
 {
     <div style="margin-top: 20px">
-        <b>E-mail address:</b> @_userData.EMail
+        <b>E-mail address:</b> @loggedInUser.Email
     </div>
     <div style="margin-top: 10px; margin-bottom: 10px;">
         <input type="button" value="Edit E-mail address" @onclick="@EnableEditingEMail"/>
@@ -43,7 +44,7 @@ else
 }
 else
 {
-    <EditForm Model="@_userData" FormName="testEMail">
+    <EditForm Model="@loggedInUser" FormName="testEMail">
         <DataAnnotationsValidator/>
         <div>
             <div>
@@ -60,7 +61,7 @@ else
 @if (!EditingPassword)
 {
     <div style="margin-top: 20px">
-        <b>Password: @_userData.EncodedPassword() </b>
+        <b>Password: ************ </b>
     </div>
     <div style="margin-top: 10px; margin-bottom: 10px;">
         <input type="button" value="Edit Password" @onclick="@EnableEditingPassword"/>
@@ -68,7 +69,7 @@ else
 }
 else
 {
-    <EditForm Model="@_userData" FormName="testPassword">
+    <EditForm Model="@loggedInUser" FormName="testPassword">
         <DataAnnotationsValidator/>
         <div>
             <div>
@@ -98,36 +99,19 @@ else
         await sessionStorageObj.RedirectToLogin("SessionID", sessionStorage, navigation);
     }
 
-    private readonly UserData _userData = new();
-    //public string EPassword = userData.EncodedPassword();
 
-
-    public class UserData
+    public User loggedInUser = new User();
+    
+    protected override async Task OnInitializedAsync()
     {
-        public string? Username { get; set; }
-        public string? EMail { get; set; }
-        public string? Password { get; set; }
-
-        // Test data
-        public UserData()
+        var value = await sessionStorage.GetItemAsync<string>("SessionID");
+        if (!string.IsNullOrEmpty(value))
         {
-            Username = "BerndMustermann2024";
-            EMail = "bernd.mustermann@mail.de";
-            Password = "passwort1234";
-        }
-
-        public string EncodedPassword()
-        {
-            var passwordLength = Password.Length;
-            var encodedPassword = string.Empty;
-            for (var i = 0; i < passwordLength; i++)
-            {
-                encodedPassword += '*';
-            }
-
-            return encodedPassword;
+            loggedInUser = userService.GetUserByPassword(value);
         }
     }
+
+    
 
     readonly EditedUserData _editedUserData = new();
 
@@ -178,19 +162,25 @@ else
     // Needs to be replaced with a funtion to write values into a database
     public void EditUsername()
     {
-        _userData.Username = _editedUserData.Username;
+        User tempUser = new User(loggedInUser.Id, _editedUserData.Username, loggedInUser.Email, loggedInUser.Password);
+        var updateSuccesful = userService.UpdateUser(tempUser);
+        if (updateSuccesful) loggedInUser = tempUser;
         EditingUsername = false;
     }
 
     public void EditEMail()
     {
-        _userData.EMail = _editedUserData.EMail;
+        User tempUser = new User(loggedInUser.Id, loggedInUser.Name, _editedUserData.EMail, loggedInUser.Password);
+        var updateSuccesful = userService.UpdateUser(tempUser);
+        if (updateSuccesful) loggedInUser = tempUser;
         EditingEMail = false;
     }
 
     public void EditPassword()
     {
-        _userData.Password = _editedUserData.Password;
+        User tempUser = new User(loggedInUser.Id, loggedInUser.Name, loggedInUser.Email, _editedUserData.Password);
+        var updateSuccesful = userService.UpdateUser(tempUser);
+        if (updateSuccesful) loggedInUser = tempUser;
         EditingPassword = false;
     }
 
