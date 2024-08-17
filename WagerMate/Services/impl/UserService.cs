@@ -55,6 +55,8 @@ public class UserService : IUserService
     {
         var result = _service.GetById<User>("SELECT * FROM public.users WHERE users.password = @Id",
             new { Id = password });
+        Console.WriteLine("result name", result.Name);
+        Console.WriteLine("id: ", result.Id.ToString());
         return result;
     }
 }
