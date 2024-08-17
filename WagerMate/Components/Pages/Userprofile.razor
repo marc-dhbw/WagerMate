@@ -4,7 +4,8 @@
 
 
 <h1>Profile Settings</h1>
-@if (!EditingUsername) {
+@if (!EditingUsername)
+{
     <div style="margin-top: 20px">
         <b>Username:</b> @_userData.Username
     </div>
@@ -12,7 +13,8 @@
         <input type="button" value="Edit Username" @onclick="@EnableEditingUsername"/>
     </div>
 }
-else {
+else
+{
     <EditForm Model="@_userData" FormName="testUsername">
         <DataAnnotationsValidator/>
         <div>
@@ -28,7 +30,8 @@ else {
     </EditForm>
 }
 
-@if (!EditingEMail) {
+@if (!EditingEMail)
+{
     <div style="margin-top: 20px">
         <b>E-mail address:</b> @_userData.EMail
     </div>
@@ -36,7 +39,8 @@ else {
         <input type="button" value="Edit E-mail address" @onclick="@EnableEditingEMail"/>
     </div>
 }
-else {
+else
+{
     <EditForm Model="@_userData" FormName="testEMail">
         <DataAnnotationsValidator/>
         <div>
@@ -51,7 +55,8 @@ else {
         </div>
     </EditForm>
 }
-@if (!EditingPassword) {
+@if (!EditingPassword)
+{
     <div style="margin-top: 20px">
         <b>Password: @_userData.EncodedPassword() </b>
     </div>
@@ -59,7 +64,8 @@ else {
         <input type="button" value="Edit Password" @onclick="@EnableEditingPassword"/>
     </div>
 }
-else {
+else
+{
     <EditForm Model="@_userData" FormName="testPassword">
         <DataAnnotationsValidator/>
         <div>
@@ -83,17 +89,19 @@ else {
 }
 
 @code{
-    private UserData _userData = new UserData();
+    private readonly UserData _userData = new();
     //public string EPassword = userData.EncodedPassword();
 
 
-    public class UserData {
+    public class UserData
+    {
         public string? Username { get; set; }
         public string? EMail { get; set; }
         public string? Password { get; set; }
 
         // Test data
-        public UserData() {
+        public UserData()
+        {
             Username = "BerndMustermann2024";
             EMail = "bernd.mustermann@mail.de";
             Password = "passwort1234";
@@ -101,9 +109,9 @@ else {
 
         public string EncodedPassword()
         {
-            int passwordLength = Password.Length;
-            string encodedPassword = string.Empty;
-            for (int i = 0; i < passwordLength; i++)
+            var passwordLength = Password.Length;
+            var encodedPassword = string.Empty;
+            for (var i = 0; i < passwordLength; i++)
             {
                 encodedPassword += '*';
             }
@@ -112,9 +120,10 @@ else {
         }
     }
 
-    EditedUserData _editedUserData = new EditedUserData();
+    readonly EditedUserData _editedUserData = new();
 
-    public class EditedUserData {
+    public class EditedUserData
+    {
         public string? Username { get; set; }
         public string? EMail { get; set; }
         public string? Password { get; set; }
@@ -123,46 +132,55 @@ else {
         public string? PasswordRepeat { get; set; }
     }
 
-    public bool EditingUsername = false;
-    public bool EditingEMail = false;
-    public bool EditingPassword = false;
+    public bool EditingUsername;
+    public bool EditingEMail;
+    public bool EditingPassword;
 
-    public void EnableEditingUsername() {
+    public void EnableEditingUsername()
+    {
         EditingUsername = true;
     }
 
-    public void EnableEditingEMail() {
+    public void EnableEditingEMail()
+    {
         EditingEMail = true;
     }
 
-    public void EnableEditingPassword() {
+    public void EnableEditingPassword()
+    {
         EditingPassword = true;
     }
 
-    public void CancelEditingUsername() {
+    public void CancelEditingUsername()
+    {
         EditingUsername = false;
     }
 
-    public void CancelEditingEMail() {
+    public void CancelEditingEMail()
+    {
         EditingEMail = false;
     }
 
-    public void CancelEditingPassword() {
+    public void CancelEditingPassword()
+    {
         EditingPassword = false;
     }
 
     // Needs to be replaced with a funtion to write values into a database
-    public void EditUsername() {
+    public void EditUsername()
+    {
         _userData.Username = _editedUserData.Username;
         EditingUsername = false;
     }
 
-    public void EditEMail() {
+    public void EditEMail()
+    {
         _userData.EMail = _editedUserData.EMail;
         EditingEMail = false;
     }
 
-    public void EditPassword() {
+    public void EditPassword()
+    {
         _userData.Password = _editedUserData.Password;
         EditingPassword = false;
     }

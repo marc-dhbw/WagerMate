@@ -1,6 +1,4 @@
 ﻿@page "/db"
-@using WagerMate.Data
-@using WagerMate.Services
 @rendermode InteractiveServer
 <PageTitle>Database</PageTitle>
 <h3>Database</h3>
@@ -34,7 +32,7 @@
 
     public void UpdateUser()
     {
-        User updatedU = new User();
+        var updatedU = new User();
         updatedU.Name = "1update";
         updatedU.Email = "1updat@email";
         updatedU.Password = "1updatedPW";
@@ -70,8 +68,8 @@
     {
         Console.WriteLine("CreateUser2");
         // create dummy user
-        User user2 = new User();
-        
+        var user2 = new User();
+
         user2.Name = "user2";
         user2.Email = "user2com";
         user2.Password = "12345";
@@ -89,7 +87,7 @@
 
     public User init()
     {
-        User user = new User();
+        var user = new User();
         user.Name = "tobi";
         user.Email = "tobi@tobi.com";
         user.Password = "1234";

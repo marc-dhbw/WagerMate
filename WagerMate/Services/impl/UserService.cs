@@ -4,7 +4,7 @@ namespace WagerMate.Services.impl;
 
 public class UserService : IUserService
 {
-    private IDbService _service;
+    private readonly IDbService _service;
 
     public UserService(IDbService service)
     {
@@ -25,27 +25,29 @@ public class UserService : IUserService
 
     public bool UpdateUser(User user)
     {
-        var result = _service.Update<User>("UPDATE public.users SET Id=@Id, name = @Name, email=@Email, password=@Password WHERE users.Id = @Id", user);
+        var result =
+            _service.Update<User>(
+                "UPDATE public.users SET Id=@Id, name = @Name, email=@Email, password=@Password WHERE users.Id = @Id",
+                user);
         return result;
     }
 
     public User GetUserById(int key)
     {
-        var result = _service.GetById<User>("SELECT * FROM public.users WHERE users.Id = @Id",new{id = key});
+        var result = _service.GetById<User>("SELECT * FROM public.users WHERE users.Id = @Id", new { id = key });
         return result;
     }
 
     public bool DeleteUser(int key)
     {
-        var result = _service.Delete<User>("DELETE FROM public.users WHERE users.Id = @Id", new{id = key});
-        return result;
-    
-    }
-    
-    public User GetUserByEmail(string email)
-    {
-        var result = _service.GetByEmail<User>("SELECT * FROM public.users WHERE users.email = @Email", new { Email = email });
+        var result = _service.Delete<User>("DELETE FROM public.users WHERE users.Id = @Id", new { id = key });
         return result;
     }
 
+    public User GetUserByEmail(string email)
+    {
+        var result = _service.GetByEmail<User>("SELECT * FROM public.users WHERE users.email = @Email",
+            new { Email = email });
+        return result;
+    }
 }
