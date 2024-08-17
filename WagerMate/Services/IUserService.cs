@@ -29,4 +29,6 @@ public interface IUserService
 
     bool DeleteUser(int key);
     public User GetUserByEmail(string email);
+
+    public User GetUserByPassword(string password);
 }

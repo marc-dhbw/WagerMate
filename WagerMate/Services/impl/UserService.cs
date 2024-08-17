@@ -50,4 +50,11 @@ public class UserService : IUserService
             new { Email = email });
         return result;
     }
+
+    public User GetUserByPassword(string password)
+    {
+        var result = _service.GetById<User>("SELECT * FROM public.users WHERE users.password = @Id",
+            new { Id = password });
+        return result;
+    }
 }
