@@ -240,32 +240,23 @@
     */
     private string? errorMessageEMail;
     private string? errorMessagePassword;
-
     private string? errorMessageRegistrationEMail;
 
     public void HandleRegister()
     {
-        try
+        var EmailExists = service.EmailIsRegistered(_newUserData.EMail);
+        if (!EmailExists)
         {
-            var result = service.GetUserByEmail(_newUserData.EMail);
-            if (result == null)
-            {
-                CreateUser();
-                Navigation.NavigateTo("/");
-            }
-
-            if (result != null)
-            {
-                Console.WriteLine("E-Mail is already taken.");
-                errorMessageRegistrationEMail = "E-Mail is already taken!";
-            }
+            CreateUser();
+            Navigation.NavigateTo("/");
         }
-        catch (Exception e)
+        else
         {
-            Console.WriteLine(e);
-            Console.WriteLine("E-Mail is already registered.");
-            errorMessageRegistrationEMail = "E-Mail is already registered!";
+            Console.WriteLine("E-Mail is already taken.");
+            errorMessageRegistrationEMail = "E-Mail is already taken!";
         }
     }
+
+}
 
 }

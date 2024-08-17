@@ -55,8 +55,12 @@ public class UserService : IUserService
     {
         var result = _service.GetById<User>("SELECT * FROM public.users WHERE users.password = @Id",
             new { Id = password });
-        Console.WriteLine("result name", result.Name);
-        Console.WriteLine("id: ", result.Id.ToString());
         return result;
+    }
+
+    public bool EmailIsRegistered(string email)
+    {
+        var result = _service.GetById<int>("SELECT COUNT(1) FROM public.users where users.email = @Id", new { Id = email });
+        return (result == 1);
     }
 }
