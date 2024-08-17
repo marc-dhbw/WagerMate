@@ -1,16 +1,9 @@
-using System.Data;
+using Blazored.SessionStorage;
 using dotenv.net;
-using Npgsql;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using WagerMate.Components;
-using WagerMate.Data;
 using WagerMate.Services;
 using WagerMate.Services.impl;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Server;
-using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,13 +14,12 @@ DotEnv.Load();
 var connectionString = Environment.GetEnvironmentVariable("CON_STR");
 
 if (string.IsNullOrEmpty(connectionString))
-{
-    throw new InvalidOperationException("The connection string is not set. Please configure the environment variable CON_STR");
-}
+    throw new InvalidOperationException(
+        "The connection string is not set. Please configure the environment variable CON_STR");
 
 builder.Configuration.AddEnvironmentVariables();
 
-builder.Configuration["ConnectionStrings:Wagerdb"]=connectionString;
+builder.Configuration["ConnectionStrings:Wagerdb"] = connectionString;
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
@@ -44,7 +36,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
         options.SlidingExpiration = true;
     });
- 
+
 // Authorization policy //Not in use yet
 builder.Services.AddAuthorization(options =>
 {
@@ -56,11 +48,15 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddScoped<IDbService, DbService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
+builder.Services.AddBlazoredSessionStorage();
+builder.Services.AddBlazoredSessionStorage(config => config.JsonSerializerOptions.WriteIndented = true);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment()) {
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error", true);
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }

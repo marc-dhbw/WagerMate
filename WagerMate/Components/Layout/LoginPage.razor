@@ -1,124 +1,145 @@
 @page "/login"
-@layout LoginLayout
 @using System.ComponentModel.DataAnnotations
+@using Blazored.SessionStorage
+@layout LoginLayout
 @rendermode InteractiveServer
-@using WagerMate.Data
-@using WagerMate.Services
 @inject IUserService service;
 @inject IHttpContextAccessor HttpContextAccessor
 @inject NavigationManager Navigation
+@inject ISessionStorageService sessionStorage
 @*
 @using Microsoft.AspNetCore.Components.Authorization;
 @using System.Security.Claims;
 @using System.Threading.Tasks;
 *@
-
 <div class="column">
-<div id="leftSide" class="half">
-    <h1>WagerMate</h1>
+    <div id="leftSide" class="half">
+        <h1>WagerMate</h1>
 
-    <p>Welcome Back!</p>
+        <p>Welcome Back!</p>
 
-    <EditForm Model="@_existingUserData" OnValidSubmit="HandleLogin" FormName="FormLogin">
-        <DataAnnotationsValidator/>
-        <div class="field">
-            <div><label>E-mail address:</label></div>
-            <InputText class="input" @bind-Value="_existingUserData.EMail"/>
-            <ValidationMessage For=@(() => _existingUserData.EMail) />
-            @if (!string.IsNullOrEmpty(errorMessageEMail))
-            {
-                @errorMessageEMail
-            }
-        </div>
-        <div class="field">
-            <div><label>Password:</label></div>
-            <InputText class="input" type="password" @bind-Value="_existingUserData.Password"/>
-            <ValidationMessage For=@(() => _existingUserData.Password) />
-            @if (!string.IsNullOrEmpty(errorMessagePassword))
-            {
-                @errorMessagePassword
-            }
-        </div>
-        <div id="loginspace"><input id="login" type="submit" value="Log in" /></div>
-    </EditForm>
+        <EditForm Model="@_existingUserData" OnValidSubmit="HandleLogin" FormName="FormLogin">
+            <DataAnnotationsValidator/>
+            <div class="field">
+                <div>
+                    <label>E-mail address:</label>
+                </div>
+                <InputText class="input" @bind-Value="_existingUserData.EMail"/>
+                <ValidationMessage For="@(() => _existingUserData.EMail)"/>
+                @if (!string.IsNullOrEmpty(errorMessageEMail))
+                {
+                    @errorMessageEMail
+                }
+            </div>
+            <div class="field">
+                <div>
+                    <label>Password:</label>
+                </div>
+                <InputText class="input" type="password" @bind-Value="_existingUserData.Password"/>
+                <ValidationMessage For="@(() => _existingUserData.Password)"/>
+                @if (!string.IsNullOrEmpty(errorMessagePassword))
+                {
+                    @errorMessagePassword
+                }
+            </div>
+            <div id="loginspace">
+                <input id="login" type="submit" value="Log in"/>
+            </div>
+        </EditForm>
+    </div>
+
+    <div id="rightSide" class="half">
+        <h1>WagerMate</h1>
+
+        <p>Welcome Mate!</p>
+
+        <EditForm Model="@_newUserData" OnValidSubmit="HandleRegister" FormName="FormRegister">
+            <DataAnnotationsValidator/>
+            <div class="field">
+                <div>
+                    <label>Username:</label>
+                </div>
+                <InputText class="input" @bind-Value="_newUserData.Username"/>
+                <ValidationMessage For="@(() => _newUserData.Username)"/>
+            </div>
+            <div class="field">
+                <div>
+                    <label>E-mail address:</label>
+                </div>
+                <InputText class="input" @bind-Value="_newUserData.EMail"/>
+                <ValidationMessage For="@(() => _newUserData.EMail)"/>
+                @if (!string.IsNullOrEmpty(errorMessageRegistrationEMail))
+                {
+                    @errorMessageRegistrationEMail
+                }
+            </div>
+            <div class="field">
+                <div>
+                    <label>Password:</label>
+                </div>
+                <InputText class="input" type="password" @bind-Value="_newUserData.Password"/>
+                <ValidationMessage For="@(() => _newUserData.Password)"/>
+            </div>
+            <div class="field">
+                <div>
+                    <label>Repeat Password:</label>
+                </div>
+                <InputText class="input" type="password" @bind-Value="_newUserData.PasswordRepeat"/>
+                <ValidationMessage For="@(() => _newUserData.PasswordRepeat)"/>
+            </div>
+            <div class="field">
+                <div>
+                    <label>Enter Invite Code:</label>
+                </div>
+                <InputText class="input" @bind-Value="_newUserData.InviteCode"/>
+                <ValidationMessage For="@(() => _newUserData.InviteCode)"/>
+            </div>
+            <div id="registerspace">
+                <input id="register" type="submit" value="Register">
+            </div>
+        </EditForm>
+    </div>
 </div>
-
-<div id="rightSide" class="half">
-    <h1>WagerMate</h1>
-
-    <p>Welcome Mate!</p>
-
-    <EditForm Model="@_newUserData" OnValidSubmit="HandleRegister" FormName="FormRegister">
-        <DataAnnotationsValidator/>
-        <div class="field">
-            <div><label>Username:</label></div>
-            <InputText class="input" @bind-Value="_newUserData.Username"/>
-            <ValidationMessage For=@(() => _newUserData.Username) />
-        </div>
-        <div class="field">
-            <div><label>E-mail address:</label></div>
-            <InputText class="input" @bind-Value="_newUserData.EMail"/>
-            <ValidationMessage For=@(() => _newUserData.EMail) />
-            @if (!string.IsNullOrEmpty(errorMessageRegistrationEMail))
-            {
-                @errorMessageRegistrationEMail
-            }
-        </div>
-        <div class="field">
-            <div><label>Password:</label></div>
-            <InputText class="input" type="password" @bind-Value="_newUserData.Password"/>
-            <ValidationMessage For=@(() => _newUserData.Password) />
-        </div>
-        <div class="field">
-            <div><label>Repeat Password:</label></div>
-            <InputText class="input" type="password" @bind-Value="_newUserData.PasswordRepeat"/>
-            <ValidationMessage For=@(() => _newUserData.PasswordRepeat) />
-        </div>
-        <div class="field">
-            <div><label>Enter Invite Code:</label></div>
-            <InputText class="input"  @bind-Value="_newUserData.InviteCode"/>
-            <ValidationMessage For=@(() => _newUserData.InviteCode) />
-        </div>
-        <div id="registerspace"><input id="register" type="submit" value="Register"></div>
-    </EditForm>
-</div>
-</div>
-
 
 
 @code {
-    private ExistingUserData _existingUserData = new ExistingUserData();
-    
+    private readonly ExistingUserData _existingUserData = new();
+
     public class ExistingUserData
     {
-        [Required (ErrorMessage = "E-mail address is required!")]
+        [Required(ErrorMessage = "E-mail address is required!")]
         [EmailAddress(ErrorMessage = "Invalid e-mail address!")]
         public string? EMail { get; set; }
-        [Required (ErrorMessage = "Password is required!")]
+
+        [Required(ErrorMessage = "Password is required!")]
         public string? Password { get; set; }
     }
 
-    private NewUserData _newUserData = new NewUserData();
+    private readonly NewUserData _newUserData = new();
 
     public class NewUserData
     {
-        [Required (ErrorMessage = "E-mail address is required!")]
+        [Required(ErrorMessage = "E-mail address is required!")]
         [EmailAddress(ErrorMessage = "Invalid e-mail address!")]
         public string? EMail { get; set; }
-        [Required (ErrorMessage = "Username is required!")]
+
+        [Required(ErrorMessage = "Username is required!")]
         public string? Username { get; set; }
-        [Required (ErrorMessage = "Password is required!")]
+
+        [Required(ErrorMessage = "Password is required!")]
         public string? Password { get; set; }
-        [Required (ErrorMessage = "Repetition of password is required!")]
+
+        [Required(ErrorMessage = "Repetition of password is required!")]
         [Compare("Password", ErrorMessage = "Must match Password!")]
         public string? PasswordRepeat { get; set; }
-        [Required (ErrorMessage = "Invite code is required!")]
+
+        [Required(ErrorMessage = "Invite code is required!")]
         [CompareInviteCode("42", ErrorMessage = "Invalid invite code!")]
         public string? InviteCode { get; set; }
     }
-    
+
     /*private LoginModel _loginModel = new LoginModel();
-    
+
     private class LoginModel
     {
         public string? EMail { get; set; }
@@ -145,12 +166,12 @@
         }
     }
 
-    
+
     private void CreateUser()
     {
         Console.WriteLine("Register New User");
-        User user2 = new User();
-        
+        var user2 = new User();
+
         user2.Name = _newUserData.Username;
         user2.Email = _newUserData.EMail;
         user2.Password = _newUserData.Password;
@@ -165,15 +186,17 @@
             Console.WriteLine("service failed");
         }
     }
- 
+
     private async Task HandleLogin()
     {
-        try {
+        try
+        {
             var result = service.GetUserByEmail(_existingUserData.EMail!);
             if (result.Password == _existingUserData.Password)
             {
                 Console.WriteLine("Login successful.");
-                await SignInUser(result);
+                var sessionStorageObj = new SessionStorage();
+                await sessionStorageObj.HandleSession("SessionID", result.Name, sessionStorage);
                 Navigation.NavigateTo("/");
             }
             else
@@ -183,13 +206,16 @@
                 errorMessageEMail = null;
             }
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
             Console.WriteLine(e);
             Console.WriteLine("Not registered E-Mail.");
             errorMessageEMail = "No account with this e-mail address exists!";
         }
     }
-    
+
+
+    /*
     [CascadingParameter]
     public HttpContext? HttpContext { get; set; }
 
@@ -202,39 +228,44 @@
             {
                 new Claim(ClaimTypes.Name, result.Email!)
             };
-            
+
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-            
+
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
-            
-            
+
+
         }
     }
-    
+    */
     private string? errorMessageEMail;
     private string? errorMessagePassword;
-    
+
     private string? errorMessageRegistrationEMail;
 
-    public void HandleRegister() {
-        try {
+    public void HandleRegister()
+    {
+        try
+        {
             var result = service.GetUserByEmail(_newUserData.EMail);
-            if (result == null) {
+            if (result == null)
+            {
                 CreateUser();
                 Navigation.NavigateTo("/");
             }
 
-            if (result != null) {
+            if (result != null)
+            {
                 Console.WriteLine("E-Mail is already taken.");
                 errorMessageRegistrationEMail = "E-Mail is already taken!";
             }
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
             Console.WriteLine(e);
             Console.WriteLine("E-Mail is already registered.");
             errorMessageRegistrationEMail = "E-Mail is already registered!";
         }
     }
-    
+
 }
