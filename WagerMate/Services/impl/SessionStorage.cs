@@ -5,11 +5,6 @@ namespace WagerMate.Services.impl;
 
 public class SessionStorage : ISessionStorage
 {
-    public async Task HandleSession(string key, string data, ISessionStorageService sessionStorage)
-    {
-        await sessionStorage.SetItemAsync(key, data);
-    }
-
     public async Task RedirectToLogin(string key, ISessionStorageService sessionStorage, NavigationManager navigation)
     {
         var value = await sessionStorage.GetItemAsync<string>(key);
@@ -17,5 +12,16 @@ public class SessionStorage : ISessionStorage
         {
             navigation.NavigateTo("/login");
         }
+    }
+
+    public ValueTask<string> GetSessionValue(string key, ISessionStorageService sessionStorage)
+    {
+        ValueTask<string> sessionValue = sessionStorage.GetItemAsync<string>(key);
+        return sessionValue;
+    }
+
+    public async Task SetSessionValue(string key, string value, ISessionStorageService sessionStorage)
+    {
+        await sessionStorage.SetItemAsync(key, value);
     }
 }

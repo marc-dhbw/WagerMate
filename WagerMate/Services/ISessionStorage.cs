@@ -1,8 +1,11 @@
 using Blazored.SessionStorage;
+using Microsoft.AspNetCore.Components;
 
 namespace WagerMate.Services;
 
 public interface ISessionStorage
 {
-    public Task HandleSession(string key, string data, ISessionStorageService sessionStorage);
+    public Task RedirectToLogin(string key, ISessionStorageService sessionStorage, NavigationManager navigation);
+    public Task SetSessionValue(string key, string value, ISessionStorageService sessionStorage);
+    public ValueTask<string> GetSessionValue(string key, ISessionStorageService sessionStorage);
 }
