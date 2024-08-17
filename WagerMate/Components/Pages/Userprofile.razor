@@ -1,5 +1,7 @@
 @page "/user"
 @using System.ComponentModel.DataAnnotations
+@inject NavigationManager navigation
+@inject ISessionStorageService sessionStorage
 @rendermode InteractiveServer
 
 
@@ -89,6 +91,13 @@ else
 }
 
 @code{
+    //AutoRedirect to the LoginPage
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var sessionStorageObj = new SessionStorage();
+        await sessionStorageObj.RedirectToLogin("SessionID", sessionStorage, navigation);
+    }
+
     private readonly UserData _userData = new();
     //public string EPassword = userData.EncodedPassword();
 

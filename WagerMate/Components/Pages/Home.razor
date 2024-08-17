@@ -1,24 +1,20 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.Components.Authorization
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject NavigationManager Navigation
-
-
-@code {
-    /*protected override async Task OnInitializedAsync()
-    {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-
-        if (!user.Identity?.IsAuthenticated ?? true)
-        {
-            Navigation.NavigateTo("/login", true);
-        }
-    }*/
-}
+@inject NavigationManager navigation
+@inject ISessionStorageService sessionStorage
+@rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
 
 <h1>Hello, world!</h1>
-
 Welcome to your new app.
+
+@code {
+    //AutoRedirect to the LoginPage
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var sessionStorageObj = new SessionStorage();
+        await sessionStorageObj.RedirectToLogin("SessionID", sessionStorage, navigation);
+    }
+}
