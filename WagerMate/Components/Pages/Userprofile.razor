@@ -93,14 +93,19 @@ else
 
 @code{
     //AutoRedirect to the LoginPage
+    public bool firstLogin = true;
     public User loggedInUser = new User();
+    public SessionStorage sessionStorageObj = new SessionStorage();
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var sessionStorageObj = new SessionStorage();
         await sessionStorageObj.RedirectToLogin("SessionID", sessionStorage, navigation);
         var value = await sessionStorage.GetItemAsync<string>("SessionID");
         Console.WriteLine(value);
-        if (value != null) loggedInUser = userService.GetUserByPassword(value);
+        if (value != null && firstLogin)
+        {
+            loggedInUser = userService.GetUserByPassword(value);
+            firstLogin = false;
+        }
     }
 
     readonly EditedUserData _editedUserData = new();
@@ -171,7 +176,11 @@ else
         
         User tempUser = new User(loggedInUser.Id, loggedInUser.Name, loggedInUser.Email, _editedUserData.Password);
         var updateSuccesful = userService.UpdateUser(tempUser);
-        if (updateSuccesful) loggedInUser = tempUser;
+        if (updateSuccesful)
+        {
+            sessionStorageObj.SetSessionValue("SessionID", tempUser.Password, sessionStorage);
+            loggedInUser = tempUser;
+        }
         EditingPassword = false;
     }
 
