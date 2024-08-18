@@ -112,4 +112,21 @@ public class DbService : IDbService
             throw;
         }
     }
+    public List<T> GetAllWithParams<T>(string sql, object parameters)
+    {
+        using var connection = new NpgsqlConnection(ConnectionString);
+        connection.Open();
+        try
+        {
+            var queryResult = connection.Query<T>(sql, parameters);
+            var result = queryResult.AsList();
+            return result;
+        }
+        catch (Exception e)
+        {
+            Console.Write("DbService: GetAllWithParams failed");
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }

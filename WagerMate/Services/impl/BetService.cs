@@ -40,4 +40,13 @@ public class BetService: IBetService
         return result;
     
     }
+    
+    public List<Bet> GetBetsByUserId(int userId)
+    {
+        var result = _service.GetAllWithParams<Bet>(
+            "SELECT w.* FROM public.wagers w INNER JOIN public.userwagers uw ON uw.wager_id = w.id WHERE uw.user_id = @UserId",
+            new { UserId = userId }
+        );
+        return result;
+    }
 }

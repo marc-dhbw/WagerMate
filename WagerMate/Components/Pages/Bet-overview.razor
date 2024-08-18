@@ -1,10 +1,85 @@
 @page "/bet-overview"
 @rendermode  InteractiveServer
+@using System.ComponentModel.DataAnnotations
+@using WagerMate.Services
+@using WagerMate.Data
+@inject IBetService BetService;
+@inject IBetService Service2;
+@inject IWagerItemService Service3;
 
+<PageTitle>Bet Overview</PageTitle>
+
+<h1>Bet Overview</h1>
+
+<div>
+    <div id="placeholder">
+        This is the perfect place to showcase your amazing advert!
+    </div>
+    <div id="creatNewBet">
+        creat new bet here
+        <button class="btn btn-primary" @onclick="CreatNewBet">New Bet</button>
+    </div>
+    <div id="allBets">
+        Here are your bets:
+        <ul>
+            @foreach (var bet in bets)
+            {
+            <li>
+                <strong>ID:</strong> @bet.Id <br />
+                <strong>Description:</strong> @bet.Description
+            </li>
+            }
+        </ul>
+    </div>
+</div>
 
 
 @code{
+    
+    private void CreatNewBet() {
+        Console.WriteLine("New Bet Button clicked");
+        Bet bet2 = new Bet();
+        
+        bet2.WageritemId = 1;
+        bet2.Description = "BetOverview: new test description for a bet";
+        bet2.Created = DateTime.Now;
+        bet2.Expiration = DateTime.Now.AddYears(50);
+        bet2.Cases = new string[] { "Testcase 1", "Testcase 2" };
+        bet2.BetAccess = Access.Public;
+        bet2.BetState = State.Pending;
 
+        Console.WriteLine("BetOverview: bet locally created");
+        try
+        {
+            Service2.CreateBet(bet2);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("BetOverview: service failed");
+        }
+    }
+
+    private List<Bet> bets = new List<Bet>();
+    private int userId = 1; // Set this to the desired user ID
+
+    protected override async Task OnInitializedAsync()
+    {
+        await DisplayAllBets(userId);
+    }
+
+    private async Task DisplayAllBets(int userId)
+    {
+        Console.WriteLine("BetOverview: DisplayAllBets");
+        try
+        {
+            bets = Service2.GetBetsByUserId(userId); 
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"BetOverview: Error fetching bets - {ex.Message}");
+        }
+    }
+    
     
 
 }    

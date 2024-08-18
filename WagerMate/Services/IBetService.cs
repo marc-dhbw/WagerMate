@@ -38,4 +38,6 @@ public interface IBetService
     /// <param name="key">Key of the bet</param>
     /// <returns></returns>
     bool DeleteBet(int key);
+
+    public List<Bet> GetBetsByUserId(int userId);
 }
