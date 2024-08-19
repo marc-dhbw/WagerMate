@@ -11,7 +11,7 @@
 
 <h1>Bet Overview</h1>
 
-<div>
+<div id="betOverviewPage">
     <div id="placeholder">
         This is the perfect place to showcase your amazing advert!
     </div>
@@ -26,7 +26,10 @@
             {
             <li>
                 <strong>ID:</strong> @bet.Id <br />
-                <strong>Description:</strong> @bet.Description
+                <strong>Description:</strong> @bet.Description  <br />
+                <strong>Created:</strong> @bet.Created  <br />
+                <strong>Expires:</strong> @bet.Expiration <br />
+                <br />
             </li>
             }
         </ul>
