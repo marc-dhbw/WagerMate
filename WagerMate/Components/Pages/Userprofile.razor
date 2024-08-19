@@ -1,7 +1,7 @@
 @page "/user"
 @using System.ComponentModel.DataAnnotations
 @inject NavigationManager navigation
-@inject ISessionStorageService sessionStorage
+@inject ICookieService cookieService;
 @inject IUserService userService;
 @rendermode InteractiveServer
 
@@ -98,8 +98,8 @@ else
     public SessionStorage sessionStorageObj = new SessionStorage();
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await sessionStorageObj.RedirectToLogin("SessionID", sessionStorage, navigation);
-        var value = await sessionStorage.GetItemAsync<string>("SessionID");
+        await sessionStorageObj.RedirectToLogin("SessionID", cookieService, navigation);
+        var value = await cookieService.GetCookieByName("SessionID");
         Console.WriteLine(value);
         if (value != null && firstLogin)
         {
@@ -178,7 +178,7 @@ else
         var updateSuccesful = userService.UpdateUser(tempUser);
         if (updateSuccesful)
         {
-            sessionStorageObj.SetSessionValue("SessionID", tempUser.Password, sessionStorage);
+            sessionStorageObj.SetSessionValue("SessionID", tempUser.Password, cookieService);
             loggedInUser = tempUser;
         }
         EditingPassword = false;

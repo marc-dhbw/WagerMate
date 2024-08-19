@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager navigation
-@inject ISessionStorageService sessionStorage
+@inject ICookieService cookieService;
 @rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
@@ -15,6 +15,6 @@ Welcome to your new app.
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         var sessionStorageObj = new SessionStorage();
-        await sessionStorageObj.RedirectToLogin("SessionID", sessionStorage, navigation);
+        await sessionStorageObj.RedirectToLogin("SessionID", cookieService, navigation);
     }
 }

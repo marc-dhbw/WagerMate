@@ -6,7 +6,7 @@
 @inject IUserService service;
 @inject IHttpContextAccessor HttpContextAccessor
 @inject NavigationManager Navigation
-@inject ISessionStorageService sessionStorage
+@inject ICookieService cookieService;
 @*
 @using Microsoft.AspNetCore.Components.Authorization;
 @using System.Security.Claims;
@@ -196,7 +196,7 @@
             {
                 Console.WriteLine("Login successful.");
                 var sessionStorageObj = new SessionStorage();
-                await sessionStorageObj.SetSessionValue("SessionID", user.Password, sessionStorage);
+                await sessionStorageObj.SetSessionValue("SessionID", user.Password, cookieService);
                 Navigation.NavigateTo("/");
             }
             else

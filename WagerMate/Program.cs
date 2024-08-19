@@ -47,6 +47,7 @@ builder.Services.AddAuthorization(options =>
 // Register the IDbConnection service for Dapper
 builder.Services.AddScoped<IDbService, DbService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICookieService, CookieService>();
 
 builder.Services.AddBlazoredSessionStorage();
 builder.Services.AddBlazoredSessionStorage(config => config.JsonSerializerOptions.WriteIndented = true);
