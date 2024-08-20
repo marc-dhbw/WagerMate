@@ -1,12 +1,13 @@
 @page "/login"
 @using System.ComponentModel.DataAnnotations
-@using Blazored.SessionStorage
+@using System.Runtime.InteropServices.JavaScript
 @layout LoginLayout
 @rendermode InteractiveServer
 @inject IUserService service;
 @inject IHttpContextAccessor HttpContextAccessor
 @inject NavigationManager Navigation
 @inject ICookieService cookieService;
+@inject IJSRuntime jsRuntime;
 @*
 @using Microsoft.AspNetCore.Components.Authorization;
 @using System.Security.Claims;
@@ -195,8 +196,8 @@
             if (user.Password == _existingUserData.Password)
             {
                 Console.WriteLine("Login successful.");
-                var sessionStorageObj = new SessionStorage();
-                await sessionStorageObj.SetSessionValue("SessionID", user.Password, cookieService);
+                CookieService cookieServiceObj = new CookieService(jsRuntime);
+                await cookieServiceObj.SetCookieByNameAndValue("CookieID", user.Password, 7);
                 Navigation.NavigateTo("/");
             }
             else

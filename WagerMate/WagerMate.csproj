@@ -14,7 +14,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Blazored.SessionStorage" Version="2.4.0"/>
         <PackageReference Include="dapper" Version="2.1.35"/>
         <PackageReference Include="dotenv.net" Version="3.2.0"/>
         <PackageReference Include="npgsql" Version="8.0.3"/>

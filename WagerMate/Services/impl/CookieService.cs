@@ -1,4 +1,5 @@
 ﻿using Microsoft.JSInterop;
+using Microsoft.AspNetCore.Components;
 
 namespace WagerMate.Services.impl;
 
@@ -22,8 +23,17 @@ public class CookieService : ICookieService
         return  _jsRuntime.InvokeVoidAsync("SetCookie", name, value, expirationDate);
     }
 
-    public  ValueTask DeleteCookie(string name)
+    public ValueTask DeleteCookie(string name)
     {
         return _jsRuntime.InvokeVoidAsync("DeleteCookie", name);
+    }
+    
+    public async Task RedirectToLogin(string key, NavigationManager navigation)
+    {
+        var value = await GetCookieByName(key);
+        if (string.IsNullOrEmpty(value))
+        {
+            navigation.NavigateTo("/login");
+        }
     }
 }

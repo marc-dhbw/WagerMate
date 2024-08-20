@@ -3,6 +3,7 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager navigation
 @inject ICookieService cookieService;
+@inject IJSRuntime jsRuntime;
 @rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
@@ -14,7 +15,7 @@ Welcome to your new app.
     //AutoRedirect to the LoginPage
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var sessionStorageObj = new SessionStorage();
-        await sessionStorageObj.RedirectToLogin("SessionID", cookieService, navigation);
+        CookieService cookieServiceObj = new CookieService(jsRuntime);
+        await cookieServiceObj.RedirectToLogin("CookieID" , navigation);
     }
 }
