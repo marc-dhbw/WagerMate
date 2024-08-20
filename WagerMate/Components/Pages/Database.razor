@@ -1,4 +1,5 @@
 ﻿@page "/db"
+@using System.ComponentModel.DataAnnotations
 @using WagerMate.Data
 @using WagerMate.Services
 @rendermode InteractiveServer
@@ -38,6 +39,16 @@
 <button class="btn btn-primary" @onclick="GetAllWagerItems">getAllWagerItem(Console)</button>
 <button class="btn btn-primary" @onclick="UpdateWagerItem">UpdateWagerItem</button>
 <button class="btn btn-primary" @onclick="GetWagerItemByIdConsole">GetWagerItemByIdConsole</button>
+<br>
+<br>
+<p>These buttons display data for userwagers</p>
+
+@inject IUserWagersService Service4;
+<button class="btn btn-primary" @onclick="AddUserWager">AddUserWager</button>
+<button class="btn btn-primary" @onclick="DeleteUserWager">DeleteUserWager</button>
+<button class="btn btn-primary" @onclick="DeleteUserWager2">DeleteUserWager2</button>
+<button class="btn btn-primary" @onclick="GetUserWagerById">GetUserWagerById</button>
+<button class="btn btn-primary" @onclick="GetAllUserIdsFromBet">GetAllUserIdsFromBet</button>
 @code {
 
     public void GetUserByIdConsole()
@@ -294,5 +305,72 @@
         wageritem.ItemDescription = "Das ist eine Testbeschreibung für ein Item";
         return wageritem;
     }
+    
+    // Tests for userwagers
 
+    private void AddUserWager()
+    {
+        Console.WriteLine("AddUserWager");
+        Service4.AddUserWager(InitUserWager());
+    }
+
+    private UserWager InitUserWager()
+    {
+        UserWager userwager = new UserWager();
+        userwager.BetId = 2;
+        userwager.UserId = 1;
+        return userwager;
+    }
+
+    private void DeleteUserWager()
+    {
+        User testuser = new User();
+        testuser.Email = "hallo@test.de";
+        testuser.Name = "testuser";
+        testuser.Password = "testpw";
+        Bet testbet = new Bet();
+        testbet.Cases = new[] { "1", "2" };
+        testbet.BetAccess = Access.Public;
+        testbet.Description = "0";
+        testbet.BetState = State.Active;
+        testbet.Created = DateTime.Now;
+        testbet.Expiration = DateTime.Today;
+        Console.WriteLine("DeleteUserWager"); 
+        Service4.DeleteUserWager(testuser, testbet);
+    }
+
+    private void DeleteUserWager2()
+    {
+        UserWager testuserwager = new UserWager();
+        testuserwager.BetId = 5;
+        testuserwager.UserId = 5;
+        Console.WriteLine("DeleteUserWager2");
+        Service4.DeleteUserWager2(testuserwager);
+    }
+
+    private void GetUserWagerById()
+    {
+        try
+        {
+            var result = Service4.GetUserWagerById(8);
+            Console.WriteLine(result.Id);
+            Console.WriteLine(result.UserId);
+            Console.WriteLine(result.BetId);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Getuserwagerbyid failed");
+            Console.WriteLine(e);
+        }
+    }
+
+    private void GetAllUserIdsFromBet()
+    {
+        Console.WriteLine("Get ALl UserIdsFromBet executing: ");
+        var result = Service4.GetUserWagerById(2);
+        // foreach (var user in result)
+        // {
+        //     Console.WriteLine(user.UserId);
+        // }
+    }
 }
