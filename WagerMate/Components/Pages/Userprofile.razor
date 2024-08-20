@@ -175,7 +175,7 @@ else
 
     public void EditPassword()
     {
-        hash.HashNewPassword(_editedUserData.Password!, loggedInUser.Name!);
+        hash.CreateHash(_editedUserData.Password!, loggedInUser.Name!);
         User tempUser = new User(loggedInUser.Id, loggedInUser.Name, loggedInUser.Email, _editedUserData.Password);
         var updateSuccesful = userService.UpdateUser(tempUser);
         if (updateSuccesful)
