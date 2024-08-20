@@ -12,22 +12,25 @@
 
 <div id="betOverviewPage">
     <div id="placeholder">
-        This is the perfect place to showcase your amazing advert!
+        <h2>This is the perfect place to showcase your amazing advert!</h2> 
     </div>
     <div id="creatNewBet">
-        creat new bet here<br />
+        <h2> Create a new bet here</h2>
         <button class="btn btn-primary" @onclick="ShowPopup">New Bet</button>
     </div>
     <div id="allBets">
-        Here are your bets:
+        <h2>Here are your bets:</h2>
         <div id="allBetsLayout">
         @foreach (var bet in _bets)
             {
             <div id = "individualBet">
-                <strong>ID:</strong> @bet.Id <br />
-                <strong>Description:</strong> @bet.Description  <br />
-                <strong>Created:</strong> @bet.Created.ToShortDateString()  <br />
-                <strong>Expires:</strong> @bet.Expiration.ToShortDateString() <br />
+                <strong>ID:</strong> @bet.Id 
+                <br />
+                <strong>Description:</strong> @bet.Description  
+                <br />
+                <strong>Created:</strong> @bet.Created.ToShortDateString()  
+                <br />
+                <strong>Expires:</strong> @bet.Expiration.ToShortDateString()
                 <br />
             </div>
             }
@@ -40,7 +43,7 @@
 {
         <div id="popup-overlay" @onclick="HidePopup" class="active">
             <div id="popup-content" @onclick:stopPropagation="true">
-                <h2 id="h2CreateNewBet">Create New Bet</h2>
+                <h2 id="h2PopUpCreateNewBet">Create New Bet</h2>
                 <br/>
                 <br/>
                 <label>Title:</label><br />
@@ -116,13 +119,37 @@
                 Id = 1,
                 Description = "Default Bet Description",
                 Created = DateTime.Now.AddDays(-1),
-                Expiration = DateTime.Now.AddDays(364)
+                Expiration = DateTime.Now.AddDays(365-1)
             },
             new Bet {
                 Id = 2,
                 Description = "Another Default Bet",
                 Created = DateTime.Now.AddDays(-2),
-                Expiration = DateTime.Now.AddDays(363)
+                Expiration = DateTime.Now.AddDays(365-2)
+            },
+            new Bet {
+                Id = 3,
+                Description = "Another Default Bet",
+                Created = DateTime.Now.AddDays(-3),
+                Expiration = DateTime.Now.AddDays(365-3)
+            },
+            new Bet {
+                Id = 4,
+                Description = "Another Default Bet",
+                Created = DateTime.Now.AddDays(-4),
+                Expiration = DateTime.Now.AddDays(365-4)
+            },
+            new Bet {
+                Id = 5,
+                Description = "Another Default Bet",
+                Created = DateTime.Now.AddDays(-5),
+                Expiration = DateTime.Now.AddDays(365-5)
+            },
+            new Bet {
+                Id = 6,
+                Description = "Another Default Bet",
+                Created = DateTime.Now.AddDays(-6),
+                Expiration = DateTime.Now.AddDays(365-6)
             }
         };
 
