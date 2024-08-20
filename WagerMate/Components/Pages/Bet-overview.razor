@@ -22,7 +22,7 @@
     <div id="allBets">
         Here are your bets:
         <div id="allBetsLayout">
-        @foreach (var bet in bets)
+        @foreach (var bet in _bets)
             {
             <div id = "individualBet">
                 <strong>ID:</strong> @bet.Id <br />
@@ -37,49 +37,49 @@
 </div>
 
 <!-- Popup Form -->
-@if (isPopupVisible)
+@if (_isPopupVisible)
 {
-<div class="popup-overlay" @onclick="HidePopup">
-    <div class="popup-content" @onclick:stopPropagation="true">
-        <h2>Create New Bet</h2>
-        <label>Title:</label><br />
-        <input type="text" @bind="NewBetDetails.newBetTitle" /><br /><br />
-        <label>Description:</label><br />
-        <input type="text" @bind="NewBetDetails.newBetDescription" /><br /><br />
-        <label>Bet Amount:</label><br />
-        <input type="number" @bind="NewBetDetails.newBetMoney" /><br /><br />
-        <button class="btn btn-success" @onclick="CreatNewBet">Submit</button>
-        <button class="btn btn-secondary" @onclick="HidePopup">Cancel</button>
-    </div>
-</div>
+        <div id="popup-overlay" @onclick="HidePopup">
+            <div id="popup-content" @onclick:stopPropagation="true">
+                <h2>Create New Bet</h2>
+                <label>Title:</label><br />
+                <input type="text" @bind="NewBetDetails.NewBetTitle" /><br /><br />
+                <label>Description:</label><br />
+                <input type="text" @bind="NewBetDetails.NewBetDescription" /><br /><br />
+                <label>Bet Amount:</label><br />
+                <input type="number" @bind="NewBetDetails.NewBetMoney" /><br /><br />
+                <button class="btn btn-success" @onclick="CreatNewBet">Submit</button>
+                <button class="btn btn-secondary" @onclick="HidePopup">Cancel</button>
+            </div>
+        </div>
 }
 
 @code{
     
-    private bool isPopupVisible = false;
+    private bool _isPopupVisible = false;
 
     private NewBetDetails _newBetDetails = new NewBetDetails();
     
     public class NewBetDetails {
-        public static string newBetTitle {get; set; }
-        public static string newBetDescription { get; set; }
-        public static uint newBetMoney { get; set; }
+        public static string NewBetTitle {get; set; } = null!;
+        public static string NewBetDescription { get; set; } = null!;
+        public static uint NewBetMoney { get; set; }
     }
     private void ShowPopup()
     {
-        isPopupVisible = true;
+        _isPopupVisible = true;
     }
 
     private void HidePopup()
     {
-        isPopupVisible = false;
+        _isPopupVisible = false;
     }
     
     private void CreatNewBet() {
         Console.WriteLine("New Bet Button clicked");
-        Console.WriteLine(NewBetDetails.newBetTitle);
-        Console.WriteLine(NewBetDetails.newBetDescription);
-        Console.WriteLine(NewBetDetails.newBetMoney);
+        Console.WriteLine(NewBetDetails.NewBetTitle);
+        Console.WriteLine(NewBetDetails.NewBetDescription);
+        Console.WriteLine(NewBetDetails.NewBetMoney);
         HidePopup();
         /*Bet bet2 = new Bet();
         
@@ -102,12 +102,12 @@
         }*/
     }
 
-    private List<Bet> bets = new List<Bet>();
-    private int userId = 1; // Set this to the desired user ID
+    private List<Bet> _bets = new List<Bet>();
+    private int _userId = 1; // Set this to the desired user ID
 
     protected override async Task OnInitializedAsync()
     {
-        await DisplayAllBets(userId);
+        await DisplayAllBets(_userId);
     }
 
     private async Task DisplayAllBets(int userId)
@@ -115,7 +115,7 @@
         Console.WriteLine("BetOverview: DisplayAllBets");
         try
         {
-            bets = Service2.GetBetsByUserId(userId); 
+            _bets = Service2.GetBetsByUserId(userId); 
         }
         catch (Exception ex)
         {
