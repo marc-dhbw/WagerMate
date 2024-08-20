@@ -174,7 +174,7 @@
 
         user2.Name = _newUserData.Username;
         user2.Email = _newUserData.EMail;
-        user2.Password = hash.HashNewPassword(_newUserData.Password!, _newUserData.Username!);
+        user2.Password = hash.createhash(_newUserData.Password!, _newUserData.EMail!);
 
         Console.WriteLine("user locally registered");
         try
@@ -192,11 +192,12 @@
         try
         {
             var user = service.GetUserByEmail(_existingUserData.EMail!);
-            Console.WriteLine("Password:" + _existingUserData.Password + "user email:" + _existingUserData.EMail);
-            Console.WriteLine(user.Password);
+            Console.WriteLine(_existingUserData.Password + " "+ _existingUserData.EMail + " hash " +hash.createhash( _existingUserData.Password, _existingUserData.EMail) );
+            Console.WriteLine(user.Password + " " + user.Email);
             //_existingUserData.EMailValidation = user.Email;
+            
             //_existingUserData.PasswordValidation = user.Password;
-            if (hash.ComparePassword(_existingUserData.EMail!, _existingUserData.Password!, user))
+            if (hash.createhash( _existingUserData.Password, _existingUserData.EMail).Equals(user.Password))
             {
                 Console.WriteLine("Login successful.");
                 var sessionStorageObj = new SessionStorage();
