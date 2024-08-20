@@ -17,7 +17,7 @@
     </div>
     <div id="creatNewBet">
         creat new bet here<br />
-        <button class="btn btn-primary" @onclick="CreatNewBet">New Bet</button>
+        <button class="btn btn-primary" @onclick="ShowPopup">New Bet</button>
     </div>
     <div id="allBets">
         Here are your bets:
@@ -36,12 +36,52 @@
     </div>
 </div>
 
+<!-- Popup Form -->
+@if (isPopupVisible)
+{
+<div class="popup-overlay" @onclick="HidePopup">
+    <div class="popup-content" @onclick:stopPropagation="true">
+        <h2>Create New Bet</h2>
+        <label>Title:</label><br />
+        <input type="text" @bind="NewBetDetails.newBetTitle" /><br /><br />
+        <label>Description:</label><br />
+        <input type="text" @bind="NewBetDetails.newBetDescription" /><br /><br />
+        <label>Bet Amount:</label><br />
+        <input type="number" @bind="NewBetDetails.newBetMoney" /><br /><br />
+        <button class="btn btn-success" @onclick="CreatNewBet">Submit</button>
+        <button class="btn btn-secondary" @onclick="HidePopup">Cancel</button>
+    </div>
+</div>
+}
 
 @code{
     
+    private bool isPopupVisible = false;
+
+    private NewBetDetails _newBetDetails = new NewBetDetails();
+    
+    public class NewBetDetails {
+        public static string newBetTitle {get; set; }
+        public static string newBetDescription { get; set; }
+        public static uint newBetMoney { get; set; }
+    }
+    private void ShowPopup()
+    {
+        isPopupVisible = true;
+    }
+
+    private void HidePopup()
+    {
+        isPopupVisible = false;
+    }
+    
     private void CreatNewBet() {
         Console.WriteLine("New Bet Button clicked");
-        Bet bet2 = new Bet();
+        Console.WriteLine(NewBetDetails.newBetTitle);
+        Console.WriteLine(NewBetDetails.newBetDescription);
+        Console.WriteLine(NewBetDetails.newBetMoney);
+        HidePopup();
+        /*Bet bet2 = new Bet();
         
         bet2.WageritemId = 1;
         bet2.Description = "BetOverview: new test description for a bet";
@@ -59,7 +99,7 @@
         catch (Exception e)
         {
             Console.WriteLine("BetOverview: service failed");
-        }
+        }*/
     }
 
     private List<Bet> bets = new List<Bet>();
