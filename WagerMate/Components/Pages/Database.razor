@@ -29,33 +29,45 @@
 <button class="btn btn-primary" @onclick="UpdateBet">UpdateBet</button>
 <button class="btn btn-primary" @onclick="GetBetByIdConsole">GetBetByIdConsole</button>
 <br>
-<br>
-<p>These buttons display data for wageritems</p>
 
-@inject IWagerItemService Service3;
-<button class="btn btn-primary" @onclick="DeleteWagerItem">DeleteWagerItem</button>
-<button class="btn btn-primary" @onclick="CreateWagerItem">CreateWagerItem</button>
-<button class="btn btn-primary" @onclick="CreateWagerItem2">CreateWagerItem2</button>
-<button class="btn btn-primary" @onclick="GetAllWagerItems">getAllWagerItem(Console)</button>
-<button class="btn btn-primary" @onclick="UpdateWagerItem">UpdateWagerItem</button>
-<button class="btn btn-primary" @onclick="GetWagerItemByIdConsole">GetWagerItemByIdConsole</button>
+
 <br>
-<br>
-<p>These buttons display data for userwagers</p>
+<p>These buttons display data for UserBet</p>
 
 @inject IUserBetService Service4;
-<button class="btn btn-primary" @onclick="AddUserWager">CreateUserBet</button>
-<button class="btn btn-primary" @onclick="DeleteUserWager">DeleteUserBet</button>
-<button class="btn btn-primary" @onclick="DeleteUserWager2">DeleteUserBet2</button>
-<button class="btn btn-primary" @onclick="GetUserWagerById">GetUserBetById</button>
-<button class="btn btn-primary" @onclick="GetAllUserIdsFromBet">GetAllUserIdsFromBet</button>
+<button class="btn btn-primary" @onclick="AddUserBet">CreateUserBet</button>
+<button class="btn btn-primary" @onclick="DeleteUserBet">DeleteUserBet</button>
+<button class="btn btn-primary" @onclick="DeleteUserBet2">DeleteUserBet2</button>
+<button class="btn btn-primary" @onclick="GetUserBetById">GetUserBetById</button>
+<button class="btn btn-primary" @onclick="ConsoleGetAllUserIdsFromBet">ConsoleGetAllUserIdsFromBet</button>
+<br/>
+
+<p>WinnerService Buttons</p>
+@inject  IWinnerService ServiceWinner;
+<button class="btn btn-primary" @onclick="CreateWinnerTest">CreateWinnerTest</button>
+<button class="btn btn-primary" @onclick="DeleteWinnerID">DeleteWinnerID2</button>
+<button class="btn btn-primary" @onclick="UpdateWinner">UpdateWinner</button>
+<button class="btn btn-primary" @onclick="ConsoleGetWinnerById">ConsoleGetWinnerById</button>
+<button class="btn btn-primary" @onclick="ConsoleGetWinnerByBetId">ConsoleGetWinnerByBet_Id</button>
+<br/>
+<p>CaseService Buttons</p>
+@inject ICaseService ServiceCase;
+<button class="btn btn-primary" @onclick="CaseCreate">CaseCreate</button>
+<button class="btn btn-primary" @onclick="CaseDelete">CaseDelete</button>
+<button class="btn btn-primary" @onclick="CaseDeleteByBetId">CaseDeleteByBetId</button>
+<button class="btn btn-primary" @onclick="CaseUpdate">CaseUpdate</button>
+<button class="btn btn-primary" @onclick="ConsoleGetCase">ConsoleGetCase</button>
+<button class="btn btn-primary" @onclick="ConsoleGetCasesByBet">ConsoleGetCasesByBet</button>
+
+
+
 @code {
 
     public void GetUserByIdConsole()
     {
         try
         {
-            var result = Service.GetUserById(47);
+            var result = Service.GetUserById(1);
             Console.WriteLine(result.Name);
             Console.WriteLine(result.Id);
         }
@@ -72,7 +84,7 @@
         updatedU.Name = "1update";
         updatedU.Email = "1updat@email";
         updatedU.Password = "1updatedPW";
-        updatedU.Id = 47;
+        updatedU.Id = 1;
 
         var result = Service.UpdateUser(updatedU);
         Console.WriteLine($"Updating User succesful: {result}");
@@ -91,7 +103,7 @@
     private void DeleteUser()
     {
         Console.WriteLine("DeleteUser");
-        Service.DeleteUser(51);
+        Service.DeleteUser(1);
     }
 
     private void CreateUser()
@@ -220,154 +232,142 @@
         return bet;
     }
     
-    //test for wageritems
-    public void GetWagerItemByIdConsole()
-    {
-        try
-        {
-            var result = Service3.GetWagerItemById(47);
-            Console.WriteLine(result.Money);
-            Console.WriteLine(result.ItemDescription);
-            Console.WriteLine(result.Id);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("Getwageritembyid failed");
-            Console.WriteLine(e);
-        }
-    }
-
-    public void UpdateWagerItem()
-    {
-        WagerItem updatedWI = new WagerItem();
-        updatedWI.Money = true;
-        updatedWI.Amount = 10000;
-        updatedWI.Item = false;
-        updatedWI.ItemDescription = "";
-
-        var result = Service3.UpdateWagerItem(updatedWI);
-        Console.WriteLine($"Updating WagerItem succesful: {result}");
-    }
-
-    private void GetAllWagerItems()
-    {
-        Console.WriteLine("Get ALl WagerItems executing: ");
-        var result = Service3.GetAllWagerItems();
-        foreach (var wageritem in result)
-        {
-            Console.WriteLine(wageritem.Amount);
-            Console.WriteLine(wageritem.ItemDescription); 
-        }
-    }
-
-    private void DeleteWagerItem()
-    {
-        Console.WriteLine("DeleteWagerItem");
-        Service3.DeleteWagerItem(51);
-    }
-
-    private void CreateWagerItem()
-    {
-        Console.WriteLine("CreateWagerItem");
-        Service3.CreateWagerItem(InitWagerItem());
-    }
-
-    private void CreateWagerItem2()
-    {
-        Console.WriteLine("CreateWagerItem2");
-        // create dummy user
-        WagerItem wageritem2 = new WagerItem();
-        
-        wageritem2.Money = false;
-        wageritem2.Amount = 0;
-        wageritem2.Item = true;
-        wageritem2.ItemDescription = "Testdescription2 für WagerItem";
-
-        Console.WriteLine("wageritem locally created");
-        try
-        {
-            Service3.CreateWagerItem(wageritem2);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("service failed");
-        }
-    }
-
-    public WagerItem InitWagerItem()
-    {
-        WagerItem wageritem = new WagerItem();
-        wageritem.Money = true;
-        wageritem.Amount = 300;
-        wageritem.Item = true;
-        wageritem.ItemDescription = "Das ist eine Testbeschreibung für ein Item";
-        return wageritem;
-    }
     
-    // Tests for userwagers
+    
+    // Tests for UserBets
 
-    private void AddUserWager()
+    private void AddUserBet()
     {
         Console.WriteLine("CreateUserBet");
-        Service4.CreateUserBet(InitUserWager());
+        Service4.CreateUserBet(InitUserBet());
     }
 
-    private UserBet InitUserWager()
+    private UserBet InitUserBet()
     {
-        UserBet userwager = new UserBet();
-        userwager.BetId = 2;
-        userwager.UserId = 1;
-        return userwager;
+        UserBet userBet = new UserBet();
+        userBet.Bet_Id = 1;
+        userBet.User_Id = 1;
+        userBet.Amount = 1;
+        userBet.Case_Id = 1;
+        return userBet;
     }
 
-    private void DeleteUserWager()
+    private void DeleteUserBet()
     {
         User testuser = new User();
-        testuser.Email = "hallo@test.de";
-        testuser.Name = "testuser";
-        testuser.Password = "testpw";
+        testuser.Id = 1;
         Bet testbet = new Bet();
-        testbet.BetAccess = Access.Public;
-        testbet.Description = "0";
-        testbet.BetState = State.Active;
-        testbet.Created = DateTime.Now;
-        testbet.Expiration = DateTime.Today;
-        Console.WriteLine("DeleteUserBet"); 
+        testbet.Id = 1;
+        Console.WriteLine("DeleteUserBet user+bet"); 
         Service4.DeleteUserBet(testuser, testbet);
     }
 
-    private void DeleteUserWager2()
+    private void DeleteUserBet2()
     {
-        UserBet testuserwager = new UserBet();
-        testuserwager.BetId = 5;
-        testuserwager.UserId = 5;
-        Console.WriteLine("DeleteUserBet");
-        Service4.DeleteUserBet(testuserwager);
+        UserBet userBet = new UserBet();
+        userBet.Id = 1;
+        Console.WriteLine("DeleteUserBet userbet");
+        Service4.DeleteUserBet(userBet);
     }
 
-    private void GetUserWagerById()
+    private void GetUserBetById()
     {
         try
         {
-            var result = Service4.GetUserBetById(8);
+            var result = Service4.GetUserBetById(1);
             Console.WriteLine(result.Id);
-            Console.WriteLine(result.UserId);
-            Console.WriteLine(result.BetId);
+            Console.WriteLine(result.User_Id);
+            Console.WriteLine(result.Bet_Id);
         }
         catch (Exception e)
         {
-            Console.WriteLine("Getuserwagerbyid failed");
+            Console.WriteLine("GetUserBetByBetId failed");
             Console.WriteLine(e);
         }
     }
 
-    private void GetAllUserIdsFromBet()
+    private void ConsoleGetAllUserIdsFromBet()
     {
         Console.WriteLine("Get ALl UserIdsFromBet executing: ");
-        var result = Service4.GetUserBetById(2);
-        // foreach (var user in result)
-        // {
-        //     Console.WriteLine(user.UserId);
-        // }
+        Bet bet = new Bet();
+        bet.Id = 1;
+        var result = Service4.GetAllUserIdsFromBet(bet);
+        foreach (var userId in result)
+        {
+            Console.WriteLine(userId);
+        }
+    }
+
+
+    private void CreateWinnerTest()
+    {
+        Winner newWinner = new Winner();
+        newWinner.Bet_Id = 1;
+        newWinner.UserBet_Id = 1;
+        ServiceWinner.CreateWinner(newWinner);
+    }
+
+    private void DeleteWinnerID()
+    {
+        ServiceWinner.DeleteWinner(1);
+    }
+
+    private void UpdateWinner()
+    {
+        Winner newWinner = new Winner();
+        newWinner.Bet_Id = 1;
+        newWinner.Id = 1;
+        newWinner.UserBet_Id = 1;
+        ServiceWinner.UpdateWinner(newWinner);
+    }
+
+    private void ConsoleGetWinnerById()
+    {
+        Console.WriteLine(ServiceWinner.GetWinnerById(1));
+    }
+
+    private void ConsoleGetWinnerByBetId()
+    {
+        Console.WriteLine("WinnerByBetsId");
+        var winners = ServiceWinner.GetWinnersByBetId(2);
+        foreach (var winner in winners)
+        {
+            Console.WriteLine(winner.Id);
+        }
+    }
+    private void CaseCreate()
+    {
+        Case newCase = new Case();
+        newCase.Bet_Id = 1;
+        newCase.Casetype = "Case";
+        ServiceCase.CreateCase(newCase);
+    }
+    private void CaseDelete()
+    {
+        ServiceCase.DeleteCase(1);
+    }
+
+    private void CaseDeleteByBetId()
+    {
+        ServiceCase.DeleteCasesOfBetId(1);
+    }
+    private void CaseUpdate()
+    {
+        Case updateCase = new Case();
+        updateCase.Casetype = "bb";
+        updateCase.Id = 1;
+        updateCase.Bet_Id = 1;
+        ServiceCase.UpdateCase(updateCase);
+    }
+    private void ConsoleGetCase()
+    {
+        Console.WriteLine("CaseID2: ");
+        Console.WriteLine(ServiceCase.GetCaseById(2));
+    }
+
+    private void ConsoleGetCasesByBet()
+    {
+        Console.WriteLine("GetCasesByBetId2: ");
+        Console.WriteLine(ServiceCase.GetCasesByBetId(2));
     }
 }

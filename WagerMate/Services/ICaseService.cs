@@ -12,4 +12,5 @@ public interface ICaseService
     public bool UpdateCase(Case newCase);
     
     public bool DeleteCase(int caseId);
+    public bool DeleteCasesOfBetId(int betId);
 }

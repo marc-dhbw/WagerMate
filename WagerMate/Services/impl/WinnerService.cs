@@ -13,7 +13,7 @@ public class WinnerService : IWinnerService
 
     public Winner CreateWinner(Winner createdWinner)
     {
-        _service.Create<Case>("INSERT INTO public.winner(bet_id, userbet_id) VALUES(@BetId, @UserBetId)", createdWinner);
+        _service.Create<Case>("INSERT INTO public.winner(bet_id, userbet_id) VALUES(@Bet_Id, @UserBet_Id)", createdWinner);
         return createdWinner;
     }
 
@@ -23,7 +23,7 @@ public class WinnerService : IWinnerService
         return result;
     }
 
-    public List<Winner> GetWinnerByBetId(int betId)
+    public List<Winner> GetWinnersByBetId(int betId)
     {
         var result = _service.GetAllWithParams<Winner>("SELECT * FROM public.winner WHERE bet_id = @Id",new{Id = betId});
         return result;
@@ -33,7 +33,7 @@ public class WinnerService : IWinnerService
     {
         var result =
             _service.Update<Winner>(
-                "UPDATE public.winner SET Id=@Id, bet_id=@betId, userbet_id = @UserBetId WHERE winner.Id = @Id", newWinner);
+                "UPDATE public.winner SET Id = @Id, bet_id = @bet_Id, userbet_id = @UserBet_Id WHERE Id = @Id", newWinner);
         return result;
     }
 

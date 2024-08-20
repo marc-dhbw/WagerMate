@@ -29,8 +29,9 @@ builder.Services.AddRazorComponents()
 builder.Services.AddScoped<IDbService, DbService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBetService, BetService>();
-builder.Services.AddScoped<IWagerItemService, WagerItemService>();
 builder.Services.AddScoped<IUserBetService, UserBetService>();
+builder.Services.AddScoped<ICaseService, CaseService>();
+builder.Services.AddScoped<IWinnerService, WinnerService>();
 
 
 
