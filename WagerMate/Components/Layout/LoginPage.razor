@@ -7,6 +7,7 @@
 @inject IHttpContextAccessor HttpContextAccessor
 @inject NavigationManager Navigation
 @inject ISessionStorageService sessionStorage
+@inject IHashService HashService
 @*
 @using Microsoft.AspNetCore.Components.Authorization;
 @using System.Security.Claims;
@@ -18,7 +19,7 @@
 
         <p>Welcome Back!</p>
 
-        <EditForm Model="@_existingUserData" OnValidSubmit="HandleLogin" FormName="FormLogin">
+        <EditForm Model="@_existingUserData" OnValidSubmit="HandleLogin" FormName="FormLogin" method="post">
             <DataAnnotationsValidator/>
             <div class="field">
                 <div>
@@ -26,10 +27,6 @@
                 </div>
                 <InputText class="input" @bind-Value="_existingUserData.EMail"/>
                 <ValidationMessage For="@(() => _existingUserData.EMail)"/>
-                @if (!string.IsNullOrEmpty(errorMessageEMail))
-                {
-                    @errorMessageEMail
-                }
             </div>
             <div class="field">
                 <div>
@@ -37,10 +34,6 @@
                 </div>
                 <InputText class="input" type="password" @bind-Value="_existingUserData.Password"/>
                 <ValidationMessage For="@(() => _existingUserData.Password)"/>
-                @if (!string.IsNullOrEmpty(errorMessagePassword))
-                {
-                    @errorMessagePassword
-                }
             </div>
             <div id="loginspace">
                 <input id="login" type="submit" value="Log in"/>
@@ -109,10 +102,16 @@
     {
         [Required(ErrorMessage = "E-mail address is required!")]
         [EmailAddress(ErrorMessage = "Invalid e-mail address!")]
+        //[Compare("PasswordValidation", ErrorMessage = "No account with this e-mail address!")]
         public string? EMail { get; set; }
 
+        public string? EMailValidation { get; set; }
+
         [Required(ErrorMessage = "Password is required!")]
+        //[Compare("PasswordValidation", ErrorMessage = "False Password!")]
         public string? Password { get; set; }
+
+        public string? PasswordValidation { get; set; }
     }
 
     private readonly NewUserData _newUserData = new();
@@ -166,7 +165,8 @@
         }
     }
 
-
+    HashService hash = new HashService();
+    
     private void CreateUser()
     {
         Console.WriteLine("Register New User");
@@ -174,7 +174,7 @@
 
         user2.Name = _newUserData.Username;
         user2.Email = _newUserData.EMail;
-        user2.Password = _newUserData.Password;
+        user2.Password = hash.HashNewPassword(_newUserData.Password!, _newUserData.Username!);
 
         Console.WriteLine("user locally registered");
         try
@@ -192,7 +192,11 @@
         try
         {
             var user = service.GetUserByEmail(_existingUserData.EMail!);
-            if (user.Password == _existingUserData.Password)
+            Console.WriteLine("Password:" + _existingUserData.Password + "user email:" + _existingUserData.EMail);
+            Console.WriteLine(user.Password);
+            //_existingUserData.EMailValidation = user.Email;
+            //_existingUserData.PasswordValidation = user.Password;
+            if (hash.ComparePassword(_existingUserData.EMail!, _existingUserData.Password!, user))
             {
                 Console.WriteLine("Login successful.");
                 var sessionStorageObj = new SessionStorage();
@@ -202,15 +206,12 @@
             else
             {
                 Console.WriteLine("Invalid password.");
-                errorMessagePassword = "Invalid Password!";
-                errorMessageEMail = null;
             }
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
             Console.WriteLine("Not registered E-Mail.");
-            errorMessageEMail = "No account with this e-mail address exists!";
         }
     }
 
@@ -238,13 +239,11 @@
         }
     }
     */
-    private string? errorMessageEMail;
-    private string? errorMessagePassword;
     private string? errorMessageRegistrationEMail;
 
     public void HandleRegister()
     {
-        var EmailExists = service.EmailIsRegistered(_newUserData.EMail);
+        var EmailExists = service.EmailIsRegistered(_newUserData.EMail!);
         if (!EmailExists)
         {
             CreateUser();

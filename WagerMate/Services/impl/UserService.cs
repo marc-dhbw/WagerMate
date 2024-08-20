@@ -50,6 +50,7 @@ public class UserService : IUserService
             new { Id = email });
         return result;
     }
+    
 
     public User GetUserByPassword(string password)
     {

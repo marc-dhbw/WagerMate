@@ -8,6 +8,8 @@ using WagerMate.Services.impl;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IHashService, HashService>();
 
 DotEnv.Load();
 // Retrieve the connection string from the environment variable
