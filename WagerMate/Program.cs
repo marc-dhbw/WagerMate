@@ -1,4 +1,3 @@
-using Blazored.SessionStorage;
 using dotenv.net;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using WagerMate.Components;
@@ -49,9 +48,7 @@ builder.Services.AddAuthorization(options =>
 // Register the IDbConnection service for Dapper
 builder.Services.AddScoped<IDbService, DbService>();
 builder.Services.AddScoped<IUserService, UserService>();
-
-builder.Services.AddBlazoredSessionStorage();
-builder.Services.AddBlazoredSessionStorage(config => config.JsonSerializerOptions.WriteIndented = true);
+builder.Services.AddScoped<ICookieService, CookieService>();
 
 var app = builder.Build();
 

@@ -1,10 +1,12 @@
 @page "/login"
 @using System.ComponentModel.DataAnnotations
+
 @layout LoginLayout
 @rendermode InteractiveServer
 @inject IUserService UserService;
 @inject NavigationManager Navigation
-@inject ISessionStorageService SessionStorage
+@inject ICookieService cookieService;
+@inject IJSRuntime jsRuntime;
 @inject IHashService HashService
 
 <div class="column">
@@ -159,8 +161,9 @@
             if (HashService.CreateHash(_existingUserData.Password!, _existingUserData.EMail!).Equals(user.Password))
             {
                 Console.WriteLine("Login successful.");
-                var sessionStorageObj = new SessionStorage();
-                await sessionStorageObj.SetSessionValue("SessionID", user.Password, SessionStorage);
+                CookieService cookieServiceObj = new CookieService(jsRuntime);
+                await cookieServiceObj.SetCookieByNameAndValue("CookieID", user.Password, 7);
+
                 Navigation.NavigateTo("/");
             }
             else
