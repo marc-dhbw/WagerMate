@@ -1,9 +1,10 @@
 @page "/user"
 @using System.ComponentModel.DataAnnotations
-@inject NavigationManager navigation
-@inject ICookieService cookieService;
-@inject IUserService userService;
-@inject IJSRuntime jsRuntime;
+@inject NavigationManager Navigation
+@inject ICookieService CookieService;
+@inject IUserService UserService;
+@inject IHashService HashService;
+
 @rendermode InteractiveServer
 
 
@@ -96,16 +97,14 @@ else
     //AutoRedirect to the LoginPage
     public bool firstLogin = true;
     public User loggedInUser = new User();
-    public CookieService cookieServiceObj;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        cookieServiceObj = new CookieService(jsRuntime);
-        cookieServiceObj.RedirectToLogin("CookieID", navigation);
-        var value = await cookieService.GetCookieByName("CookieID");
+        await CookieService.RedirectToLogin("CookieID", Navigation);
+        var value = await CookieService.GetCookieByName("CookieID");
         Console.WriteLine(value);
         if (value != null && firstLogin)
         {
-            loggedInUser = userService.GetUserByPassword(value);
+            loggedInUser = UserService.GetUserByPassword(value);
             firstLogin = false;
         }
     }
@@ -160,29 +159,28 @@ else
     public void EditUsername()
     {
         User tempUser = new User(loggedInUser.Id, _editedUserData.Username, loggedInUser.Email, loggedInUser.Password);
-        var updateSuccesful = userService.UpdateUser(tempUser);
+        var updateSuccesful = UserService.UpdateUser(tempUser);
         if (updateSuccesful) loggedInUser = tempUser;
         EditingUsername = false;
     }
 
-    HashService hash = new HashService();
 
     public void EditEMail()
     {
         User tempUser = new User(loggedInUser.Id, loggedInUser.Name, _editedUserData.EMail, loggedInUser.Password);
-        var updateSuccesful = userService.UpdateUser(tempUser);
+        var updateSuccesful = UserService.UpdateUser(tempUser);
         if (updateSuccesful) loggedInUser = tempUser;
         EditingEMail = false;
     }
 
     public void EditPassword()
     {
-        hash.CreateHash(_editedUserData.Password!, loggedInUser.Name!);
+        HashService.CreateHash(_editedUserData.Password!, loggedInUser.Name!);
         User tempUser = new User(loggedInUser.Id, loggedInUser.Name, loggedInUser.Email, _editedUserData.Password);
-        var updateSuccesful = userService.UpdateUser(tempUser);
+        var updateSuccesful = UserService.UpdateUser(tempUser);
         if (updateSuccesful)
         {
-            cookieServiceObj.SetCookieByNameAndValue("CookieID", tempUser.Password, 7);
+            CookieService.SetCookieByNameAndValue("CookieID", tempUser.Password, 7);
             loggedInUser = tempUser;
         }
         EditingPassword = false;

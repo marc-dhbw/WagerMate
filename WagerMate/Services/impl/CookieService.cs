@@ -1,15 +1,18 @@
 ﻿using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components;
+using WagerMate.Data;
 
 namespace WagerMate.Services.impl;
 
 public class CookieService : ICookieService
 {
     private readonly IJSRuntime _jsRuntime;
+    private readonly IUserService _userService;
 
-    public CookieService(IJSRuntime jsRuntime)
+    public CookieService(IJSRuntime jsRuntime, IUserService userService)
     {
         _jsRuntime = jsRuntime;
+        _userService = userService;
     }
 
 

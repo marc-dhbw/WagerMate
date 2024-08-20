@@ -1,9 +1,7 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.Components.Authorization
-@inject AuthenticationStateProvider AuthenticationStateProvider
-@inject NavigationManager navigation
-@inject ICookieService cookieService;
-@inject IJSRuntime jsRuntime;
+@inject NavigationManager Navigation
+@inject ICookieService CookieService;
 @rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
@@ -15,7 +13,6 @@ Welcome to your new app.
     //AutoRedirect to the LoginPage
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        CookieService cookieServiceObj = new CookieService(jsRuntime);
-        await cookieServiceObj.RedirectToLogin("CookieID" , navigation);
+        await CookieService.RedirectToLogin("CookieID" , Navigation);
     }
 }
