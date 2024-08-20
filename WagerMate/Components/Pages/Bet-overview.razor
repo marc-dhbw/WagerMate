@@ -41,14 +41,14 @@
 {
         <div id="popup-overlay" @onclick="HidePopup">
             <div id="popup-content" @onclick:stopPropagation="true">
-                <h2>Create New Bet</h2>
+                <h2 id="h2CreateNewBet">Create New Bet</h2>
                 <label>Title:</label><br />
                 <input type="text" @bind="NewBetDetails.NewBetTitle" /><br /><br />
                 <label>Description:</label><br />
                 <input type="text" @bind="NewBetDetails.NewBetDescription" /><br /><br />
                 <label>Bet Amount:</label><br />
                 <input type="number" @bind="NewBetDetails.NewBetMoney" /><br /><br />
-                <button class="btn btn-success" @onclick="CreatNewBet">Submit</button>
+                <button class="btn btn-success" @onclick="CreatNewBet">Create Bet</button>
                 <button class="btn btn-secondary" @onclick="HidePopup">Cancel</button>
             </div>
         </div>
