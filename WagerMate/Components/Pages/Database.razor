@@ -43,11 +43,11 @@
 <br>
 <p>These buttons display data for userwagers</p>
 
-@inject IUserWagersService Service4;
-<button class="btn btn-primary" @onclick="AddUserWager">AddUserWager</button>
-<button class="btn btn-primary" @onclick="DeleteUserWager">DeleteUserWager</button>
-<button class="btn btn-primary" @onclick="DeleteUserWager2">DeleteUserWager2</button>
-<button class="btn btn-primary" @onclick="GetUserWagerById">GetUserWagerById</button>
+@inject IUserBetService Service4;
+<button class="btn btn-primary" @onclick="AddUserWager">CreateUserBet</button>
+<button class="btn btn-primary" @onclick="DeleteUserWager">DeleteUserBet</button>
+<button class="btn btn-primary" @onclick="DeleteUserWager2">DeleteUserBet2</button>
+<button class="btn btn-primary" @onclick="GetUserWagerById">GetUserBetById</button>
 <button class="btn btn-primary" @onclick="GetAllUserIdsFromBet">GetAllUserIdsFromBet</button>
 @code {
 
@@ -310,13 +310,13 @@
 
     private void AddUserWager()
     {
-        Console.WriteLine("AddUserWager");
-        Service4.AddUserWager(InitUserWager());
+        Console.WriteLine("CreateUserBet");
+        Service4.CreateUserBet(InitUserWager());
     }
 
-    private UserWager InitUserWager()
+    private UserBet InitUserWager()
     {
-        UserWager userwager = new UserWager();
+        UserBet userwager = new UserBet();
         userwager.BetId = 2;
         userwager.UserId = 1;
         return userwager;
@@ -335,24 +335,24 @@
         testbet.BetState = State.Active;
         testbet.Created = DateTime.Now;
         testbet.Expiration = DateTime.Today;
-        Console.WriteLine("DeleteUserWager"); 
-        Service4.DeleteUserWager(testuser, testbet);
+        Console.WriteLine("DeleteUserBet"); 
+        Service4.DeleteUserBet(testuser, testbet);
     }
 
     private void DeleteUserWager2()
     {
-        UserWager testuserwager = new UserWager();
+        UserBet testuserwager = new UserBet();
         testuserwager.BetId = 5;
         testuserwager.UserId = 5;
-        Console.WriteLine("DeleteUserWager2");
-        Service4.DeleteUserWager2(testuserwager);
+        Console.WriteLine("DeleteUserBet");
+        Service4.DeleteUserBet(testuserwager);
     }
 
     private void GetUserWagerById()
     {
         try
         {
-            var result = Service4.GetUserWagerById(8);
+            var result = Service4.GetUserBetById(8);
             Console.WriteLine(result.Id);
             Console.WriteLine(result.UserId);
             Console.WriteLine(result.BetId);
@@ -367,7 +367,7 @@
     private void GetAllUserIdsFromBet()
     {
         Console.WriteLine("Get ALl UserIdsFromBet executing: ");
-        var result = Service4.GetUserWagerById(2);
+        var result = Service4.GetUserBetById(2);
         // foreach (var user in result)
         // {
         //     Console.WriteLine(user.UserId);

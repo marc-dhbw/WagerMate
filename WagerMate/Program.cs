@@ -30,7 +30,7 @@ builder.Services.AddScoped<IDbService, DbService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBetService, BetService>();
 builder.Services.AddScoped<IWagerItemService, WagerItemService>();
-builder.Services.AddScoped<IUserWagersService, UserWagersService>();
+builder.Services.AddScoped<IUserBetService, UserBetService>();
 
 
 
