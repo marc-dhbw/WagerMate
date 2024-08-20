@@ -38,3 +38,18 @@ p{
     grid-row: 2;
     grid-column: 1/ span 2;
 }
+
+#allBetsLayout{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 10px;
+}
+
+#individualBet{
+    border: 2px solid #157347;
+}
+
+#popup-content{
+    background: maroon;
+}
