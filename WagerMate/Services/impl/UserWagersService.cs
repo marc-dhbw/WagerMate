@@ -5,6 +5,11 @@ namespace WagerMate.Services.impl;
 public class UserWagersService : IUserWagersService
 {
     private IDbService _service;
+
+    public UserWagersService(IDbService service)
+    {
+        _service = service;
+    }
     
     public bool AddUserWager(UserWager userWager)
     {
@@ -22,7 +27,7 @@ public class UserWagersService : IUserWagersService
         return result;
     }
 
-    public bool DeleteUserWager(UserWager userWager)
+    public bool DeleteUserWager2(UserWager userWager)
     {
         var result = _service.Delete<User>("Delete from public.userwagers where id =@Id", userWager);
         return result;
