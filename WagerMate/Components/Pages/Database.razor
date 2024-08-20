@@ -30,17 +30,7 @@
 <button class="btn btn-primary" @onclick="GetBetByIdConsole">GetBetByIdConsole</button>
 <br>
 <br>
-<p>These buttons display data for wageritems</p>
 
-@inject IWagerItemService Service3;
-<button class="btn btn-primary" @onclick="DeleteWagerItem">DeleteWagerItem</button>
-<button class="btn btn-primary" @onclick="CreateWagerItem">CreateWagerItem</button>
-<button class="btn btn-primary" @onclick="CreateWagerItem2">CreateWagerItem2</button>
-<button class="btn btn-primary" @onclick="GetAllWagerItems">getAllWagerItem(Console)</button>
-<button class="btn btn-primary" @onclick="UpdateWagerItem">UpdateWagerItem</button>
-<button class="btn btn-primary" @onclick="GetWagerItemByIdConsole">GetWagerItemByIdConsole</button>
-<br>
-<br>
 <p>These buttons display data for userwagers</p>
 
 @inject IUserBetService Service4;
@@ -220,79 +210,7 @@
         return bet;
     }
     
-    //test for wageritems
-    public void GetWagerItemByIdConsole()
-    {
-        try
-        {
-            var result = Service3.GetWagerItemById(47);
-            Console.WriteLine(result.Money);
-            Console.WriteLine(result.ItemDescription);
-            Console.WriteLine(result.Id);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("Getwageritembyid failed");
-            Console.WriteLine(e);
-        }
-    }
-
-    public void UpdateWagerItem()
-    {
-        WagerItem updatedWI = new WagerItem();
-        updatedWI.Money = true;
-        updatedWI.Amount = 10000;
-        updatedWI.Item = false;
-        updatedWI.ItemDescription = "";
-
-        var result = Service3.UpdateWagerItem(updatedWI);
-        Console.WriteLine($"Updating WagerItem succesful: {result}");
-    }
-
-    private void GetAllWagerItems()
-    {
-        Console.WriteLine("Get ALl WagerItems executing: ");
-        var result = Service3.GetAllWagerItems();
-        foreach (var wageritem in result)
-        {
-            Console.WriteLine(wageritem.Amount);
-            Console.WriteLine(wageritem.ItemDescription); 
-        }
-    }
-
-    private void DeleteWagerItem()
-    {
-        Console.WriteLine("DeleteWagerItem");
-        Service3.DeleteWagerItem(51);
-    }
-
-    private void CreateWagerItem()
-    {
-        Console.WriteLine("CreateWagerItem");
-        Service3.CreateWagerItem(InitWagerItem());
-    }
-
-    private void CreateWagerItem2()
-    {
-        Console.WriteLine("CreateWagerItem2");
-        // create dummy user
-        WagerItem wageritem2 = new WagerItem();
-        
-        wageritem2.Money = false;
-        wageritem2.Amount = 0;
-        wageritem2.Item = true;
-        wageritem2.ItemDescription = "Testdescription2 für WagerItem";
-
-        Console.WriteLine("wageritem locally created");
-        try
-        {
-            Service3.CreateWagerItem(wageritem2);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("service failed");
-        }
-    }
+   
 
     public WagerItem InitWagerItem()
     {

@@ -5,7 +5,6 @@
 @using WagerMate.Data
 @inject IBetService BetService;
 @inject IBetService Service2;
-@inject IWagerItemService Service3;
 
 <PageTitle>Bet Overview</PageTitle>
 
@@ -27,8 +26,8 @@
             <div id = "individualBet">
                 <strong>ID:</strong> @bet.Id <br />
                 <strong>Description:</strong> @bet.Description  <br />
-                <strong>Created:</strong> @bet.Created  <br />
-                <strong>Expires:</strong> @bet.Expiration <br />
+                <strong>Created:</strong> @bet.Created.ToShortDateString()  <br />
+                <strong>Expires:</strong> @bet.Expiration.ToShortDateString() <br />
                 <br />
             </div>
             }
@@ -42,6 +41,8 @@
         <div id="popup-overlay" @onclick="HidePopup" class="active">
             <div id="popup-content" @onclick:stopPropagation="true">
                 <h2 id="h2CreateNewBet">Create New Bet</h2>
+                <br/>
+                <br/>
                 <label>Title:</label><br />
                 <input type="text" @bind="NewBetDetails.NewBetTitle" /><br /><br />
                 <label>Description:</label><br />
@@ -55,29 +56,28 @@
 }
 
 @code{
-    
+
     private bool _isPopupVisible = false;
 
     private NewBetDetails _newBetDetails = new NewBetDetails();
-    
+
     public class NewBetDetails {
-        public static string NewBetTitle {get; set; } = null!;
+        public static string NewBetTitle { get; set; } = null!;
         public static string NewBetDescription { get; set; } = null!;
         public static uint NewBetMoney { get; set; }
     }
-    private void ShowPopup()
-    {
+
+    private void ShowPopup() {
         _isPopupVisible = true;
-        StateHasChanged(); 
+        StateHasChanged();
     }
 
-    private void HidePopup()
-    {
+    private void HidePopup() {
         _isPopupVisible = false;
-        StateHasChanged(); 
+        StateHasChanged();
     }
-    
-    
+
+
     private void CreatNewBet() {
         Console.WriteLine("New Bet Button clicked");
         Console.WriteLine(NewBetDetails.NewBetTitle);
@@ -85,7 +85,7 @@
         Console.WriteLine(NewBetDetails.NewBetMoney);
         HidePopup();
         /*Bet bet2 = new Bet();
-        
+
         bet2.WageritemId = 1;
         bet2.Description = "BetOverview: new test description for a bet";
         bet2.Created = DateTime.Now;
@@ -108,25 +108,36 @@
     private List<Bet> _bets = new List<Bet>();
     private int _userId = 1; // Set this to the desired user ID
 
-    protected override async Task OnInitializedAsync()
-    {
-        await DisplayAllBets(_userId);
+    protected override async Task OnInitializedAsync() {
+        //await DisplayAllBets(_userId);
+
+        _bets = new List<Bet> {
+            new Bet {
+                Id = 1,
+                Description = "Default Bet Description",
+                Created = DateTime.Now.AddDays(-1),
+                Expiration = DateTime.Now.AddDays(364)
+            },
+            new Bet {
+                Id = 2,
+                Description = "Another Default Bet",
+                Created = DateTime.Now.AddDays(-2),
+                Expiration = DateTime.Now.AddDays(363)
+            }
+        };
+
+        /*private async Task DisplayAllBets(int userId)
+        {
+            Console.WriteLine("BetOverview: DisplayAllBets");
+            try
+            {
+                _bets = Service2.GetBetsByUserId(userId);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"BetOverview: Error fetching bets - {ex.Message}");
+            }
+        }*/
     }
 
-    private async Task DisplayAllBets(int userId)
-    {
-        Console.WriteLine("BetOverview: DisplayAllBets");
-        try
-        {
-            _bets = Service2.GetBetsByUserId(userId); 
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"BetOverview: Error fetching bets - {ex.Message}");
-        }
-    }
-    
-    
-
-}    
-
+}
