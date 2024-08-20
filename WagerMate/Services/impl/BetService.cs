@@ -1,8 +1,8 @@
 namespace WagerMate.Services.impl;
+
 using WagerMate.Data;
 
-
-public class BetService: IBetService
+public class BetService : IBetService
 {
     private IDbService _service;
 
@@ -10,41 +10,45 @@ public class BetService: IBetService
     {
         _service = service;
     }
+
     public Bet CreateBet(Bet bet)
     {
-        _service.Create<Bet>("INSERT INTO public.wagers(wageritem_id, description, created, expiration, cases, access, state) VALUES(@WageritemId, @Description, @Created, @Expiration, @Cases, @BetAccess, @BetState)", bet);
+        _service.Create<Bet>(
+            "INSERT INTO public.bet(title, description, invitation_code, access, state, created, expiration) VALUES(@Title, @Description, @InvitationCode, @BetAccess, @BetState, @Created, @Expiration)",
+            bet);
         return bet;
     }
 
     public List<Bet> GetAllBets()
     {
-        var result = _service.GetAll<Bet>("SELECT * FROM public.wagers");
+        var result = _service.GetAll<Bet>("SELECT * FROM public.bet");
         return result;
     }
 
     public bool UpdateBet(Bet bet)
     {
-        var result = _service.Update<Bet>("UPDATE public.wagers SET Id=@Id, wageritem_id = @WageritemId, description = @Description, created=@Created, expiration=@Expiration, cases = @Cases, access=@BetAccess, state=@BetState WHERE wagers.Id = @Id", bet);
+        var result = _service.Update<Bet>(
+            "UPDATE public.bet SET id=@Id, title = @Title, description = @Description, invitation_code = @InvitationCode, access=@BetAccess, state=@BetState, created=@Created, expiration=@Expiration WHERE bet.id = @Id",
+            bet);
         return result;
     }
 
     public Bet GetBetById(int key)
     {
-        var result = _service.GetById<Bet>("SELECT * FROM public.wagers WHERE wagers.Id = @Id",new{id = key});
+        var result = _service.GetById<Bet>("SELECT * FROM public.bet WHERE bet.Id = @Id", new { id = key });
         return result;
     }
 
     public bool DeleteBet(int key)
     {
-        var result = _service.Delete<Bet>("DELETE FROM wagers.wagers WHERE wagers.Id = @Id", new{id = key});
+        var result = _service.Delete<Bet>("DELETE FROM bet.bet WHERE bet.Id = @Id", new { id = key });
         return result;
-    
     }
-    
+
     public List<Bet> GetBetsByUserId(int userId)
     {
         var result = _service.GetAllWithParams<Bet>(
-            "SELECT w.* FROM public.wagers w INNER JOIN public.userwagers uw ON uw.wager_id = w.id WHERE uw.user_id = @UserId",
+            "SELECT * FROM public.bet INNER JOIN userbet ON bet.id = userbet.bet_id INNER JOIN user ON user.id = userbet.user_id WHERE user.id = @UserId",
             new { UserId = userId }
         );
         return result;

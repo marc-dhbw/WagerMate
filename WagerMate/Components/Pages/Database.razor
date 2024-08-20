@@ -138,7 +138,6 @@
             var result = Service2.GetBetById(47);
             Console.WriteLine(result.Id);
             Console.WriteLine(result.Description);
-            Console.WriteLine(result.Cases);
         }
         catch (Exception e)
         {
@@ -150,9 +149,9 @@
     public void UpdateBet()
     {
         Bet updatedB = new Bet();
-        updatedB.WageritemId = 3;
+        updatedB.Title = "Updated Titel";
         updatedB.Description = "updated description";
-        updatedB.Cases = new string[] { "updated case1", "updated case2" };
+        updatedB.InvitationCode = "ALJFKDKJFSDL";
         updatedB.BetAccess = Access.Restricted;
         updatedB.BetState = State.Closed;
         updatedB.Id = 47;
@@ -168,7 +167,6 @@
         foreach (var bet in result)
         {
             Console.WriteLine(bet.Description);
-            Console.WriteLine(bet.Cases);
         }
     }
 
@@ -190,11 +188,11 @@
         // create dummy bet
         Bet bet2 = new Bet();
         
-        bet2.WageritemId = 2;
+        bet2.Title = "Titel2";
         bet2.Description = "This is a newwwwwww test description for a bet";
+        bet2.InvitationCode = "LSDJFHSGAJDIEWU";
         bet2.Created = DateTime.Now;
         bet2.Expiration = DateTime.Now.AddYears(50);
-        bet2.Cases = new string[] { "Testcase 1", "Testcase 2" };
         bet2.BetAccess = Access.Public;
         bet2.BetState = State.Pending;
 
@@ -212,11 +210,11 @@
     public Bet InitBet()
     {
         Bet bet = new Bet();
-        bet.WageritemId = 1;
+        bet.Title = "Titel";
         bet.Description = "This is a test description for a bet";
+        bet.InvitationCode = "SDFHUKSNVBSHEIFWE";
         bet.Created = DateTime.Now;
         bet.Expiration = DateTime.Now.AddYears(50);
-        bet.Cases = new string[] { "Testcase 1", "Testcase 2" };
         bet.BetAccess = Access.Private;
         bet.BetState = State.Active;
         return bet;
@@ -329,7 +327,6 @@
         testuser.Name = "testuser";
         testuser.Password = "testpw";
         Bet testbet = new Bet();
-        testbet.Cases = new[] { "1", "2" };
         testbet.BetAccess = Access.Public;
         testbet.Description = "0";
         testbet.BetState = State.Active;
