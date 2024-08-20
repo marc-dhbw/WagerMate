@@ -6,6 +6,11 @@ namespace WagerMate.Services.impl;
 public class CaseService : ICaseService
 {
     private IDbService _service;
+
+    public CaseService(IDbService service)
+    {
+        _service = service;
+    }
     
     public Case CreateCase(Case createdCase)
     {
