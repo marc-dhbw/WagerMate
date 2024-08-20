@@ -165,6 +165,8 @@ else
         EditingUsername = false;
     }
 
+    HashService hash = new HashService();
+
     public void EditEMail()
     {
         User tempUser = new User(loggedInUser.Id, loggedInUser.Name, _editedUserData.EMail, loggedInUser.Password);
@@ -175,6 +177,7 @@ else
 
     public void EditPassword()
     {
+        hash.CreateHash(_editedUserData.Password!, loggedInUser.Name!);
         User tempUser = new User(loggedInUser.Id, loggedInUser.Name, loggedInUser.Email, _editedUserData.Password);
         var updateSuccesful = userService.UpdateUser(tempUser);
         if (updateSuccesful)
