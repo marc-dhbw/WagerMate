@@ -59,6 +59,12 @@ public class UserService : IUserService
         return result;
     }
 
+    public bool DoesUserPasswordExist(string password)
+    {
+        var result = _service.GetById<int>("SELECT COUNT(1) FROM public.users WHERE users.password = @Id", new { Id = password });
+        return (result == 1);
+    }
+
     public bool EmailIsRegistered(string email)
     {
         var result = _service.GetById<int>("SELECT COUNT(1) FROM public.users where users.email = @Id", new { Id = email });
