@@ -1,15 +1,13 @@
-﻿﻿using System.Data;
-using Dapper;
+﻿using Dapper;
 using Npgsql;
 
 namespace WagerMate.Services.impl;
 
 public class DbService : IDbService
 {
-    private IConfiguration _config;
-
     private const string Conname = "Wagerdb";
-    private string? ConnectionString;
+    private readonly IConfiguration _config;
+    private readonly string? ConnectionString;
 
     public DbService(IConfiguration configuration)
     {
@@ -24,11 +22,9 @@ public class DbService : IDbService
         try
         {
             var result = connection.Query<T>(sql, p).FirstOrDefault();
-            if(result != null)
+            if (result != null)
                 return true;
-            else
-                return false;
-
+            return false;
         }
         catch (Exception e)
         {
@@ -45,7 +41,7 @@ public class DbService : IDbService
         connection.Open();
         try
         {
-            T result = connection.QuerySingleOrDefault<T>(sql, id);
+            var result = connection.QuerySingleOrDefault<T>(sql, id);
             if (result == null)
                 throw new Exception();
             return result;
