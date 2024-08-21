@@ -34,7 +34,7 @@ public class CookieService : ICookieService
     public async Task RedirectToLogin(string key, NavigationManager navigation)
     {
         var value = await GetCookieByName(key);
-        if (string.IsNullOrEmpty(value))
+        if (!_userService.DoesUserPasswordExist(value))
         {
             navigation.NavigateTo("/login");
         }
