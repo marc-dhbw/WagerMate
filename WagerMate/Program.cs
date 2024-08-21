@@ -44,10 +44,6 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-// Enable authentication and authorization //Not in use yet
-app.UseAuthentication();
-app.UseAuthorization();
-
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
