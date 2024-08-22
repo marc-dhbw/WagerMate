@@ -14,13 +14,13 @@ public class CaseService : ICaseService
     
     public Case CreateCase(Case createdCase)
     {
-        _service.Create<Case>("INSERT INTO public.case(bet_id, casetype) VALUES(@BetId, @Casetype)", createdCase);
+        _service.Create<Case>("INSERT INTO public.case(bet_id, casetype) VALUES(@Bet_Id, @Casetype)", createdCase);
         return createdCase;
     }
 
     public Case GetCaseById(int caseId)
     {
-        var result = _service.GetById<Case>("SELECT * FROM public.case WHERE case.Id = @Id", new { id = caseId });
+        var result = _service.GetById<Case>("SELECT * FROM public.case WHERE Id = @Id", new { id = caseId });
         return result;
     }
 
@@ -34,14 +34,19 @@ public class CaseService : ICaseService
     {
         var result =
             _service.Update<Case>(
-                "UPDATE public.case SET Id=@Id, bet_id=@betId, casetype = @Casetype WHERE case.Id = @Id", newCase);
+                "UPDATE public.case SET Id=@Id, bet_id=@bet_Id, casetype = @Casetype WHERE Id = @Id", newCase);
         return result;
     }
 
     public bool DeleteCase(int caseId)
     {
-        var result  = _service.Delete<Case>("DELETE FROM public.case WHERE case.Id = @Id", new { Id = caseId });
+        var result  = _service.Delete<Case>("DELETE FROM public.case WHERE Id = @caseId", new { caseId = caseId });
         return result;
     }
 
+    public bool DeleteCasesOfBetId(int betId)
+    {
+        var result = _service.Delete<Case>("DELETE FROM public.case where bet_id = @id", new { Id = betId });
+        return result;
+    }
 }
