@@ -106,6 +106,7 @@ else
         {
             loggedInUser = UserService.GetUserByPassword(value);
             firstLogin = false;
+            StateHasChanged();
         }
     }
 
