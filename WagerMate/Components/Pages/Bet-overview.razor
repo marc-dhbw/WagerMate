@@ -1,4 +1,4 @@
-@page "/bet-overview"
+@page "/"
 @rendermode  InteractiveServer
 @using System.ComponentModel.DataAnnotations
 @using WagerMate.Services
@@ -52,6 +52,7 @@
                 <input type="text" @bind="NewBetDetails.NewBetDescription" /><br /><br />
                 <label>Bet Amount:</label><br />
                 <input type="number" @bind="NewBetDetails.NewBetMoney" /><br /><br />
+                <input type="date" @bind="NewBetDetails.NewBetExpiration" /><br /><br />
                 <button class="btn btn-success" @onclick="CreatNewBet">Create Bet</button>
                 <button class="btn btn-secondary" @onclick="HidePopup">Cancel</button>
             </div>
@@ -61,13 +62,14 @@
 @code{
 
     private bool _isPopupVisible = false;
-
+    
     private NewBetDetails _newBetDetails = new NewBetDetails();
 
     public class NewBetDetails {
         public static string NewBetTitle { get; set; } = null!;
         public static string NewBetDescription { get; set; } = null!;
         public static uint NewBetMoney { get; set; }
+        public static DateTime NewBetExpiration { get; set; } = DateTime.Now;
     }
 
     private void ShowPopup() {
@@ -86,6 +88,7 @@
         Console.WriteLine(NewBetDetails.NewBetTitle);
         Console.WriteLine(NewBetDetails.NewBetDescription);
         Console.WriteLine(NewBetDetails.NewBetMoney);
+        Console.WriteLine(NewBetDetails.NewBetExpiration);
         HidePopup();
         /*Bet bet2 = new Bet();
 
