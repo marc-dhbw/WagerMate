@@ -47,13 +47,13 @@
                 <br/>
                 <br/>
                 <label>Title:</label><br />
-                <input type="text" @bind="NewBetDetails.NewBetTitle" /><br /><br />
+                <input type="text" @bind="_newBetDetails.NewBetTitle" /><br /><br />
                 <label>Description:</label><br />
-                <input type="text" @bind="NewBetDetails.NewBetDescription" /><br /><br />
+                <input type="text" @bind="_newBetDetails.NewBetDescription" /><br /><br />
                 <label>Bet Amount:</label><br />
-                <input type="number" @bind="NewBetDetails.NewBetMoney" /><br /><br />
+                <input type="number" @bind="_newBetDetails.NewBetMoney" /><br /><br />
                 <label>Set Expiration Date:</label><br />
-                <input type="date" @bind="NewBetDetails.NewBetExpiration" /><br /><br />
+                <input type="date" @bind="_newBetDetails.NewBetExpiration" /><br /><br />
                 <button class="btn btn-success" @onclick="CreateNewBet">Create Bet</button>
                 <button class="btn btn-secondary" @onclick="HidePopup">Cancel</button>
 
@@ -77,14 +77,15 @@
     private NewBetDetails _newBetDetails = new NewBetDetails();
 
     public class NewBetDetails {
-        public static string NewBetTitle { get; set; } = null!;
-        public static string NewBetDescription { get; set; } = null!;
-        public static uint NewBetMoney { get; set; }
-        public static DateTime NewBetExpiration { get; set; } = DateTime.Now;
+        public string NewBetTitle { get; set; } = null!;
+        public string NewBetDescription { get; set; } = null!;
+        public uint NewBetMoney { get; set; }
+        public DateTime NewBetExpiration { get; set; } = DateTime.Now;
     }
 
     private void ShowPopup() {
         _isPopupVisible = true;
+        _newBetDetails = new NewBetDetails();
         StateHasChanged();
     }
 
@@ -96,56 +97,48 @@
     public string ErrorMessage { get; set; }
 
     private void CreateNewBet() {
-        Console.WriteLine("New Bet Button clicked");
         
         ErrorMessage = string.Empty;
         
-        if (string.IsNullOrWhiteSpace(NewBetDetails.NewBetTitle) ||
-            string.IsNullOrWhiteSpace(NewBetDetails.NewBetDescription) ||
-            NewBetDetails.NewBetMoney <= 0 ||
-            NewBetDetails.NewBetExpiration == default(DateTime))
+        if (string.IsNullOrWhiteSpace(_newBetDetails.NewBetTitle) ||
+            string.IsNullOrWhiteSpace(_newBetDetails.NewBetDescription) ||
+            _newBetDetails.NewBetMoney <= 0 ||
+            _newBetDetails.NewBetExpiration == default(DateTime))
         {
             ErrorMessage = "Please fill out all fields correctly before creating a new bet.";
             return;
         }
 
         Bet newbet = new Bet();
-        newbet.Title = NewBetDetails.NewBetTitle;
-        newbet.Description = NewBetDetails.NewBetDescription;
+        newbet.Title = _newBetDetails.NewBetTitle;
+        newbet.Description = _newBetDetails.NewBetDescription;
         newbet.InvitationCode = "13df870a-b1c7-4a1b-8183-29904a1e36ae"; //TODO: Add real UUID 
         newbet.Created = DateTime.Now;
-        newbet.Expiration = NewBetDetails.NewBetExpiration;
+        newbet.Expiration = _newBetDetails.NewBetExpiration;
         newbet.BetAccess = Access.Private;
         newbet.BetState = State.Pending;
 
-        try 
-        {
+        try {
+            int userId = 1; //TODO: Set this to the current user ID
             Service2.CreateBet(newbet);
-            Console.WriteLine("BetOverview: bet locally created");
+            _bets = Service2.GetBetsByUserId(userId);
         }
         catch (Exception e) {
             Console.WriteLine("BetOverview: service failed");
-            throw;
         }
         
         HidePopup();
     }
  
     private List<Bet> _bets = new List<Bet>();
-    private int _userId = 1; // Set this to the desired user ID
+    private int _userId = 1; // TODO: Set this to the current user ID
 
     protected override async Task OnInitializedAsync() {
-
-        //_bets = new List<Bet>(Service2.GetAllBets()); //All bets are displayed
-        //_bets = new List<Bet> { Service2.GetBetById(2) }; //only one specific bet is displayed
-        Console.WriteLine("BO: GetbyID");
-        
 
         await DisplayAllBets(_userId);
 
         async Task DisplayAllBets(int userId)
         {
-            Console.WriteLine("BetOverview: DisplayAllBets");
             try
             {
                 _bets = Service2.GetBetsByUserId(userId);
