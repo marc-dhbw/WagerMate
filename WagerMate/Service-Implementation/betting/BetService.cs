@@ -48,7 +48,7 @@ public class BetService : IBetService
     public List<Bet> GetBetsByUserId(int userId)
     {
         var result = _service.GetAllWithParams<Bet>(
-            "SELECT * FROM public.bet INNER JOIN userbet ON bet.id = userbet.bet_id INNER JOIN user ON user.id = userbet.user_id WHERE user.id = @UserId",
+            "SELECT bet.* FROM public.bet INNER JOIN public.userbet ON bet.id = userbet.bet_id WHERE userbet.user_id = @UserId",
             new { UserId = userId }
         );
         return result;

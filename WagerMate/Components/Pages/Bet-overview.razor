@@ -136,50 +136,14 @@
 
     protected override async Task OnInitializedAsync() {
 
-        _bets = new List<Bet>(Service2.GetAllBets());
+        //_bets = new List<Bet>(Service2.GetAllBets()); //All bets are displayed
+        //_bets = new List<Bet> { Service2.GetBetById(2) }; //only one specific bet is displayed
+        Console.WriteLine("BO: GetbyID");
+        
 
-        //await DisplayAllBets(_userId);
+        await DisplayAllBets(_userId);
 
-        /*_bets = new List<Bet> {
-            new Bet {
-                Id = 1,
-                Description = "Default Bet Description",
-                Created = DateTime.Now.AddDays(-1),
-                Expiration = DateTime.Now.AddDays(365-1)
-            },
-            new Bet {
-                Id = 2,
-                Description = "Another Default Bet",
-                Created = DateTime.Now.AddDays(-2),
-                Expiration = DateTime.Now.AddDays(365-2)
-            },
-            new Bet {
-                Id = 3,
-                Description = "Another Default Bet",
-                Created = DateTime.Now.AddDays(-3),
-                Expiration = DateTime.Now.AddDays(365-3)
-            },
-            new Bet {
-                Id = 4,
-                Description = "Another Default Bet",
-                Created = DateTime.Now.AddDays(-4),
-                Expiration = DateTime.Now.AddDays(365-4)
-            },
-            new Bet {
-                Id = 5,
-                Description = "Another Default Bet",
-                Created = DateTime.Now.AddDays(-5),
-                Expiration = DateTime.Now.AddDays(365-5)
-            },
-            new Bet {
-                Id = 6,
-                Description = "Another Default Bet",
-                Created = DateTime.Now.AddDays(-6),
-                Expiration = DateTime.Now.AddDays(365-6)
-            }
-        };*/
-
-        /*private async Task DisplayAllBets(int userId)
+        async Task DisplayAllBets(int userId)
         {
             Console.WriteLine("BetOverview: DisplayAllBets");
             try
@@ -190,7 +154,7 @@
             {
                 Console.WriteLine($"BetOverview: Error fetching bets - {ex.Message}");
             }
-        }*/
+        }
     }
 
 }
