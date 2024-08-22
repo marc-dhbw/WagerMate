@@ -59,9 +59,11 @@
 
                 @if (!string.IsNullOrEmpty(ErrorMessage))
                 {
-                <div class="alert alert-danger">
-                    @ErrorMessage
-                </div>
+                    <br/>
+                    <br/>
+                    <div class="alert alert-danger">
+                        @ErrorMessage
+                    </div>
                 }
                 
             </div>
@@ -95,10 +97,6 @@
 
     private void CreateNewBet() {
         Console.WriteLine("New Bet Button clicked");
-        Console.WriteLine(NewBetDetails.NewBetTitle);
-        Console.WriteLine(NewBetDetails.NewBetDescription);
-        Console.WriteLine(NewBetDetails.NewBetMoney);
-        Console.WriteLine(NewBetDetails.NewBetExpiration);
         
         ErrorMessage = string.Empty;
         
@@ -131,34 +129,18 @@
         }
         
         HidePopup();
-        /*Bet bet2 = new Bet();
-
-        bet2.WageritemId = 1;
-        bet2.Description = "BetOverview: new test description for a bet";
-        bet2.Created = DateTime.Now;
-        bet2.Expiration = DateTime.Now.AddYears(50);
-        bet2.Cases = new string[] { "Testcase 1", "Testcase 2" };
-        bet2.BetAccess = Access.Public;
-        bet2.BetState = State.Pending;
-
-        Console.WriteLine("BetOverview: bet locally created");
-        try
-        {
-            Service2.CreateBet(bet2);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("BetOverview: service failed");
-        }*/
     }
  
     private List<Bet> _bets = new List<Bet>();
     private int _userId = 1; // Set this to the desired user ID
 
     protected override async Task OnInitializedAsync() {
+
+        _bets = new List<Bet>(Service2.GetAllBets());
+
         //await DisplayAllBets(_userId);
 
-        _bets = new List<Bet> {
+        /*_bets = new List<Bet> {
             new Bet {
                 Id = 1,
                 Description = "Default Bet Description",
@@ -195,7 +177,7 @@
                 Created = DateTime.Now.AddDays(-6),
                 Expiration = DateTime.Now.AddDays(365-6)
             }
-        };
+        };*/
 
         /*private async Task DisplayAllBets(int userId)
         {
