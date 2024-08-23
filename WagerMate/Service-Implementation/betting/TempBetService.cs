@@ -1,6 +1,8 @@
 using WagerMate.Data;
+using WagerMate.Services;
+using WagerMate.Services.betting;
 
-namespace WagerMate.Services.impl;
+namespace WagerMate.Service_Implementation.betting;
 
 public class TempBetService : IBetService {
     public Bet CreateBet(Bet bet) {

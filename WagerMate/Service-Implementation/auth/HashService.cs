@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using WagerMate.Data;
+using WagerMate.Services.auth;
 
 
 namespace WagerMate.Services.impl;

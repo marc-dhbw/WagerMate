@@ -1,4 +1,4 @@
-﻿namespace WagerMate.Services;
+﻿namespace WagerMate.Services.database;
 
 public interface IDbService
 {

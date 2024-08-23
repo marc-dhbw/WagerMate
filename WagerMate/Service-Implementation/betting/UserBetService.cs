@@ -1,6 +1,9 @@
 using WagerMate.Data;
+using WagerMate.Services;
+using WagerMate.Services.betting;
+using WagerMate.Services.database;
 
-namespace WagerMate.Services.impl;
+namespace WagerMate.Service_Implementation.betting;
 
 public class UserBetService : IUserBetService
 {

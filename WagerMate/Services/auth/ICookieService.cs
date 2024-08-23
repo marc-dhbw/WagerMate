@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace WagerMate.Services;
+namespace WagerMate.Services.auth;
 
 public interface ICookieService
 {

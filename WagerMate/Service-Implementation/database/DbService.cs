@@ -1,8 +1,9 @@
-﻿using System.Data;
-using Dapper;
+﻿using Dapper;
 using Npgsql;
+using WagerMate.Services;
+using WagerMate.Services.database;
 
-namespace WagerMate.Services.impl;
+namespace WagerMate.Service_Implementation.database;
 
 public class DbService : IDbService
 {

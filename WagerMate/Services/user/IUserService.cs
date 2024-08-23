@@ -1,6 +1,6 @@
 ﻿using WagerMate.Data;
 
-namespace WagerMate.Services;
+namespace WagerMate.Services.user;
 
 public interface IUserService
 {

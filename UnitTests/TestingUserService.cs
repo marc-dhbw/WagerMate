@@ -1,5 +1,8 @@
 using Microsoft.Extensions.Configuration;
 using Npgsql;
+using WagerMate.Service_Implementation.database;
+using WagerMate.Service_Implementation.user;
+using WagerMate.Services.database;
 
 namespace UnitTests;
 
