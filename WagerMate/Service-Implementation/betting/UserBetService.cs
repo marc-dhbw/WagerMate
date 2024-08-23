@@ -1,5 +1,4 @@
 using WagerMate.Data;
-using WagerMate.Services;
 using WagerMate.Services.betting;
 using WagerMate.Services.database;
 
@@ -38,7 +37,7 @@ public class UserBetService : IUserBetService
 
     public UserBet GetUserBetById(int id)
     {
-        var result = _service.GetById<UserBet>("SELECT * FROM public.userbet WHERE Id = @Id",new{id = id});
+        var result = _service.GetById<UserBet>("SELECT * FROM public.userbet WHERE Id = @Id",new{ id });
         Console.WriteLine("result");
         Console.WriteLine("id: " + result.Id);
         Console.WriteLine("userId: " + result.User_Id);

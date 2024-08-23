@@ -1,6 +1,5 @@
 ﻿using Dapper;
 using Npgsql;
-using WagerMate.Services;
 using WagerMate.Services.database;
 
 namespace WagerMate.Service_Implementation.database;
@@ -9,12 +8,12 @@ public class DbService : IDbService
 {
     private const string Conname = "Wagerdb";
     private readonly IConfiguration _config;
-    private readonly string? ConnectionString;
+    private readonly string? _connectionString;
 
     public DbService(IConfiguration configuration)
     {
         _config = configuration;
-        ConnectionString = _config.GetConnectionString(Conname);
+        _connectionString = _config.GetConnectionString(Conname);
     }
 
     public bool Create<T>(string sql, object p)
@@ -39,7 +38,7 @@ public class DbService : IDbService
 
     public T GetById<T>(string sql, object id)
     {
-        using var connection = new NpgsqlConnection(ConnectionString);
+        using var connection = new NpgsqlConnection(_connectionString);
         connection.Open();
         try
         {
@@ -58,7 +57,7 @@ public class DbService : IDbService
 
     public List<T> GetAll<T>(string sql)
     {
-        using var connection = new NpgsqlConnection(ConnectionString);
+        using var connection = new NpgsqlConnection(_connectionString);
         connection.Open();
         try
         {
@@ -76,7 +75,7 @@ public class DbService : IDbService
 
     public bool Delete<T>(string sql, object id)
     {
-        using var connection = new NpgsqlConnection(ConnectionString);
+        using var connection = new NpgsqlConnection(_connectionString);
         connection.Open();
         try
         {
@@ -94,7 +93,7 @@ public class DbService : IDbService
 
     public bool Update<T>(string sql, object obj)
     {
-        using var connection = new NpgsqlConnection(ConnectionString);
+        using var connection = new NpgsqlConnection(_connectionString);
 
         connection.Open();
 
@@ -112,7 +111,7 @@ public class DbService : IDbService
     }
     public List<T> GetAllWithParams<T>(string sql, object parameters)
     {
-        using var connection = new NpgsqlConnection(ConnectionString);
+        using var connection = new NpgsqlConnection(_connectionString);
         connection.Open();
         try
         {
@@ -130,7 +129,7 @@ public class DbService : IDbService
 
     public (bool, T?) GetIfExists<T>(string existsSql, object existsParameters, string getSql, object getParameters) where T : class
     {
-        using var connection = new NpgsqlConnection(ConnectionString);
+        using var connection = new NpgsqlConnection(_connectionString);
         connection.Open();
         try
         {

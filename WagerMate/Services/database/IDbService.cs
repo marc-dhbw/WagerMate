@@ -1,6 +1,4 @@
-﻿using WagerMate.Data;
-
-namespace WagerMate.Services.database;
+﻿namespace WagerMate.Services.database;
 
 public interface IDbService
 {

@@ -1,10 +1,8 @@
 using System.Security.Cryptography;
 using System.Text;
-using WagerMate.Data;
 using WagerMate.Services.auth;
 
-
-namespace WagerMate.Services.impl;
+namespace WagerMate.Service_Implementation.auth;
 
 public class HashService : IHashService
 {

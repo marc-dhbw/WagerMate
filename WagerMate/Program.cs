@@ -10,7 +10,6 @@ using WagerMate.Service_Implementation.user;
 using WagerMate.Services.auth;
 using WagerMate.Services.betting;
 using WagerMate.Services.database;
-using WagerMate.Services.impl;
 using WagerMate.Services.user;
 
 var builder = WebApplication.CreateBuilder(args);

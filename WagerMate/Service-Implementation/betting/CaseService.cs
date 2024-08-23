@@ -1,5 +1,4 @@
 using WagerMate.Data;
-using WagerMate.Services;
 using WagerMate.Services.betting;
 using WagerMate.Services.database;
 
@@ -42,7 +41,7 @@ public class CaseService : ICaseService
 
     public bool DeleteCase(int caseId)
     {
-        var result  = _service.Delete<Case>("DELETE FROM public.case WHERE Id = @caseId", new { caseId = caseId });
+        var result  = _service.Delete<Case>("DELETE FROM public.case WHERE Id = @caseId", new { caseId });
         return result;
     }
 

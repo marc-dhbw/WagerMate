@@ -1,7 +1,4 @@
 ﻿@page "/db"
-@using System.ComponentModel.DataAnnotations
-@using WagerMate.Data
-@using WagerMate.Services
 @using WagerMate.Services.betting
 @using WagerMate.Services.user
 @rendermode InteractiveServer
@@ -13,14 +10,14 @@
 <br>
 <p>These buttons display data for users</p>
 
-@inject IUserService Service;
+@inject IUserService UserService;
 <button class="btn btn-primary" @onclick="DeleteUser">DeleteUser</button>
 <button class="btn btn-primary" @onclick="CreateUser">CreateUser</button>
 <button class="btn btn-primary" @onclick="CreateUser2">CreateUser2</button>
 <button class="btn btn-primary" @onclick="GetAllUsers">getAllUsers(Console)</button>
 <button class="btn btn-primary" @onclick="UpdateUser">UpdateUser</button>
 <button class="btn btn-primary" @onclick="GetUserByIdConsole">GetUserByIdConsole</button>
-@inject IBetService Service2;
+@inject IBetService BetService;
 <br>
 <br>
 <p>These buttons display data for bets</p>
@@ -47,7 +44,7 @@
 <p>WinnerService Buttons</p>
 @inject  IWinnerService ServiceWinner;
 <button class="btn btn-primary" @onclick="CreateWinnerTest">CreateWinnerTest</button>
-<button class="btn btn-primary" @onclick="DeleteWinnerID">DeleteWinnerID2</button>
+<button class="btn btn-primary" @onclick="DeleteWinnerId">DeleteWinnerID2</button>
 <button class="btn btn-primary" @onclick="UpdateWinner">UpdateWinner</button>
 <button class="btn btn-primary" @onclick="ConsoleGetWinnerById">ConsoleGetWinnerById</button>
 <button class="btn btn-primary" @onclick="ConsoleGetWinnerByBetId">ConsoleGetWinnerByBet_Id</button>
@@ -69,13 +66,13 @@
     {
         try
         {
-            var result = Service.GetUserById(1);
-            Console.WriteLine(result.Name);
-            Console.WriteLine(result.Id);
+            var user = UserService.GetUserById(1);
+            Console.WriteLine(user.Name);
+            Console.WriteLine(user.Id);
         }
         catch (Exception e)
         {
-            Console.WriteLine("Getuserbyid failed");
+            Console.WriteLine("GetUserById failed");
             Console.WriteLine(e);
         }
     }
@@ -88,14 +85,14 @@
         updatedU.Password = "1updatedPW";
         updatedU.Id = 1;
 
-        var result = Service.UpdateUser(updatedU);
+        var result = UserService.UpdateUser(updatedU);
         Console.WriteLine($"Updating User succesful: {result}");
     }
 
     private void GetAllUsers()
     {
         Console.WriteLine("Get ALl Users executing: ");
-        var result = Service.GetAllUsers();
+        var result = UserService.GetAllUsers();
         foreach (var user in result)
         {
             Console.WriteLine(user.Name);
@@ -105,13 +102,13 @@
     private void DeleteUser()
     {
         Console.WriteLine("DeleteUser");
-        Service.DeleteUser(1);
+        UserService.DeleteUser(1);
     }
 
     private void CreateUser()
     {
         Console.WriteLine("CreateUser");
-        Service.CreateUser(InitUser());
+        UserService.CreateUser(InitUser());
     }
 
     private void CreateUser2()
@@ -127,9 +124,9 @@
         Console.WriteLine("user locally created");
         try
         {
-            Service.CreateUser(user2);
+            UserService.CreateUser(user2);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             Console.WriteLine("service failed");
         }
@@ -149,7 +146,7 @@
     {
         try
         {
-            var result = Service2.GetBetById(47);
+            var result = BetService.GetBetById(47);
             Console.WriteLine(result.Id);
             Console.WriteLine(result.Description);
         }
@@ -170,14 +167,14 @@
         updatedB.BetState = State.Closed;
         updatedB.Id = 47;
 
-        var result = Service2.UpdateBet(updatedB);
+        var result = BetService.UpdateBet(updatedB);
         Console.WriteLine($"Updating Bet succesful: {result}");
     }
 
     private void GetAllBets()
     {
         Console.WriteLine("Get ALl Bets executing: ");
-        var result = Service2.GetAllBets();
+        var result = BetService.GetAllBets();
         foreach (var bet in result)
         {
             Console.WriteLine(bet.Description);
@@ -187,13 +184,13 @@
     private void DeleteBet()
     {
         Console.WriteLine("DeleteBet");
-        Service.DeleteUser(51);
+        UserService.DeleteUser(51);
     }
 
     private void CreateBet()
     {
         Console.WriteLine("CreateBet");
-        Bet createdBet = Service2.CreateBet(InitBet());
+        Bet createdBet = BetService.CreateBet(InitBet());
         Console.WriteLine("betId: " + createdBet.Id);
     }
 
@@ -214,9 +211,9 @@
         Console.WriteLine("bet locally created");
         try
         {
-            Service2.CreateBet(bet2);
+            BetService.CreateBet(bet2);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             Console.WriteLine("service failed");
         }
@@ -311,7 +308,7 @@
         ServiceWinner.CreateWinner(newWinner);
     }
 
-    private void DeleteWinnerID()
+    private void DeleteWinnerId()
     {
         ServiceWinner.DeleteWinner(1);
     }

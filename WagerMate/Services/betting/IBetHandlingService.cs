@@ -15,15 +15,16 @@ public interface IBetHandlingService
     public string GetStakeOfUserInBet<T>(User user, T bet);
     
     /// <summary>
-    /// Filters if bets of an user with or without money should be returned
+    /// Filters if bets of a user with or without money should be returned
     /// </summary>
     /// <param name="user">User Object</param>
     /// <param name="bets">Array Of Bets</param>
+    /// <param name="moneyStake">Bool if money is bet</param>
     /// <returns>Array of Bets</returns>
     public T[] FilterBetsOfUserByMoneyStake<T>(User user, T bets, bool moneyStake);
     
     /// <summary>
-    /// Fitler bets weather they are set before, after or at the given date
+    /// Filter bets weather they are set before, after or at the given date
     /// </summary>
     /// <param name="bets">Array of Bets</param>
     /// <param name="date">Date in form of string formatted like the date of the DB</param>
