@@ -1,6 +1,9 @@
 ﻿using WagerMate.Data;
+using WagerMate.Services;
+using WagerMate.Services.database;
+using WagerMate.Services.user;
 
-namespace WagerMate.Services.impl;
+namespace WagerMate.Service_Implementation.user;
 
 public class UserService : IUserService
 {
@@ -43,27 +46,27 @@ public class UserService : IUserService
 
     public User GetUserByEmail(string email)
     {
-        var result = _service.GetById<User>("SELECT * FROM public.user WHERE user.email = @Id",
+        var result = _service.GetById<User>("SELECT * FROM public.user WHERE email = @Id",
             new { Id = email });
         return result;
     }
 
     public User GetUserByPassword(string password)
     {
-        var result = _service.GetById<User>("SELECT * FROM public.user WHERE user.password = @Id",
+        var result = _service.GetById<User>("SELECT * FROM public.user WHERE password = @Id",
             new { Id = password });
         return result;
     }
 
     public bool DoesUserPasswordExist(string password)
     {
-        var result = _service.GetById<int>("SELECT COUNT(1) FROM public.user WHERE user.password = @Id", new { Id = password });
+        var result = _service.GetById<int>("SELECT COUNT(1) FROM public.user WHERE password = @Id", new { Id = password });
         return (result == 1);
     }
 
     public bool EmailIsRegistered(string email)
     {
-        var result = _service.GetById<int>("SELECT COUNT(1) FROM public.user where user.email = @Id", new { Id = email });
+        var result = _service.GetById<int>("SELECT COUNT(1) FROM public.user where email = @Id", new { Id = email });
         return (result == 1);
     }
 }

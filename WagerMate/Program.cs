@@ -3,7 +3,15 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using WagerMate.Components;
 using WagerMate.Services;
 using WagerMate;
+using WagerMate.Service_Implementation.auth;
+using WagerMate.Service_Implementation.betting;
+using WagerMate.Service_Implementation.database;
+using WagerMate.Service_Implementation.user;
+using WagerMate.Services.auth;
+using WagerMate.Services.betting;
+using WagerMate.Services.database;
 using WagerMate.Services.impl;
+using WagerMate.Services.user;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,5 +1,6 @@
-namespace WagerMate.Services;
 using WagerMate.Data;
+
+namespace WagerMate.Services.betting;
 
 public interface IBetHandlingService
 {

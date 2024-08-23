@@ -1,6 +1,9 @@
-namespace WagerMate.Services.impl;
-
 using WagerMate.Data;
+using WagerMate.Services;
+using WagerMate.Services.betting;
+using WagerMate.Services.database;
+
+namespace WagerMate.Service_Implementation.betting;
 
 public class BetService : IBetService
 {
