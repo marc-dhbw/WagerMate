@@ -16,9 +16,10 @@ public class BetService : IBetService
 
     public Bet CreateBet(Bet bet)
     {
-        _service.Create<Bet>(
-            "INSERT INTO public.bet(title, description, invitation_code, access, state, created, expiration) VALUES(@Title, @Description, @InvitationCode, @BetAccess, @BetState, @Created, @Expiration)",
+        int betId = _service.CreateWithReturn(
+            "INSERT INTO public.bet(title, description, invitation_code, access, state, created, expiration) VALUES(@Title, @Description, @InvitationCode, @BetAccess, @BetState, @Created, @Expiration)  RETURNING id",
             bet);
+        bet.Id = betId;
         return bet;
     }
 

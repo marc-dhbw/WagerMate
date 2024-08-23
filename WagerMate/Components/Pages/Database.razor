@@ -36,7 +36,7 @@
 <br>
 <p>These buttons display data for UserBet</p>
 
-@inject IUserBetService Service4;
+@inject IUserBetService UserBetService;
 <button class="btn btn-primary" @onclick="AddUserBet">CreateUserBet</button>
 <button class="btn btn-primary" @onclick="DeleteUserBet">DeleteUserBet</button>
 <button class="btn btn-primary" @onclick="DeleteUserBet2">DeleteUserBet2</button>
@@ -193,7 +193,8 @@
     private void CreateBet()
     {
         Console.WriteLine("CreateBet");
-        Service2.CreateBet(InitBet());
+        Bet createdBet = Service2.CreateBet(InitBet());
+        Console.WriteLine("betId: " + createdBet.Id);
     }
 
     private void CreateBet2()
@@ -241,7 +242,8 @@
     private void AddUserBet()
     {
         Console.WriteLine("CreateUserBet");
-        Service4.CreateUserBet(InitUserBet());
+        var userBetId = UserBetService.CreateUserBet(InitUserBet());
+        Console.WriteLine("UserBetId: " + userBetId);
     }
 
     private UserBet InitUserBet()
@@ -261,7 +263,7 @@
         Bet testbet = new Bet();
         testbet.Id = 1;
         Console.WriteLine("DeleteUserBet user+bet"); 
-        Service4.DeleteUserBet(testuser, testbet);
+        UserBetService.DeleteUserBet(testuser, testbet);
     }
 
     private void DeleteUserBet2()
@@ -269,14 +271,14 @@
         UserBet userBet = new UserBet();
         userBet.Id = 1;
         Console.WriteLine("DeleteUserBet userbet");
-        Service4.DeleteUserBet(userBet);
+        UserBetService.DeleteUserBet(userBet);
     }
 
     private void GetUserBetById()
     {
         try
         {
-            var result = Service4.GetUserBetById(1);
+            var result = UserBetService.GetUserBetById(1);
             Console.WriteLine(result.Id);
             Console.WriteLine(result.User_Id);
             Console.WriteLine(result.Bet_Id);
@@ -293,7 +295,7 @@
         Console.WriteLine("Get ALl UserIdsFromBet executing: ");
         Bet bet = new Bet();
         bet.Id = 1;
-        var result = Service4.GetAllUserIdsFromBet(bet);
+        var result = UserBetService.GetAllUserIdsFromBet(bet);
         foreach (var userId in result)
         {
             Console.WriteLine(userId);

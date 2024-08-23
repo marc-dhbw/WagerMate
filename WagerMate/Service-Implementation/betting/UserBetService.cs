@@ -14,9 +14,9 @@ public class UserBetService : IUserBetService
         _service = service;
     }
     
-    public bool CreateUserBet(UserBet userBet)
+    public int CreateUserBet(UserBet userBet)
     {
-        var result = _service.Create<UserBet>("INSERT INTO public.userbet(user_id, bet_id, case_id, amount) VALUES(@User_Id, @Bet_Id, @Case_Id, @Amount)", userBet);
+        var result = _service.CreateWithReturn("INSERT INTO public.userbet(user_id, bet_id, case_id, amount) VALUES(@User_Id, @Bet_Id, @Case_Id, @Amount) RETURNING id", userBet);
         return result;
     }
 

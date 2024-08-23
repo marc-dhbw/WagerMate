@@ -5,7 +5,9 @@
 @using WagerMate.Services.betting
 @inject IBetService BetService;
 @inject IUserService UserService;
+@inject ICaseService CaseService;
 @inject ICookieService CookieService;
+@inject IUserBetService UserBetService;
 @inject NavigationManager Navigation
 
 <PageTitle>Bet Overview</PageTitle>
@@ -122,15 +124,37 @@
             BetState = State.Pending
         };
         if (_loggedInUser == null) return;
+        
+        Case tempCase = new Case
+        {
+            Casetype = "Money" //TODO: adjust value depending on ?
+        };
+        UserBet tempUserBet = new UserBet
+        {
+            User_Id = _loggedInUser.Id,
+            Amount = _newBetDetails.NewBetMoney
+        };
+        
         try {
-            BetService.CreateBet(newBet);
+            // creating Bet, then Case, then UserBet
+            Bet createdBet = BetService.CreateBet(newBet);
             _bets = BetService.GetBetsByUserId(_loggedInUser.Id);
+            tempCase.Bet_Id = createdBet.Id;
+            tempUserBet.Bet_Id = createdBet.Id;
+            
+            var caseId = CaseService.CreateCase(tempCase);
+            tempCase.Id = caseId;
+            tempUserBet.Case_Id = caseId;
+            
+            var userBetId = UserBetService.CreateUserBet(tempUserBet);
+            tempUserBet.Id = userBetId;
         }
         catch (Exception) {
             Console.WriteLine("BetOverview: service failed");
         }
         
         HidePopup();
+        StateHasChanged();
     }
  
     private List<Bet> _bets = new List<Bet>();

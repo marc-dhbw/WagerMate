@@ -4,7 +4,7 @@ namespace WagerMate.Services.betting;
 
 public interface IUserBetService
 {
-    public bool CreateUserBet(UserBet userBet);
+    public int CreateUserBet(UserBet userBet);
     public bool DeleteUserBet(User user, Bet bet);
     public bool DeleteUserBet(UserBet userBet);
     public UserBet GetUserBetById(int id);
