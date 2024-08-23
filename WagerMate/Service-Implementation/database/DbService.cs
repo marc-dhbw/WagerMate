@@ -150,4 +150,21 @@ public class DbService : IDbService
             throw;
         }
     }
+
+    public int CreateWithReturn(string sql, object parameters)
+    {
+        using var connection = new NpgsqlConnection(_config.GetConnectionString("Wagerdb"));
+        connection.Open();
+        try
+        {
+            var result = connection.Query<int>(sql, parameters).FirstOrDefault();
+            return result;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("DbService CreateWithReturn failed");
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }

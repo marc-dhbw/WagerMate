@@ -14,10 +14,10 @@ public class CaseService : ICaseService
         _service = service;
     }
     
-    public Case CreateCase(Case createdCase)
+    public int CreateCase(Case createdCase)
     {
-        _service.Create<Case>("INSERT INTO public.case(bet_id, casetype) VALUES(@Bet_Id, @Casetype)", createdCase);
-        return createdCase;
+        int caseId = _service.CreateWithReturn("INSERT INTO public.case(bet_id, casetype) VALUES(@Bet_Id, @Casetype) RETURNING id", createdCase);
+        return caseId;
     }
 
     public Case GetCaseById(int caseId)

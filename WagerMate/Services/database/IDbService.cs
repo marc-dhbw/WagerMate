@@ -11,4 +11,5 @@ public interface IDbService
     public bool Update<T>(string sql, object obj);
    public List<T> GetAllWithParams<T>(string sql, object parameters);
    public (bool, T?) GetIfExists<T>(string existsSql, object existsParameters, string getSql, object getParameters) where T : class;
+   public int CreateWithReturn(string sql, object parameters);
 }

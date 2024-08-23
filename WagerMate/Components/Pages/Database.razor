@@ -342,7 +342,8 @@
         Case newCase = new Case();
         newCase.Bet_Id = 1;
         newCase.Casetype = "Case";
-        ServiceCase.CreateCase(newCase);
+        int caseId = ServiceCase.CreateCase(newCase);
+        Console.WriteLine("CreateCase CaseId: " + caseId);
     }
     private void CaseDelete()
     {
