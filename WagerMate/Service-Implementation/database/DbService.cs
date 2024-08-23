@@ -127,4 +127,27 @@ public class DbService : IDbService
             throw;
         }
     }
+
+    public (bool, T?) GetIfExists<T>(string existsSql, object existsParameters, string getSql, object getParameters) where T : class
+    {
+        using var connection = new NpgsqlConnection(ConnectionString);
+        connection.Open();
+        try
+        {
+            var existsResult = connection.Query<bool>(existsSql, existsParameters).FirstOrDefault();
+            if (!existsResult)
+            {
+                return (false, null);
+            }
+
+            var getResult = connection.Query<T>(getSql, getParameters).FirstOrDefault();
+            return (true, getResult);
+        }
+        catch (Exception e)
+        {
+            Console.Write("DbService: GetIfExists failed");
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }

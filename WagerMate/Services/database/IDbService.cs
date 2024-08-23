@@ -1,4 +1,6 @@
-﻿namespace WagerMate.Services.database;
+﻿using WagerMate.Data;
+
+namespace WagerMate.Services.database;
 
 public interface IDbService
 {
@@ -8,4 +10,5 @@ public interface IDbService
     public bool Delete<T>(string sql, object id);
     public bool Update<T>(string sql, object obj);
    public List<T> GetAllWithParams<T>(string sql, object parameters);
+   public (bool, T?) GetIfExists<T>(string existsSql, object existsParameters, string getSql, object getParameters) where T : class;
 }
