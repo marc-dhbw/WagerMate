@@ -4,7 +4,7 @@ namespace WagerMate.Services.impl;
 
 public class UserService : IUserService
 {
-    private IDbService _service;
+    private readonly IDbService _service;
 
     public UserService(IDbService service)
     {
@@ -39,6 +39,31 @@ public class UserService : IUserService
     {
         var result = _service.Delete<User>("DELETE FROM public.user WHERE id = @Id", new{id = key});
         return result;
-    
+    }
+
+    public User GetUserByEmail(string email)
+    {
+        var result = _service.GetById<User>("SELECT * FROM public.user WHERE user.email = @Id",
+            new { Id = email });
+        return result;
+    }
+
+    public User GetUserByPassword(string password)
+    {
+        var result = _service.GetById<User>("SELECT * FROM public.user WHERE user.password = @Id",
+            new { Id = password });
+        return result;
+    }
+
+    public bool DoesUserPasswordExist(string password)
+    {
+        var result = _service.GetById<int>("SELECT COUNT(1) FROM public.user WHERE user.password = @Id", new { Id = password });
+        return (result == 1);
+    }
+
+    public bool EmailIsRegistered(string email)
+    {
+        var result = _service.GetById<int>("SELECT COUNT(1) FROM public.user where user.email = @Id", new { Id = email });
+        return (result == 1);
     }
 }

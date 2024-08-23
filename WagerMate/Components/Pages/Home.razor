@@ -1,7 +1,18 @@
 ﻿@page "/home"
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager Navigation
+@inject ICookieService CookieService;
+@rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
 
 <h1>Hello, world!</h1>
-
 Welcome to your new app.
+
+@code {
+    //AutoRedirect to the LoginPage
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await CookieService.RedirectToLogin("CookieID" , Navigation);
+    }
+}

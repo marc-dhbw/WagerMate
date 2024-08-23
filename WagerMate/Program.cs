@@ -1,9 +1,8 @@
-using System.Data;
 using dotenv.net;
-using Npgsql;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using WagerMate.Components;
-using WagerMate.Data;
 using WagerMate.Services;
+using WagerMate;
 using WagerMate.Services.impl;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,20 +32,20 @@ builder.Services.AddScoped<IUserBetService, UserBetService>();
 builder.Services.AddScoped<ICaseService, CaseService>();
 builder.Services.AddScoped<IWinnerService, WinnerService>();
 
-
-
+builder.Services.AddScoped<ICookieService, CookieService>();
+builder.Services.AddScoped<IHashService, HashService>();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment()) {
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error", true);
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
-
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 

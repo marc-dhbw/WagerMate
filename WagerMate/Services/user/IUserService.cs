@@ -24,7 +24,7 @@ public interface IUserService
     /// <param name="key">Key of the User</param>
     /// <returns>User</returns>
     public User GetUserById(int key);
-    
+
     /// <summary>
     /// Returns updated user
     /// </summary>
@@ -38,4 +38,8 @@ public interface IUserService
     /// <param name="key">Key of the user</param>
     /// <returns></returns>
     bool DeleteUser(int key);
+    public User GetUserByEmail(string email);
+    public User GetUserByPassword(string password);
+    public bool EmailIsRegistered(string email);
+    public bool DoesUserPasswordExist(string password);
 }
