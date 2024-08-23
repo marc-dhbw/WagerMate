@@ -1,5 +1,4 @@
 ﻿using WagerMate.Data;
-using WagerMate.Services;
 using WagerMate.Services.database;
 using WagerMate.Services.user;
 
@@ -68,5 +67,12 @@ public class UserService : IUserService
     {
         var result = _service.GetById<int>("SELECT COUNT(1) FROM public.user where email = @Id", new { Id = email });
         return (result == 1);
+    }
+
+    public User? GetUserIfPasswordExists(string password)
+    {
+        var result = _service.GetIfExists<User>("SELECT EXISTS ( SELECT 1 FROM public.user where password = @key)",
+            new { key = password },"SELECT * FROM public.user WHERE password = @key", new{key = password});
+        return result.Item1 ? result.Item2 : null;
     }
 }

@@ -42,4 +42,5 @@ public interface IUserService
     public User GetUserByPassword(string password);
     public bool EmailIsRegistered(string email);
     public bool DoesUserPasswordExist(string password);
+    public User? GetUserIfPasswordExists(string password);
 }
