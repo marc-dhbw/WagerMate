@@ -1,5 +1,6 @@
 @page "/login"
 @using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Mvc.Infrastructure
 @using WagerMate.Services.auth
 @using WagerMate.Services.user
 
@@ -234,10 +235,10 @@
     {
         if (!UserService.EmailIsRegistered(_newUserData.EMail!))
         {
-            var result = RegisterUser();
-            if (result.Password != null)
+            var registeredUser = RegisterUser();
+            if (registeredUser!= null && registeredUser.Password != null)
             {
-                await CookieService.SetCookieByNameAndValue("CookieID", result.Password, 7);
+                await CookieService.SetCookieByNameAndValue("CookieID", registeredUser.Password, 7);
                 Navigation.NavigateTo("/");
             }
         }
@@ -248,9 +249,9 @@
         }
     }
 
-    private User RegisterUser()
+    private User? RegisterUser()
     {
-        if ((_newUserData.Username == null) | (_newUserData.EMail == null)) return;
+        if ((_newUserData.Username == null) | (_newUserData.EMail == null)) return null;
         var user2 = new User
         {
             Name = _newUserData.Username,
