@@ -58,10 +58,6 @@
                 </div>
                 <InputText class="input" @bind-Value="_newUserData.EMail"/>
                 <ValidationMessage For="@(() => _newUserData.EMail)"/>
-                @if (!string.IsNullOrEmpty(_errorMessageRegistrationEMail))
-                {
-                    @_errorMessageRegistrationEMail
-                }
             </div>
             <div class="field">
                 <div>
@@ -99,12 +95,11 @@
     {
         [Required(ErrorMessage = "E-mail address is required!")]
         [EmailAddress(ErrorMessage = "Invalid e-mail address!")]
-        //[Compare("PasswordValidation", ErrorMessage = "No account with this e-mail address!")]
+        [AccountWithEmailExists]
         public string? EMail { get; set; }
 
-        public string? EMailValidation { get; set; }
-
         [Required(ErrorMessage = "Password is required!")]
+        [PasswordCorrect("EMail")]
         public string? Password { get; set; }
 
         public string? PasswordValidation { get; set; }
@@ -116,6 +111,7 @@
     {
         [Required(ErrorMessage = "E-mail address is required!")]
         [EmailAddress(ErrorMessage = "Invalid e-mail address!")]
+        [EmailAvailable]
         public string? EMail { get; set; }
 
         [Required(ErrorMessage = "Username is required!")]
@@ -146,6 +142,68 @@
         }
     }
 
+    public class EmailAvailableAttribute : ValidationAttribute
+    {
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+        {
+            var email = value as string;
+            var userService = (IUserService)validationContext.GetService(typeof(IUserService));
+            var emailExists = userService.EmailIsRegistered(email);
+
+            if (emailExists)
+            {
+                return new ValidationResult("An account with this email address already exists!");
+            }
+            
+            return ValidationResult.Success;
+        }
+    }
+
+    public class AccountWithEmailExistsAttribute : ValidationAttribute
+    {
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+        {
+            var email = value as string;
+            var userService = (IUserService)validationContext.GetService(typeof(IUserService));
+            var emailExists = userService.EmailIsRegistered(email);
+
+            if (!emailExists)
+            {
+                return new ValidationResult("There is no account with this email address!");
+            }
+
+            return ValidationResult.Success;
+        }
+    }
+
+    public class PasswordCorrectAttribute : ValidationAttribute
+    {
+        private readonly string _emailPropertyName;
+
+        public PasswordCorrectAttribute(string emailPropertyName)
+        {
+            _emailPropertyName = emailPropertyName;
+        }
+
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+            var password = value as string;
+            var emailProperty = validationContext.ObjectType.GetProperty(_emailPropertyName);
+            var email = emailProperty.GetValue(validationContext.ObjectInstance) as string;
+
+            var userService = (IUserService)validationContext.GetService(typeof(IUserService));
+            var hashService = (IHashService)validationContext.GetService(typeof(IHashService));
+            var user = userService.GetUserByEmail(email);
+
+            if (!hashService.CreateHash(password, email).Equals(user.Password))
+            {
+                return new ValidationResult("Incorrect password!");
+            }
+            
+            return ValidationResult.Success;
+        }
+    }
+
 
     private async Task HandleLogin()
     {
@@ -171,7 +229,6 @@
         }
     }
 
-    private string? _errorMessageRegistrationEMail;
 
     public void HandleRegister()
     {
@@ -184,7 +241,7 @@
         else
         {
             Console.WriteLine("E-Mail is already taken.");
-            _errorMessageRegistrationEMail = "E-Mail is already taken!";
+
         }
     }
 
