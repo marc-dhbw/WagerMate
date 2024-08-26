@@ -104,11 +104,10 @@ else
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await CookieService.RedirectToLogin("CookieID", Navigation);
-        var value = await CookieService.GetCookieByName("CookieID");
-        Console.WriteLine(value);
+        var hashFromCookie = await CookieService.GetCookieByName("CookieID");
         if (_firstLogin)
         {
-            _loggedInUser = UserService.GetUserByPassword(value);
+            _loggedInUser = UserService.GetUserByPassword(hashFromCookie);
             _firstLogin = false;
         }
     }
