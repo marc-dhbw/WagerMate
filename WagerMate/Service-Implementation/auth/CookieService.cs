@@ -1,8 +1,9 @@
-﻿using Microsoft.JSInterop;
-using Microsoft.AspNetCore.Components;
-using WagerMate.Data;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
+using WagerMate.Services.auth;
+using WagerMate.Services.user;
 
-namespace WagerMate.Services.impl;
+namespace WagerMate.Service_Implementation.auth;
 
 public class CookieService : ICookieService
 {

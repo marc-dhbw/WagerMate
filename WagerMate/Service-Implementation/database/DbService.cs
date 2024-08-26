@@ -1,18 +1,19 @@
 ﻿using Dapper;
 using Npgsql;
+using WagerMate.Services.database;
 
-namespace WagerMate.Services.impl;
+namespace WagerMate.Service_Implementation.database;
 
 public class DbService : IDbService
 {
     private const string Conname = "Wagerdb";
     private readonly IConfiguration _config;
-    private readonly string? ConnectionString;
+    private readonly string? _connectionString;
 
     public DbService(IConfiguration configuration)
     {
         _config = configuration;
-        ConnectionString = _config.GetConnectionString(Conname);
+        _connectionString = _config.GetConnectionString(Conname);
     }
 
     public bool Create<T>(string sql, object p)
@@ -37,7 +38,7 @@ public class DbService : IDbService
 
     public T GetById<T>(string sql, object id)
     {
-        using var connection = new NpgsqlConnection(ConnectionString);
+        using var connection = new NpgsqlConnection(_connectionString);
         connection.Open();
         try
         {
@@ -56,7 +57,7 @@ public class DbService : IDbService
 
     public List<T> GetAll<T>(string sql)
     {
-        using var connection = new NpgsqlConnection(ConnectionString);
+        using var connection = new NpgsqlConnection(_connectionString);
         connection.Open();
         try
         {
@@ -74,7 +75,7 @@ public class DbService : IDbService
 
     public bool Delete<T>(string sql, object id)
     {
-        using var connection = new NpgsqlConnection(ConnectionString);
+        using var connection = new NpgsqlConnection(_connectionString);
         connection.Open();
         try
         {
@@ -92,7 +93,7 @@ public class DbService : IDbService
 
     public bool Update<T>(string sql, object obj)
     {
-        using var connection = new NpgsqlConnection(ConnectionString);
+        using var connection = new NpgsqlConnection(_connectionString);
 
         connection.Open();
 
@@ -104,6 +105,63 @@ public class DbService : IDbService
         catch (Exception e)
         {
             Console.WriteLine("DbService: Update failed");
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    public List<T> GetAllWithParams<T>(string sql, object parameters)
+    {
+        using var connection = new NpgsqlConnection(_connectionString);
+        connection.Open();
+        try
+        {
+            var queryResult = connection.Query<T>(sql, parameters);
+            var result = queryResult.AsList();
+            return result;
+        }
+        catch (Exception e)
+        {
+            Console.Write("DbService: GetAllWithParams failed");
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public (bool, T?) GetIfExists<T>(string existsSql, object existsParameters, string getSql, object getParameters) where T : class
+    {
+        using var connection = new NpgsqlConnection(_connectionString);
+        connection.Open();
+        try
+        {
+            var existsResult = connection.Query<bool>(existsSql, existsParameters).FirstOrDefault();
+            if (!existsResult)
+            {
+                return (false, null);
+            }
+
+            var getResult = connection.Query<T>(getSql, getParameters).FirstOrDefault();
+            return (true, getResult);
+        }
+        catch (Exception e)
+        {
+            Console.Write("DbService: GetIfExists failed");
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public int CreateWithReturn(string sql, object parameters)
+    {
+        using var connection = new NpgsqlConnection(_config.GetConnectionString("Wagerdb"));
+        connection.Open();
+        try
+        {
+            var result = connection.Query<int>(sql, parameters).FirstOrDefault();
+            return result;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("DbService CreateWithReturn failed");
             Console.WriteLine(e);
             throw;
         }

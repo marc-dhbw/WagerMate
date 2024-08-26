@@ -1,5 +1,4 @@
-using WagerMate.Data;
-namespace WagerMate.Services;
+namespace WagerMate.Services.auth;
 
 public interface IHashService
 {
