@@ -230,13 +230,16 @@
     }
 
 
-    public void HandleRegister()
+    public async Task HandleRegister()
     {
-        var emailExists = UserService.EmailIsRegistered(_newUserData.EMail!);
-        if (!emailExists)
+        if (!UserService.EmailIsRegistered(_newUserData.EMail!))
         {
-            RegisterUser();
-            Navigation.NavigateTo("/");
+            var result = RegisterUser();
+            if (result.Password != null)
+            {
+                await CookieService.SetCookieByNameAndValue("CookieID", result.Password, 7);
+                Navigation.NavigateTo("/");
+            }
         }
         else
         {
@@ -245,7 +248,7 @@
         }
     }
 
-    private void RegisterUser()
+    private User RegisterUser()
     {
         if (_newUserData.Username == null | _newUserData.EMail == null) return;
         var user2 = new User
@@ -258,10 +261,12 @@
         try
         {
             UserService.CreateUser(user2);
+            return user2;
         }
         catch (Exception)
         {
             Console.WriteLine("service failed");
+            throw;
         }
     }
 }
