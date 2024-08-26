@@ -1,5 +1,7 @@
 @page "/login"
 @using System.ComponentModel.DataAnnotations
+@using WagerMate.Services.auth
+@using WagerMate.Services.user
 
 @layout LoginLayout
 @rendermode InteractiveServer
@@ -127,18 +129,11 @@
         public string? InviteCode { get; set; }
     }
 
-    public class CompareInviteCodeAttribute : ValidationAttribute
+    public class CompareInviteCodeAttribute(string validCode) : ValidationAttribute
     {
-        private readonly string _validCode;
-
-        public CompareInviteCodeAttribute(string validCode)
-        {
-            _validCode = validCode;
-        }
-
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            if (value == null || value.ToString() != _validCode)
+            if (value == null || value.ToString() != validCode)
             {
                 return new ValidationResult(ErrorMessage ?? "Invalid invite code!");
             }
@@ -215,7 +210,7 @@
         try
         {
             var user = UserService.GetUserByEmail(_existingUserData.EMail!);
-            if (HashService.CreateHash(_existingUserData.Password!, _existingUserData.EMail!).Equals(user.Password))
+            if (HashService.CreateHash(_existingUserData.EMail!, _existingUserData.Password!).Equals(user.Password))
             {
                 Console.WriteLine("Login successful.");
                 await CookieService.SetCookieByNameAndValue("CookieID", user.Password, 7);
@@ -234,6 +229,7 @@
         }
     }
 
+
     public void HandleRegister()
     {
         var emailExists = UserService.EmailIsRegistered(_newUserData.EMail!);
@@ -245,23 +241,25 @@
         else
         {
             Console.WriteLine("E-Mail is already taken.");
+
         }
     }
 
     private void RegisterUser()
     {
-        Console.WriteLine("Register New User");
-        var user2 = new User();
-        user2.Name = _newUserData.Username;
-        user2.Email = _newUserData.EMail;
-        user2.Password = HashService.CreateHash(_newUserData.Password!, _newUserData.EMail!);
+        if (_newUserData.Username == null | _newUserData.EMail == null) return;
+        var user2 = new User
+        {
+            Name = _newUserData.Username,
+            Email = _newUserData.EMail,
+            Password = HashService.CreateHash(_newUserData.EMail!, _newUserData.Password!)
+        };
 
-        Console.WriteLine("user locally registered");
         try
         {
             UserService.CreateUser(user2);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             Console.WriteLine("service failed");
         }

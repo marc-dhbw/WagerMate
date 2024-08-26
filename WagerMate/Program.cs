@@ -2,10 +2,17 @@ using dotenv.net;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using WagerMate.Components;
 using WagerMate.Services;
-using WagerMate.Services.impl;
+using WagerMate;
+using WagerMate.Service_Implementation.auth;
+using WagerMate.Service_Implementation.betting;
+using WagerMate.Service_Implementation.database;
+using WagerMate.Service_Implementation.user;
+using WagerMate.Services.auth;
+using WagerMate.Services.betting;
+using WagerMate.Services.database;
+using WagerMate.Services.user;
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 DotEnv.Load();
 // Retrieve the connection string from the environment variable
@@ -18,7 +25,7 @@ if (string.IsNullOrEmpty(connectionString))
 
 builder.Configuration.AddEnvironmentVariables();
 
-builder.Configuration["ConnectionStrings:Wagerdb"] = connectionString;
+builder.Configuration["ConnectionStrings:Wagerdb"]=connectionString;
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
@@ -27,6 +34,11 @@ builder.Services.AddRazorComponents()
 // Register the IDbConnection service for Dapper
 builder.Services.AddScoped<IDbService, DbService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IBetService, BetService>();
+builder.Services.AddScoped<IUserBetService, UserBetService>();
+builder.Services.AddScoped<ICaseService, CaseService>();
+builder.Services.AddScoped<IWinnerService, WinnerService>();
+
 builder.Services.AddScoped<ICookieService, CookieService>();
 builder.Services.AddScoped<IHashService, HashService>();
 

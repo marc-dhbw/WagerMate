@@ -1,0 +1,195 @@
+@page "/"
+@rendermode  InteractiveServer
+@using WagerMate.Services.auth
+@using WagerMate.Services.user
+@using WagerMate.Services.betting
+@inject IBetService BetService;
+@inject IUserService UserService;
+@inject ICaseService CaseService;
+@inject ICookieService CookieService;
+@inject IUserBetService UserBetService;
+@inject NavigationManager Navigation
+
+<PageTitle>Bet Overview</PageTitle>
+
+<h1>Bet Overview</h1>
+
+<div id="betOverviewPage">
+    <div id="placeholder">
+        <h2>This is the perfect place to showcase your amazing advert!</h2> 
+    </div>
+    <div id="creatNewBet">
+        <h2> Create a new bet here</h2>
+        <button class="btn btn-primary" @onclick="ShowPopup">New Bet</button>
+    </div>
+    <div id="allBets">
+        <h2>Here are your bets:</h2>
+        <div id="allBetsLayout">
+        @foreach (var bet in _bets)
+            {
+            <div id = "individualBet">
+                <strong>ID:</strong> @bet.Id 
+                <br />
+                <strong>Description:</strong> @bet.Description  
+                <br />
+                <strong>Created:</strong> @bet.Created.ToShortDateString()  
+                <br />
+                <strong>Expires:</strong> @bet.Expiration.ToShortDateString()
+                <br />
+            </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Popup Form -->
+@if (_isPopupVisible)
+{
+        <div id="popup-overlay" @onclick="HidePopup" class="active">
+            <div id="popup-content" @onclick:stopPropagation="true">
+                <h2 id="h2PopUpCreateNewBet">Create New Bet</h2>
+                <br/>
+                <br/>
+                <label>Title:</label><br />
+                <input type="text" @bind="_newBetDetails.NewBetTitle" /><br /><br />
+                <label>Description:</label><br />
+                <input type="text" @bind="_newBetDetails.NewBetDescription" /><br /><br />
+                <label>Bet Amount:</label><br />
+                <input type="number" @bind="_newBetDetails.NewBetMoney" /><br /><br />
+                <label>Set Expiration Date:</label><br />
+                <input type="date" @bind="_newBetDetails.NewBetExpiration" /><br /><br />
+                <button class="btn btn-success" @onclick="CreateNewBet">Create Bet</button>
+                <button class="btn btn-secondary" @onclick="HidePopup">Cancel</button>
+
+                @if (!string.IsNullOrEmpty(ErrorMessage))
+                {
+                    <br/>
+                    <br/>
+                    <div class="alert alert-danger">
+                        @ErrorMessage
+                    </div>
+                }
+                
+            </div>
+        </div>
+}
+
+@code{
+
+    private bool _isPopupVisible;
+    
+    private NewBetDetails _newBetDetails = new ();
+
+    public class NewBetDetails {
+        public string NewBetTitle { get; set; } = null!;
+        public string NewBetDescription { get; set; } = null!;
+        public uint NewBetMoney { get; set; }
+        public DateTime NewBetExpiration { get; set; } = DateTime.Now;
+    }
+
+    private void ShowPopup() {
+        _isPopupVisible = true;
+        _newBetDetails = new NewBetDetails();
+        StateHasChanged();
+    }
+
+    private void HidePopup() {
+        _isPopupVisible = false;
+        StateHasChanged();
+    }
+
+    private string? ErrorMessage { get; set; }
+
+    private void CreateNewBet() {
+        
+        ErrorMessage = string.Empty;
+        
+        if (string.IsNullOrWhiteSpace(_newBetDetails.NewBetTitle) ||
+            string.IsNullOrWhiteSpace(_newBetDetails.NewBetDescription) ||
+            _newBetDetails.NewBetMoney <= 0 ||
+            _newBetDetails.NewBetExpiration == default(DateTime))
+        {
+            ErrorMessage = "Please fill out all fields correctly before creating a new bet.";
+            return;
+        }
+
+        Bet newBet = new Bet
+        {
+            Title = _newBetDetails.NewBetTitle,
+            Description = _newBetDetails.NewBetDescription,
+            InvitationCode = "13df870a-b1c7-4a1b-8183-29904a1e36ae", //TODO: Add real UUID 
+            Created = DateTime.Now,
+            Expiration = _newBetDetails.NewBetExpiration,
+            BetAccess = Access.Private,
+            BetState = State.Pending
+        };
+        if (_loggedInUser == null) return;
+        
+        Case tempCase = new Case
+        {
+            Casetype = "Money" //TODO: adjust value depending on ?
+        };
+        UserBet tempUserBet = new UserBet
+        {
+            User_Id = _loggedInUser.Id,
+            Amount = _newBetDetails.NewBetMoney
+        };
+        
+        try {
+            // creating Bet, then Case, then UserBet
+            Bet createdBet = BetService.CreateBet(newBet);
+            _bets = BetService.GetBetsByUserId(_loggedInUser.Id);
+            tempCase.Bet_Id = createdBet.Id;
+            tempUserBet.Bet_Id = createdBet.Id;
+            
+            var caseId = CaseService.CreateCase(tempCase);
+            tempCase.Id = caseId;
+            tempUserBet.Case_Id = caseId;
+            
+            var userBetId = UserBetService.CreateUserBet(tempUserBet);
+            tempUserBet.Id = userBetId;
+        }
+        catch (Exception) {
+            Console.WriteLine("BetOverview: service failed");
+        }
+        
+        HidePopup();
+        StateHasChanged();
+    }
+ 
+    private List<Bet> _bets = new List<Bet>();
+    
+    //AutoRedirect to the LoginPage
+    private bool _firstLogin = true;
+    private User? _loggedInUser = new User();
+    
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await CookieService.RedirectToLogin("CookieID", Navigation);
+        var value = await CookieService.GetCookieByName("CookieID");
+        if (_firstLogin)
+        {
+            _loggedInUser = UserService.GetUserIfPasswordExists(value);
+            if (_loggedInUser != null){
+                _firstLogin = false;
+                RenderData();
+            }
+        }
+    }
+    
+     void RenderData() {
+        try
+        {
+            if (_loggedInUser == null) return;
+            _bets = BetService.GetBetsByUserId(_loggedInUser.Id);
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"BetOverview: Error fetching bets - {ex.Message}");
+        }
+    
+    }
+
+}
