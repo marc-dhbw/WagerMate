@@ -109,6 +109,7 @@ public class DbService : IDbService
             throw;
         }
     }
+
     public List<T> GetAllWithParams<T>(string sql, object parameters)
     {
         using var connection = new NpgsqlConnection(_connectionString);
@@ -127,17 +128,15 @@ public class DbService : IDbService
         }
     }
 
-    public (bool, T?) GetIfExists<T>(string existsSql, object existsParameters, string getSql, object getParameters) where T : class
+    public (bool, T?) GetIfExists<T>(string existsSql, object existsParameters, string getSql, object getParameters)
+        where T : class
     {
         using var connection = new NpgsqlConnection(_connectionString);
         connection.Open();
         try
         {
             var existsResult = connection.Query<bool>(existsSql, existsParameters).FirstOrDefault();
-            if (!existsResult)
-            {
-                return (false, null);
-            }
+            if (!existsResult) return (false, null);
 
             var getResult = connection.Query<T>(getSql, getParameters).FirstOrDefault();
             return (true, getResult);

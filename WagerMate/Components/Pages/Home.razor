@@ -10,9 +10,11 @@
 Welcome to your new app.
 
 @code {
+
     //AutoRedirect to the LoginPage
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await CookieService.RedirectToLogin("CookieID" , Navigation);
+        await CookieService.RedirectToLogin("CookieID", Navigation);
     }
+
 }

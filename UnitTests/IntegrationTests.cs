@@ -1,7 +1,4 @@
-using Microsoft.Extensions.Configuration;
 using Npgsql;
-using NUnit.Framework.Internal;
-using IConfiguration = Castle.Core.Configuration.IConfiguration;
 
 namespace UnitTests;
 

@@ -8,13 +8,13 @@ public class HashService : IHashService
 {
     public string CreateHash(string email, string pw)
     {
-        string inputString = email + pw;
-        StringBuilder sb = new StringBuilder();
+        var inputString = email + pw;
+        var sb = new StringBuilder();
         using (HashAlgorithm algorithm = SHA256.Create())
         {
             var hashbytes = algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));
 
-            foreach (byte b in hashbytes)
+            foreach (var b in hashbytes)
                 sb.Append(b.ToString("X2"));
         }
 

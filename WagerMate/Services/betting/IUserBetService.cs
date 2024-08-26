@@ -9,5 +9,4 @@ public interface IUserBetService
     public bool DeleteUserBet(UserBet userBet);
     public UserBet GetUserBetById(int id);
     public List<int> GetAllUserIdsFromBet(Bet bet);
-    
 }

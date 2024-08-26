@@ -250,7 +250,7 @@
 
     private User RegisterUser()
     {
-        if (_newUserData.Username == null | _newUserData.EMail == null) return;
+        if ((_newUserData.Username == null) | (_newUserData.EMail == null)) return;
         var user2 = new User
         {
             Name = _newUserData.Username,
@@ -269,4 +269,5 @@
             throw;
         }
     }
+
 }
