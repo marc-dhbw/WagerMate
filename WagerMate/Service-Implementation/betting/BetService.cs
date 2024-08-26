@@ -56,4 +56,12 @@ public class BetService : IBetService
         );
         return result;
     }
+
+    public Bet? GetBetByInviteCode(string inviteCode)
+    {
+        var result =
+            _service.GetIfExists<Bet>("SELECT EXISTS ( SELECT 1 FROM public.bet where invitation_code = @inviteCode)",
+                new { inviteCode },"SELECT * FROM public.bet WHERE invitation_code = @inviteCode", new {inviteCode});
+        return result.Item1 ? result.Item2 : null;
+    }
 }

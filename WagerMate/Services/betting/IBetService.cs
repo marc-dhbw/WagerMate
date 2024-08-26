@@ -40,4 +40,6 @@ public interface IBetService
     bool DeleteBet(int key);
 
     public List<Bet> GetBetsByUserId(int userId);
+
+    public Bet? GetBetByInviteCode(string inviteCode);
 }
