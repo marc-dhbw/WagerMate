@@ -5,7 +5,7 @@
 
 <div class="form-group">
     <label for="inviteCode">Invite Code:</label>
-    <input @bind="inviteCode" class="form-control" id="inviteCode" placeholder="Enter your invitation code here..." />
+    <input @bind="inviteCode" class="form-control" id="inviteCode" placeholder="Enter your invitation code here..."/>
 </div>
 
 <button class="btn btn-primary" @onclick="SubmitCode">Submit</button>
@@ -22,8 +22,8 @@
     private void SubmitCode()
     {
         Console.WriteLine("SubmitCode method called");
-           
-        submittedCode = inviteCode;
 
+        submittedCode = inviteCode;
     }
+
 }

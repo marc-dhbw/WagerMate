@@ -96,9 +96,11 @@ else
 }
 
 @code{
+
     //AutoRedirect to the LoginPage
     private bool _firstLogin = true;
-    private User _loggedInUser = new User();
+    private User _loggedInUser = new();
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await CookieService.RedirectToLogin("CookieID", Navigation);
@@ -161,7 +163,7 @@ else
     private void EditUsername()
     {
         if (_editedUserData.Username == null) return;
-        User tempUser = new User(_loggedInUser.Id, _editedUserData.Username, _loggedInUser.Email!, _loggedInUser.Password!);
+        var tempUser = new User(_loggedInUser.Id, _editedUserData.Username, _loggedInUser.Email!, _loggedInUser.Password!);
         var updateSuccessful = UserService.UpdateUser(tempUser);
         if (updateSuccessful) _loggedInUser = tempUser;
         _editingUsername = false;
@@ -171,7 +173,7 @@ else
     private void EditEMail()
     {
         if (_editedUserData.EMail == null) return;
-        User tempUser = new User(_loggedInUser.Id, _loggedInUser.Name!, _editedUserData.EMail, _loggedInUser.Password!);
+        var tempUser = new User(_loggedInUser.Id, _loggedInUser.Name!, _editedUserData.EMail, _loggedInUser.Password!);
         var updateSuccessful = UserService.UpdateUser(tempUser);
         if (updateSuccessful) _loggedInUser = tempUser;
         _editingEMail = false;
@@ -180,13 +182,15 @@ else
     private void EditPassword()
     {
         var hashed = HashService.CreateHash(_editedUserData.EMail!, _loggedInUser.Password!);
-        User tempUser = new User(_loggedInUser.Id, _loggedInUser.Name!, _loggedInUser.Email!, hashed);
+        var tempUser = new User(_loggedInUser.Id, _loggedInUser.Name!, _loggedInUser.Email!, hashed);
         var updateSuccessful = UserService.UpdateUser(tempUser);
         if (updateSuccessful)
         {
             CookieService.SetCookieByNameAndValue("CookieID", tempUser.Password!, 7);
             _loggedInUser = tempUser;
         }
+
         _editingPassword = false;
     }
+
 }

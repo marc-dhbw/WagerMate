@@ -6,7 +6,7 @@ namespace WagerMate.Service_Implementation.betting;
 
 public class WinnerService : IWinnerService
 {
-    private IDbService _service;
+    private readonly IDbService _service;
 
     public WinnerService(IDbService service)
     {
@@ -15,19 +15,22 @@ public class WinnerService : IWinnerService
 
     public Winner CreateWinner(Winner createdWinner)
     {
-        _service.Create<Case>("INSERT INTO public.winner(bet_id, userbet_id) VALUES(@Bet_Id, @UserBet_Id)", createdWinner);
+        _service.Create<Case>("INSERT INTO public.winner(bet_id, userbet_id) VALUES(@Bet_Id, @UserBet_Id)",
+            createdWinner);
         return createdWinner;
     }
 
     public Winner GetWinnerById(int winnerId)
     {
-        var result = _service.GetById<Winner>("SELECT * FROM public.winner WHERE winner.Id = @Id", new { id = winnerId });
+        var result =
+            _service.GetById<Winner>("SELECT * FROM public.winner WHERE winner.Id = @Id", new { id = winnerId });
         return result;
     }
 
     public List<Winner> GetWinnersByBetId(int betId)
     {
-        var result = _service.GetAllWithParams<Winner>("SELECT * FROM public.winner WHERE bet_id = @Id",new{Id = betId});
+        var result =
+            _service.GetAllWithParams<Winner>("SELECT * FROM public.winner WHERE bet_id = @Id", new { Id = betId });
         return result;
     }
 
@@ -35,13 +38,14 @@ public class WinnerService : IWinnerService
     {
         var result =
             _service.Update<Winner>(
-                "UPDATE public.winner SET Id = @Id, bet_id = @bet_Id, userbet_id = @UserBet_Id WHERE Id = @Id", newWinner);
+                "UPDATE public.winner SET Id = @Id, bet_id = @bet_Id, userbet_id = @UserBet_Id WHERE Id = @Id",
+                newWinner);
         return result;
     }
 
     public bool DeleteWinner(int winnerId)
     {
-        var result  = _service.Delete<Winner>("DELETE FROM public.winner WHERE winner.Id = @Id", new { Id = winnerId });
+        var result = _service.Delete<Winner>("DELETE FROM public.winner WHERE winner.Id = @Id", new { Id = winnerId });
         return result;
     }
 }

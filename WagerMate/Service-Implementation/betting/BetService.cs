@@ -6,7 +6,7 @@ namespace WagerMate.Service_Implementation.betting;
 
 public class BetService : IBetService
 {
-    private IDbService _service;
+    private readonly IDbService _service;
 
     public BetService(IDbService service)
     {
@@ -15,7 +15,7 @@ public class BetService : IBetService
 
     public Bet CreateBet(Bet bet)
     {
-        int betId = _service.CreateWithReturn(
+        var betId = _service.CreateWithReturn(
             "INSERT INTO public.bet(title, description, invitation_code, access, state, created, expiration) VALUES(@Title, @Description, @InvitationCode, @BetAccess, @BetState, @Created, @Expiration)  RETURNING id",
             bet);
         bet.Id = betId;

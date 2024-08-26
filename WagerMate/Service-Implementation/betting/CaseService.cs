@@ -6,16 +6,18 @@ namespace WagerMate.Service_Implementation.betting;
 
 public class CaseService : ICaseService
 {
-    private IDbService _service;
+    private readonly IDbService _service;
 
     public CaseService(IDbService service)
     {
         _service = service;
     }
-    
+
     public int CreateCase(Case createdCase)
     {
-        int caseId = _service.CreateWithReturn("INSERT INTO public.case(bet_id, casetype) VALUES(@Bet_Id, @Casetype) RETURNING id", createdCase);
+        var caseId =
+            _service.CreateWithReturn(
+                "INSERT INTO public.case(bet_id, casetype) VALUES(@Bet_Id, @Casetype) RETURNING id", createdCase);
         return caseId;
     }
 
@@ -27,7 +29,8 @@ public class CaseService : ICaseService
 
     public List<Case> GetCasesByBetId(int betId)
     {
-        var result = _service.GetAllWithParams<Case>("SELECT * FROM public.case WHERE bet_id = @Id",new{Id = betId});
+        var result =
+            _service.GetAllWithParams<Case>("SELECT * FROM public.case WHERE bet_id = @Id", new { Id = betId });
         return result;
     }
 
@@ -41,7 +44,7 @@ public class CaseService : ICaseService
 
     public bool DeleteCase(int caseId)
     {
-        var result  = _service.Delete<Case>("DELETE FROM public.case WHERE Id = @caseId", new { caseId });
+        var result = _service.Delete<Case>("DELETE FROM public.case WHERE Id = @caseId", new { caseId });
         return result;
     }
 

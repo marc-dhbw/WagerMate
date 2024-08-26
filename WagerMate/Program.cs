@@ -1,8 +1,5 @@
 using dotenv.net;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using WagerMate.Components;
-using WagerMate.Services;
-using WagerMate;
 using WagerMate.Service_Implementation.auth;
 using WagerMate.Service_Implementation.betting;
 using WagerMate.Service_Implementation.database;
@@ -19,13 +16,12 @@ DotEnv.Load();
 var connectionString = Environment.GetEnvironmentVariable("CON_STR");
 
 if (string.IsNullOrEmpty(connectionString))
-{
-    throw new InvalidOperationException("The connection string is not set. Please configure the environment variable CON_STR");
-}
+    throw new InvalidOperationException(
+        "The connection string is not set. Please configure the environment variable CON_STR");
 
 builder.Configuration.AddEnvironmentVariables();
 
-builder.Configuration["ConnectionStrings:Wagerdb"]=connectionString;
+builder.Configuration["ConnectionStrings:Wagerdb"] = connectionString;
 
 // Add services to the container.
 builder.Services.AddRazorComponents()

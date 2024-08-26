@@ -6,16 +6,18 @@ namespace WagerMate.Service_Implementation.betting;
 
 public class UserBetService : IUserBetService
 {
-    private IDbService _service;
+    private readonly IDbService _service;
 
     public UserBetService(IDbService service)
     {
         _service = service;
     }
-    
+
     public int CreateUserBet(UserBet userBet)
     {
-        var result = _service.CreateWithReturn("INSERT INTO public.userbet(user_id, bet_id, case_id, amount) VALUES(@User_Id, @Bet_Id, @Case_Id, @Amount) RETURNING id", userBet);
+        var result = _service.CreateWithReturn(
+            "INSERT INTO public.userbet(user_id, bet_id, case_id, amount) VALUES(@User_Id, @Bet_Id, @Case_Id, @Amount) RETURNING id",
+            userBet);
         return result;
     }
 
@@ -25,7 +27,8 @@ public class UserBetService : IUserBetService
         userBet.User_Id = user.Id;
         userBet.Bet_Id = bet.Id;
         var result =
-            _service.Delete<UserBet>("Delete from public.userbet where user_id = @User_Id and bet_id = @Bet_ID", userBet);
+            _service.Delete<UserBet>("Delete from public.userbet where user_id = @User_Id and bet_id = @Bet_ID",
+                userBet);
         return result;
     }
 
@@ -37,7 +40,7 @@ public class UserBetService : IUserBetService
 
     public UserBet GetUserBetById(int id)
     {
-        var result = _service.GetById<UserBet>("SELECT * FROM public.userbet WHERE Id = @Id",new{ id });
+        var result = _service.GetById<UserBet>("SELECT * FROM public.userbet WHERE Id = @Id", new { id });
         Console.WriteLine("result");
         Console.WriteLine("id: " + result.Id);
         Console.WriteLine("userId: " + result.User_Id);
