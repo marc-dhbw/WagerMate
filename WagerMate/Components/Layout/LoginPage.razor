@@ -183,7 +183,7 @@
         if (!UserService.EmailIsRegistered(_newUserData.EMail!))
         {
             var result = RegisterUser();
-            if (result != null)
+            if (result.Password != null)
             {
                 await CookieService.SetCookieByNameAndValue("CookieID", result.Password, 7);
                 Navigation.NavigateTo("/");
@@ -210,10 +210,10 @@
             UserService.CreateUser(user2);
             return user2;
         }
-        catch (Exception e)
+        catch (Exception)
         {
             Console.WriteLine("service failed");
-            return null;
+            throw;
         }
     }
 }
