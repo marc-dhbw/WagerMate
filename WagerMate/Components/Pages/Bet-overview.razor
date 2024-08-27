@@ -28,9 +28,11 @@
             @foreach (var bet in _bets)
             {
                 <div id="individualBet">
-                    <strong>ID:</strong> @bet.Id
+                    <strong>Title:</strong> @bet.Title
                     <br/>
                     <strong>Description:</strong> @bet.Description
+                    <br/>
+                    <strong>State:</strong> @bet.BetState
                     <br/>
                     <strong>Created:</strong> @bet.Created.ToShortDateString()
                     <br/>
