@@ -13,28 +13,49 @@
 @inject IUserService UserService
 @inject NavigationManager Navigation
 
-<h3>Invitation Code</h3>
+<div class="form-container">
+    
+    @if (!DisplayBetInputs)
+    {
+        <h2>Invitation Code</h2>
 
-<div class="form-group">
-    <label for="inviteCode">Invite Code:</label>
-    <input @bind="inviteCode" class="form-control" id="inviteCode" placeholder="Enter your invitation code here..."/>
+        <div class="form-group">
+            <label for="inviteCode">Invite Code:</label>
+            <input @bind="inviteCode" class="form-control" id="inviteCode" placeholder="Enter your invitation code here..."/>
+        </div>
+
+        <button class="submit-btn" @onclick="SubmitCode">Submit</button>
+    }
+
+    @if (DisplayBetInputs)
+    {
+        <h2>Submit Bet</h2>
+
+        <div class="form-group">
+            <label for="title">Title:</label>
+            <InputText id="title" @bind-Value="_acceptedBet.Title" readonly class="no-border"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <InputText id="description" @bind-Value="_acceptedBet.Description" readonly class="no-border"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="state">State:</label>
+            <InputText id="state" @bind-Value="_betStateString" readonly class="no-border"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="moneyValue">Amount:</label>
+            <input id="moneyValue" type="number" @bind="_moneyValue" />
+        </div>
+
+        <button class="submit-btn" @onclick="SubmitValues">Submit</button>
+    }
 </div>
-
-<button class="btn btn-primary" @onclick="SubmitCode">Submit</button>
-
-@* @if (!string.IsNullOrEmpty(submittedInviteCode)) *@
-@* { *@
-@*     <p class="alert alert-success">Invite Code Submitted: @submittedInviteCode</p> *@
-@* } *@
-
-@if (displayBetInputs)
-{
-
-    <label for="moneyValue">Ammount: </label>
-    <input id="moneyValue" type="number" @bind="_moneyValue"/>
-    <button @onclick="SubmitValues">Submit</button>
-}
-@if (createdNewUserBet)
+    
+@if (CreatedNewUserBet)
 {
     <p class="alert alert-success">You are now participating in the bet!</p>
 }
@@ -60,15 +81,14 @@
     
     private string inviteCode { get; set; }
     private string submittedInviteCode { get; set; }
-    private bool displayBetInputs { get; set; } = false;
+    private bool DisplayBetInputs { get; set; } = false;
     private int _moneyValue { get; set; }
     private Bet _acceptedBet { get; set; }
-    private bool createdNewUserBet { get; set; }
+    private bool CreatedNewUserBet { get; set; }
+    private string _betStateString { get; set; }
 
     private void SubmitCode()
     {
-        Console.WriteLine("SubmitCode method called");
-
         submittedInviteCode = inviteCode;
 
         _acceptedBet = BetService.GetBetByInviteCode(submittedInviteCode);
@@ -79,8 +99,12 @@
             return;
         }
 
+        if (_acceptedBet.BetState == State.Active) _betStateString = "Active";
+        if (_acceptedBet.BetState == State.Closed) _betStateString = "Closed";
+        if (_acceptedBet.BetState == State.Pending) _betStateString = "Pending";
+        
         submittedInviteCode = "";
-        displayBetInputs = true;
+        DisplayBetInputs = true;
     }
 
     private void SubmitValues()
@@ -89,20 +113,15 @@
         Case tempCase = new Case();
         tempCase.Bet_Id = _acceptedBet.Id;
         tempCase.Casetype = "Money";
-        Console.WriteLine("Created Case");
         tempCase.Id = CaseService.CreateCase(tempCase);
-        Console.WriteLine("CaseSercie: Created Case");
         //create userbet
         UserBet tempUserBet = new UserBet();
         tempUserBet.Bet_Id = _acceptedBet.Id;
         tempUserBet.User_Id = _loggedInUser.Id;
         tempUserBet.Amount = _moneyValue;
         tempUserBet.Case_Id = tempCase.Id;
-        Console.WriteLine("Created UserBet");
         UserBetService.CreateUserBet(tempUserBet);
-        Console.WriteLine("UserBetService: Created UserBet");
         
-        createdNewUserBet = true;
-
+        CreatedNewUserBet = true;
     }
 }
