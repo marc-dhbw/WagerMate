@@ -56,6 +56,12 @@ else
             </div>
             <InputText type="email" @bind-Value="_editedUserData.EMail"/>
         </div>
+        <div>
+            <div>
+                <label>Confirm with password:</label>
+            </div>
+            <InputText type="password" @bind-Value="_editedUserData.NewEmailPassword"/>
+        </div>
         <div id="registerspace">
             <input type="button" value="Cancel" @onclick="@CancelEditingEMail"/>
             <input type="submit" value="Save" @onclick="@EditEMail"/>
@@ -124,6 +130,9 @@ else
 
         [Compare("Password", ErrorMessage = "Must match Password!")]
         public string? PasswordRepeat { get; set; }
+        
+        //[PasswordCorrect("Email")]
+        public string? NewEmailPassword { get; set; }
     }
 
     private bool _editingUsername;
@@ -170,19 +179,51 @@ else
         _editingUsername = false;
     }
 
+    /*public class PasswordCorrectAttribute : ValidationAttribute
+    {
+        private readonly string _emailPropertyName;
+
+        public PasswordCorrectAttribute(string emailPropertyName)
+        {
+            _emailPropertyName = emailPropertyName;
+        }
+
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+            var password = value as string;
+            var emailProperty = validationContext.ObjectType.GetProperty(_emailPropertyName);
+            var email = emailProperty.GetValue(validationContext.ObjectInstance) as string;
+
+            var userService = (IUserService)validationContext.GetService(typeof(IUserService));
+            var hashService = (IHashService)validationContext.GetService(typeof(IHashService));
+            var user = userService.GetUserByEmail(email);
+
+            if (!hashService.CreateHash(email, password).Equals(user.Password))
+            {
+                return new ValidationResult("Incorrect password!");
+            }
+            
+            return ValidationResult.Success;
+        }
+    }*/
 
     private void EditEMail()
     {
         if (_editedUserData.EMail == null) return;
-        var tempUser = new User(_loggedInUser.Id, _loggedInUser.Name!, _editedUserData.EMail, _loggedInUser.Password!);
-        var updateSuccessful = UserService.UpdateUser(tempUser);
-        if (updateSuccessful) _loggedInUser = tempUser;
-        _editingEMail = false;
+        var user = UserService.GetUserByEmail(_editedUserData.EMail!);
+        if (HashService.CreateHash(_loggedInUser.Email!, _editedUserData.NewEmailPassword!).Equals(user.Password))
+        {
+            var hashed = HashService.CreateHash(_editedUserData.EMail!, _editedUserData.NewEmailPassword!);
+            var tempUser = new User(_loggedInUser.Id, _loggedInUser.Name!, _editedUserData.EMail, hashed);
+            var updateSuccessful = UserService.UpdateUser(tempUser);
+            if (updateSuccessful) _loggedInUser = tempUser;
+            _editingEMail = false;
+        }
     }
 
     private void EditPassword()
     {
-        var hashed = HashService.CreateHash(_editedUserData.EMail!, _loggedInUser.Password!);
+        var hashed = HashService.CreateHash(_loggedInUser.Email!, _editedUserData.Password!);
         var tempUser = new User(_loggedInUser.Id, _loggedInUser.Name!, _loggedInUser.Email!, hashed);
         var updateSuccessful = UserService.UpdateUser(tempUser);
         if (updateSuccessful)
