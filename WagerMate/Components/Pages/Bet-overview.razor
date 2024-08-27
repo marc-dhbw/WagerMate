@@ -22,23 +22,49 @@
         <h2> Create a new bet here</h2>
         <button class="btn btn-primary" @onclick="ShowPopup">New Bet</button>
     </div>
+
+    @* hier sind schon die checkboxen aer die werden später erste gerendert?!??!? *@
+    <div class="check-box-line">
+        <div class="bet-state">
+            <label for="Accepted">Accepted Bets</label>
+            <input type="checkbox" id="Accepted" @bind="DisplayAcceptedBets" />
+        </div>
+
+        <div class="bet-state">
+            <label for="Pending">Pending Bets</label>
+            <input type="checkbox" id="Pending" @bind="DisplayPendingBets" />
+        </div>
+
+        <div class="bet-state">
+            <label for="Closed">Closed Bets</label>
+            <input type="checkbox" id="Closed" @bind="DisplayClosedBets" />
+        </div>
+    </div>
+    
+    @* Listing the bets of the user: *@
     <div id="allBets">
         <h2>Here are your bets:</h2>
         <div id="allBetsLayout">
             @foreach (var bet in _bets)
             {
-                <div id="individualBet">
-                    <strong>Title:</strong> @bet.Title
-                    <br/>
-                    <strong>Description:</strong> @bet.Description
-                    <br/>
-                    <strong>State:</strong> @bet.BetState
-                    <br/>
-                    <strong>Created:</strong> @bet.Created.ToShortDateString()
-                    <br/>
-                    <strong>Expires:</strong> @bet.Expiration.ToShortDateString()
-                    <br/>
-                </div>
+                @if ((bet.BetState == State.Active && DisplayAcceptedBets) || 
+                     (bet.BetState == State.Closed && DisplayClosedBets) ||
+                     (bet.BetState == State.Pending && DisplayPendingBets)
+                )
+                {
+                    <div id="individualBet">
+                        <strong>Title:</strong> @bet.Title
+                        <br/>
+                        <strong>Description:</strong> @bet.Description
+                        <br/>
+                        <strong>State:</strong> @bet.BetState
+                        <br/>
+                        <strong>Created:</strong> @bet.Created.ToShortDateString()
+                        <br/>
+                        <strong>Expires:</strong> @bet.Expiration.ToShortDateString()
+                        <br/>
+                    </div>
+                }
             }
         </div>
     </div>
@@ -200,4 +226,8 @@
         }
     }
 
+    private bool DisplayAcceptedBets { get; set; } = true;
+    private bool DisplayPendingBets { get; set; } = true;
+    private bool DisplayClosedBets { get; set; } = false;
+    
 }

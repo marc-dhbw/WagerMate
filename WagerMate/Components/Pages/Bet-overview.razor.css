@@ -39,9 +39,27 @@ p {
     text-align: center;
 }
 
-#allBets {
+#check-box-line{
     padding: 10px;
     grid-row: 2;
+    grid-column: 2;
+    border-left: 2px solid black;
+    height: 100px;
+    margin: 20px;
+}
+
+.bet-state{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    align-content: center;
+    justify-content: center;
+}
+
+
+#allBets {
+    padding: 10px;
+    grid-row: 3;
     grid-column: 1/ span 2;
 }
 
