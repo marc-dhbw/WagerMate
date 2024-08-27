@@ -22,7 +22,7 @@
 }
 else
 {
-    <EditForm Model="@_loggedInUser" FormName="testUsername">
+    <EditForm Model="@_loggedInUser" OnValidSubmit="EditUsername" FormName="testUsername">
         <DataAnnotationsValidator/>
         <div>
             <div>
@@ -32,7 +32,7 @@ else
         </div>
         <div id="registerspace">
             <input type="button" value="Cancel" @onclick="@CancelEditingUsername"/>
-            <input type="submit" value="Save" @onclick="@EditUsername"/>
+            <input type="submit" value="Save"/>
         </div>
     </EditForm>
 }
@@ -48,7 +48,7 @@ else
 }
 else
 {
-    <EditForm Model="@_loggedInUser" FormName="testEMail">
+    <EditForm Model="@_loggedInUser" OnValidSubmit="EditEMail" FormName="testEMail">
         <DataAnnotationsValidator/>
         <div>
             <div>
@@ -61,10 +61,11 @@ else
                 <label>Confirm with password:</label>
             </div>
             <InputText type="password" @bind-Value="_editedUserData.NewEmailPassword"/>
+            <ValidationMessage For=@(() => _editedUserData.NewEmailPassword)/>
         </div>
         <div id="registerspace">
             <input type="button" value="Cancel" @onclick="@CancelEditingEMail"/>
-            <input type="submit" value="Save" @onclick="@EditEMail"/>
+            <input type="submit" value="Save"/>
         </div>
     </EditForm>
 }
@@ -79,7 +80,7 @@ else
 }
 else
 {
-    <EditForm Model="@_loggedInUser" FormName="testPassword">
+    <EditForm Model="@_loggedInUser" OnValidSubmit="EditPassword" FormName="testPassword">
         <DataAnnotationsValidator/>
         <div>
             <div>
@@ -96,7 +97,7 @@ else
         </div>
         <div id="registerspace">
             <input type="button" value="Cancel" @onclick="@CancelEditingPassword"/>
-            <input type="submit" value="Save" @onclick="@EditPassword"/>
+            <input type="submit" value="Save"/>
         </div>
     </EditForm>
 }
@@ -131,7 +132,7 @@ else
         [Compare("Password", ErrorMessage = "Must match Password!")]
         public string? PasswordRepeat { get; set; }
         
-        //[PasswordCorrect("Email")]
+        //[PasswordCorrect]
         public string? NewEmailPassword { get; set; }
     }
 
@@ -181,24 +182,16 @@ else
 
     /*public class PasswordCorrectAttribute : ValidationAttribute
     {
-        private readonly string _emailPropertyName;
-
-        public PasswordCorrectAttribute(string emailPropertyName)
-        {
-            _emailPropertyName = emailPropertyName;
-        }
-
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             var password = value as string;
-            var emailProperty = validationContext.ObjectType.GetProperty(_emailPropertyName);
-            var email = emailProperty.GetValue(validationContext.ObjectInstance) as string;
+            var loggedInUser = (User)validationContext.GetService(typeof(User));
 
             var userService = (IUserService)validationContext.GetService(typeof(IUserService));
             var hashService = (IHashService)validationContext.GetService(typeof(IHashService));
-            var user = userService.GetUserByEmail(email);
+            var user = userService.GetUserByEmail(loggedInUser.Email);
 
-            if (!hashService.CreateHash(email, password).Equals(user.Password))
+            if (!hashService.CreateHash(loggedInUser.Email, password).Equals(user.Password))
             {
                 return new ValidationResult("Incorrect password!");
             }
@@ -210,13 +203,17 @@ else
     private void EditEMail()
     {
         if (_editedUserData.EMail == null) return;
-        var user = UserService.GetUserByEmail(_editedUserData.EMail!);
+        var user = UserService.GetUserByEmail(_loggedInUser.Email!);
         if (HashService.CreateHash(_loggedInUser.Email!, _editedUserData.NewEmailPassword!).Equals(user.Password))
         {
             var hashed = HashService.CreateHash(_editedUserData.EMail!, _editedUserData.NewEmailPassword!);
             var tempUser = new User(_loggedInUser.Id, _loggedInUser.Name!, _editedUserData.EMail, hashed);
             var updateSuccessful = UserService.UpdateUser(tempUser);
-            if (updateSuccessful) _loggedInUser = tempUser;
+            if (updateSuccessful)
+            {
+                CookieService.SetCookieByNameAndValue("CookieID", tempUser.Password!, 7);
+                _loggedInUser = tempUser;
+            }
             _editingEMail = false;
         }
     }
