@@ -57,6 +57,7 @@ p {
     background: rgba(255, 128, 0, 0.5);
     padding: 8px;
     border-radius: 20px;
+    cursor: pointer;
 }
 
 #h2PopUpCreateNewBet {

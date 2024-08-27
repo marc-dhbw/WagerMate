@@ -26,8 +26,8 @@
         <h2>Here are your bets:</h2>
         <div id="allBetsLayout">
             @foreach (var bet in _bets)
-            {
-                <div id="individualBet">
+            { 
+                <div id="individualBet" @onclick="() => ShowDetailsPopup(bet)">
                     <strong>ID:</strong> @bet.Id
                     <br/>
                     <strong>Description:</strong> @bet.Description
@@ -74,12 +74,33 @@
     </div>
 }
 
+@if (_isDetailsPopupVisible)
+{
+    <div id="popup-overlay" @onclick="HidePopup" class="active">
+        <div id="popup-content" @onclick:stopPropagation="true">
+            <h2 id="h2PopUpBetDetails">Bet Details</h2>
+            <br/>
+            <br/>
+            <label>Title:</label>@_betPopup.Title<br/>
+            <label>Description:</label>@_betPopup.Description<br/>
+            <label>Bet Amount:</label>@_userbetPopup.Amount<br/>
+            <label>Expiration Date:</label>@_betPopup.Expiration<br/>
+            <button class="btn btn-secondary" @onclick="HideDetailsPopup">Cancel</button>
+
+        </div>
+    </div>
+}
+
 @code{
 
     private bool _isPopupVisible;
+    private bool _isDetailsPopupVisible;
+
 
     private NewBetDetails _newBetDetails = new();
 
+    private Bet _betPopup = new();
+    private UserBet _userbetPopup = new();
     public class NewBetDetails
     {
         public string NewBetTitle { get; set; } = null!;
@@ -94,10 +115,23 @@
         _newBetDetails = new NewBetDetails();
         StateHasChanged();
     }
+    
+    private void ShowDetailsPopup(Bet bet)
+    {
+        _userbetPopup = UserBetService.GetUserBetById(_loggedInUser.Id, bet.Id);
+        _betPopup = bet;
+        _isDetailsPopupVisible = true;
+        StateHasChanged();
+    }
 
     private void HidePopup()
     {
         _isPopupVisible = false;
+        StateHasChanged();
+    }
+    private void HideDetailsPopup()
+    {
+        _isDetailsPopupVisible = false;
         StateHasChanged();
     }
 
