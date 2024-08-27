@@ -61,6 +61,11 @@
     <p class="alert alert-success">You are now participating in the bet!</p>
 }
 
+@if (HasNotificationMessage)
+{
+<p class=@NotificationClass>@NotificationMessage</p>
+}
+
 @code {
     //AutoRedirect to the LoginPage
     private bool _firstLogin = true;
@@ -87,6 +92,10 @@
     private Bet _acceptedBet { get; set; }
     private bool CreatedNewUserBet { get; set; }
     private string _betStateString { get; set; }
+    private bool HasNotificationMessage { get; set; }
+    private string NotificationMessage { get; set; }
+    private string NotificationClass { get; set; }
+    
 
     private void SubmitCode()
     {
@@ -96,7 +105,6 @@
         if (_acceptedBet == null)
         {
             submittedInviteCode = "No such code found";
-            Console.WriteLine("Invite Code not found!");
             return;
         }
 
@@ -121,9 +129,20 @@
         tempUserBet.User_Id = _loggedInUser.Id;
         tempUserBet.Amount = _moneyValue;
         tempUserBet.Case_Id = tempCase.Id;
-        UserBetService.CreateUserBet(tempUserBet);
+
+        List<Bet> ParticipatingInBetWithId = BetService.GetBetsByUserId(_loggedInUser.Id);
+        if (ParticipatingInBetWithId.All(bet => bet.Id != _acceptedBet.Id))
+        {
+            UserBetService.CreateUserBet(tempUserBet);
+            CreatedNewUserBet = true;
+        }
+        else
+        {
+            HasNotificationMessage = true;
+            NotificationMessage = "You already are participating in this Bet!";
+            NotificationClass = "alert alert-danger";
+        }
         
-        CreatedNewUserBet = true;
     }
     
     [Parameter]
@@ -134,7 +153,6 @@
         if (ParamInviteCode != null)
         inviteCode = ParamInviteCode;
         StateHasChanged();
-        Console.WriteLine("ParamInviteCode: " + ParamInviteCode);
     }
 
 }
