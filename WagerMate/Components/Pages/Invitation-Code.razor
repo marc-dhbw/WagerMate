@@ -1,4 +1,5 @@
 @page "/invitation-code"
+@page "/invitation-code/{ParamInviteCode}"
 @using WagerMate.Service_Implementation.auth
 @using WagerMate.Service_Implementation.betting
 @using WagerMate.Service_Implementation.user
@@ -124,4 +125,16 @@
         
         CreatedNewUserBet = true;
     }
+    
+    [Parameter]
+    public string? ParamInviteCode { get; set; }
+    
+    protected override void OnParametersSet()
+    {
+        if (ParamInviteCode != null)
+        inviteCode = ParamInviteCode;
+        StateHasChanged();
+        Console.WriteLine("ParamInviteCode: " + ParamInviteCode);
+    }
+
 }

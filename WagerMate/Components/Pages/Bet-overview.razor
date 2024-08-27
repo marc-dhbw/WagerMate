@@ -9,6 +9,8 @@
 @inject ICookieService CookieService;
 @inject IUserBetService UserBetService;
 @inject NavigationManager Navigation
+@inject IJSRuntime JsRuntime
+
 
 <PageTitle>Bet Overview</PageTitle>
 
@@ -42,7 +44,7 @@
     </div>
 </div>
 
-<!-- Popup Form -->
+<!-- Create Bet Popup Form -->
 @if (_isPopupVisible)
 {
     <div id="popup-overlay" @onclick="HidePopup" class="active">
@@ -74,6 +76,7 @@
     </div>
 }
 
+@*Details of Bet Popup Form*@
 @if (_isDetailsPopupVisible)
 {
     <div id="popup-overlay" @onclick="HidePopup" class="active">
@@ -83,8 +86,9 @@
             <br/>
             <label>Title:</label>@_betPopup.Title<br/>
             <label>Description:</label>@_betPopup.Description<br/>
-            <label>Bet Amount:</label>@_userbetPopup.Amount<br/>
-            <label>Expiration Date:</label>@_betPopup.Expiration<br/>
+            <label>Bet Amount:</label>@_userBetPopup.Amount<br/>
+            <label>Expiration Date:</label>@_betPopup.Expiration.ToShortDateString()<br/>
+            <button class="btn btn-primary" id="copyButton" @onclick="CopyLinkToClipboard">Copy Invite Link!</button><br/>
             <button class="btn btn-secondary" @onclick="HideDetailsPopup">Cancel</button>
 
         </div>
@@ -95,12 +99,13 @@
 
     private bool _isPopupVisible;
     private bool _isDetailsPopupVisible;
+    private string _inviteCode = "https://wagermate-main.onrender.com/invitation-code";
 
 
     private NewBetDetails _newBetDetails = new();
 
     private Bet _betPopup = new();
-    private UserBet _userbetPopup = new();
+    private UserBet _userBetPopup = new();
     public class NewBetDetails
     {
         public string NewBetTitle { get; set; } = null!;
@@ -118,8 +123,9 @@
     
     private void ShowDetailsPopup(Bet bet)
     {
-        _userbetPopup = UserBetService.GetUserBetById(_loggedInUser.Id, bet.Id);
+        _userBetPopup = UserBetService.GetUserBetById(_loggedInUser!.Id, bet.Id);
         _betPopup = bet;
+        _inviteCode = "https://wagermate-main.onrender.com/invitation-code/" +_betPopup.Invitation_Code;
         _isDetailsPopupVisible = true;
         StateHasChanged();
     }
@@ -154,7 +160,7 @@
         {
             Title = _newBetDetails.NewBetTitle,
             Description = _newBetDetails.NewBetDescription,
-            InvitationCode = Guid.NewGuid().ToString(),
+            Invitation_Code = Guid.NewGuid().ToString(),
             Created = DateTime.Now,
             Expiration = _newBetDetails.NewBetExpiration,
             BetAccess = Access.Private,
@@ -230,6 +236,11 @@
         {
             Console.WriteLine($"BetOverview: Error fetching bets - {ex.Message}");
         }
+    }
+    
+    private async Task CopyLinkToClipboard()
+    {
+        await JsRuntime.InvokeVoidAsync("copyToClipboard", _inviteCode);
     }
 
 }
