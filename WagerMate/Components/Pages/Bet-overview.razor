@@ -57,7 +57,7 @@
             <label>Bet Amount:</label><br/>
             <input type="number" @bind="_newBetDetails.NewBetMoney"/><br/><br/>
             <label>Set Expiration Date:</label><br/>
-            <input type="date" @bind="_newBetDetails.NewBetExpiration"/><br/><br/>
+            <input type="date" @bind="_newBetDetails.NewBetExpiration" min="@DateTime.Now.ToString("yyyy-MM-dd")"/><br/><br/>
             <button class="btn btn-success" @onclick="CreateNewBet">Create Bet</button>
             <button class="btn btn-secondary" @onclick="HidePopup">Cancel</button>
 
@@ -109,10 +109,15 @@
 
         if (string.IsNullOrWhiteSpace(_newBetDetails.NewBetTitle) ||
             string.IsNullOrWhiteSpace(_newBetDetails.NewBetDescription) ||
-            _newBetDetails.NewBetMoney <= 0 ||
-            _newBetDetails.NewBetExpiration == default)
+            _newBetDetails.NewBetMoney <= 0)
         {
             ErrorMessage = "Please fill out all fields correctly before creating a new bet.";
+            return;
+        }
+        
+        if (_newBetDetails.NewBetExpiration < DateTime.Now.Date || _newBetDetails.NewBetExpiration == default)
+        {
+            ErrorMessage = "The expiration date cannot be in the past.";
             return;
         }
 
