@@ -196,7 +196,7 @@
             var hashService = (IHashService)validationContext.GetService(typeof(IHashService));
             var user = userService.GetUserByEmail(email);
 
-            if (!hashService.CreateHash(password, email).Equals(user.Password))
+            if (!hashService.CreateHash(email, password).Equals(user.Password))
             {
                 return new ValidationResult("Incorrect password!");
             }
@@ -215,7 +215,6 @@
             {
                 Console.WriteLine("Login successful.");
                 await CookieService.SetCookieByNameAndValue("CookieID", user.Password, 7);
-
                 Navigation.NavigateTo("/");
             }
             else
