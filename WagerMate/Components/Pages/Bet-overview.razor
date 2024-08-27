@@ -154,7 +154,7 @@
         {
             Title = _newBetDetails.NewBetTitle,
             Description = _newBetDetails.NewBetDescription,
-            InvitationCode = "13df870a-b1c7-4a1b-8183-29904a1e36ae", //TODO: Add real UUID 
+            InvitationCode = Guid.NewGuid().ToString(),
             Created = DateTime.Now,
             Expiration = _newBetDetails.NewBetExpiration,
             BetAccess = Access.Private,
