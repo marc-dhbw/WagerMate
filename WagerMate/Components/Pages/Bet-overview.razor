@@ -27,30 +27,30 @@
     <div class="check-box-line">
         <div class="bet-state">
             <label for="Accepted">Accepted Bets</label>
-            <input type="checkbox" id="Accepted" @bind="DisplayAcceptedBets" />
+            <input type="checkbox" id="Accepted" @bind="DisplayAcceptedBets"/>
         </div>
 
         <div class="bet-state">
             <label for="Pending">Pending Bets</label>
-            <input type="checkbox" id="Pending" @bind="DisplayPendingBets" />
+            <input type="checkbox" id="Pending" @bind="DisplayPendingBets"/>
         </div>
 
         <div class="bet-state">
             <label for="Closed">Closed Bets</label>
-            <input type="checkbox" id="Closed" @bind="DisplayClosedBets" />
+            <input type="checkbox" id="Closed" @bind="DisplayClosedBets"/>
         </div>
     </div>
-    
+
     @* Listing the bets of the user: *@
     <div id="allBets">
         <h2>Here are your bets:</h2>
         <div id="allBetsLayout">
             @foreach (var bet in _bets)
             {
-                @if ((bet.State == State.Active && DisplayAcceptedBets) || 
+                @if ((bet.State == State.Active && DisplayAcceptedBets) ||
                      (bet.State == State.Closed && DisplayClosedBets) ||
                      (bet.State == State.Pending && DisplayPendingBets)
-                )
+                    )
                 {
                     <div id="individualBet">
                         <strong>Title:</strong> @bet.Title
@@ -89,19 +89,24 @@
             <label>Set Expiration Date:</label><br/>
             <input type="date" @bind="_formBetDetails.NewBetExpiration"/><br/><br/>
 
-            <label>Your Expected Case</label><br/>
+            <label>Your bet option</label><br/>
             <input type="text" @bind="_formBetDetails.CaseBetCreator"/><br/><br/>
-            
+
+            <label>Other possible bet options</label>
             <form>
                 <div>
                     @for (int i = 0; i < _dynamicInputs.Count; i++)
                     {
                         int index = i;
-                        <input type="text"  @oninput="(e) => UpdateInputValue(index, e.Value.ToString())"/>
+                        <input type="text" @oninput="(e) => UpdateInputValue(index, e.Value.ToString())"/>
+                        <br/>
                     }
 
                 </div>
-                <button type="button" @onclick="AddInputField">Add Entry</button>
+                @if (_dynamicInputs.Count != MaxFields)
+                {
+                    <button type="button" @onclick="AddInputField">add bet option</button>
+                }
             </form>
 
             <button class="btn btn-success" @onclick="CreateNewBet">Create Bet</button>
@@ -151,7 +156,7 @@
     {
         if (index >= 0 && index < _dynamicInputs.Count)
         {
-            _dynamicInputs[index]=value; 
+            _dynamicInputs[index] = value;
         }
     }
 
@@ -270,5 +275,5 @@
     private bool DisplayAcceptedBets { get; set; } = true;
     private bool DisplayPendingBets { get; set; } = true;
     private bool DisplayClosedBets { get; set; } = false;
-    
+
 }
