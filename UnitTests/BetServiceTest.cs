@@ -9,6 +9,7 @@ public class BetServiceTest
     private CaseService _caseService;
     private NpgsqlConnection _connection;
     private IDbService _idb;
+    private ClearService _clearService;
 
     [SetUp]
     public void Setup()
@@ -24,24 +25,13 @@ public class BetServiceTest
         _userService = new UserService(_idb);
         _userBetService = new UserBetService(_idb);
         _caseService = new CaseService(_idb);
+        _clearService = new ClearService(_idb);
     }
-    
-    public void ClearDatabase()
-    {
-        _idb.CustomSql("DELETE FROM public.userbet");
-        _idb.CustomSql("DELETE FROM public.case");
-        _idb.CustomSql("DELETE FROM public.user");
-        _idb.CustomSql("DELETE FROM public.bet");
-        _idb.CustomSql("ALTER SEQUENCE userbet_id_seq RESTART WITH 1");
-        _idb.CustomSql("ALTER SEQUENCE case_id_seq RESTART WITH 1");
-        _idb.CustomSql("ALTER SEQUENCE user_id_seq RESTART WITH 1");
-        _idb.CustomSql("ALTER SEQUENCE bet_id_seq RESTART WITH 1");
-    } 
     
     [Test]
     public void TestCreateBetEmptyConstructor()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();;
         
         //Creates Bet with Empty Constructor
         var localBet = new Bet();
@@ -61,7 +51,7 @@ public class BetServiceTest
     [Test]
     public void TestCreateBetKonstructor()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();;
         
         //Creates Bet with Constructor
         var localBet = new Bet(1, "Title", "Description", "InvitationCode", DateTime.Now, DateTime.Now, Access.Private, State.Active);
@@ -73,7 +63,7 @@ public class BetServiceTest
     [Test]
     public void TestGetAllBets()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();;
         
         //Create 3 Bets
         var localBet1 = new Bet(1, "Title", "Description", "InvitationCode", DateTime.Now, DateTime.Now, Access.Private, State.Active);
@@ -91,7 +81,7 @@ public class BetServiceTest
     [Test]
     public void TestUpdateBet()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();;
         
         //Create Bet to be updated
         var localBet = new Bet(1, "Title", "Description", "InvitationCode", DateTime.Now, DateTime.Now, Access.Private, State.Active);
@@ -106,7 +96,7 @@ public class BetServiceTest
     [Test]
     public void TestGetBetById()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();;
         
         //Create Bet
         var localBet = new Bet(1, "Title", "Description", "InvitationCode", DateTime.Now, DateTime.Now, Access.Private, State.Active);
@@ -120,7 +110,7 @@ public class BetServiceTest
     [Test]
     public void TestDeleteBet()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();;
         
         //Create Bet
         var localBet = new Bet(1, "Title", "Description", "InvitationCode", DateTime.Now, DateTime.Now, Access.Private, State.Active);
@@ -134,7 +124,7 @@ public class BetServiceTest
     [Test]
     public void TestGetBetsByUserId()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();;
         
         //Create Bet
         var localBet = new Bet(1, "Title", "Description", "InvitationCode", DateTime.Now, DateTime.Now, Access.Private, State.Active);
@@ -160,7 +150,7 @@ public class BetServiceTest
     [Test]
     public void TestGetBetByInviteCode()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();;
         
         //Create Bet
         var localBet = new Bet(1, "Title", "Description", "InvitationCode", DateTime.Now, DateTime.Now, Access.Private, State.Active);

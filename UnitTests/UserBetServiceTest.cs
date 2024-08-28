@@ -10,6 +10,7 @@ public class UserBetServiceTest
     private CaseService _caseService;
     private NpgsqlConnection _connection;
     private IDbService _idb;
+    private ClearService _clearService;
 
     [SetUp]
     public void Setup()
@@ -25,24 +26,13 @@ public class UserBetServiceTest
         _userService = new UserService(_idb);
         _userBetService = new UserBetService(_idb);
         _caseService = new CaseService(_idb);
-    }
-    
-    public void ClearDatabase()
-    {
-        _idb.CustomSql("DELETE FROM public.userbet");
-        _idb.CustomSql("DELETE FROM public.case");
-        _idb.CustomSql("DELETE FROM public.user");
-        _idb.CustomSql("DELETE FROM public.bet");
-        _idb.CustomSql("ALTER SEQUENCE userbet_id_seq RESTART WITH 1");
-        _idb.CustomSql("ALTER SEQUENCE case_id_seq RESTART WITH 1");
-        _idb.CustomSql("ALTER SEQUENCE user_id_seq RESTART WITH 1");
-        _idb.CustomSql("ALTER SEQUENCE bet_id_seq RESTART WITH 1");
+        _clearService = new ClearService(_idb);
     }
     
     [Test]
     public void TestCreateUserBetEmptyConstructor()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();
         
         //Creates User
         var localUser = new User(1, "Username", "Password", "Email");
@@ -71,7 +61,7 @@ public class UserBetServiceTest
     [Test]
     public void TestCreateUserBetKonstructor()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();
         
         //Creates User
         var localUser = new User(1, "Username", "Password", "Email");
@@ -95,7 +85,7 @@ public class UserBetServiceTest
     [Test]
     public void TestDeleteUserBetByUserAndBet()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();
         
         //Creates User
         var localUser = new User(1, "Username", "Password", "Email");
@@ -120,7 +110,7 @@ public class UserBetServiceTest
     [Test]
     public void TestDeleteUserBetByUserBet()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();
         
         //Creates User
         var localUser = new User(1, "Username", "Password", "Email");
@@ -145,7 +135,7 @@ public class UserBetServiceTest
     [Test]
     public void TestGetUserBetById()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();
         
         //Creates User
         var localUser = new User(1, "Username", "Password", "Email");
@@ -170,7 +160,7 @@ public class UserBetServiceTest
     [Test]
     public void TestGetUserBetByUserIdAndBetId()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();
         
         //Creates User
         var localUser = new User(1, "Username", "Password", "Email");
@@ -195,7 +185,7 @@ public class UserBetServiceTest
     [Test]
     public void TestGetAllUserIdsFromBet()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();
         
         //Creates User
         var localUser = new User(1, "Username", "Password", "Email");

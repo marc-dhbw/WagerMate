@@ -11,6 +11,7 @@ public class WinnerServiceTest
     private WinnerService _winnerService;
     private NpgsqlConnection _connection;
     private IDbService _idb;
+    private ClearService _clearService;
 
     [SetUp]
     public void Setup()
@@ -27,26 +28,13 @@ public class WinnerServiceTest
         _userBetService = new UserBetService(_idb);
         _caseService = new CaseService(_idb);
         _winnerService = new WinnerService(_idb);
-    }
-    
-    public void ClearDatabase()
-    {
-        _idb.CustomSql("DELETE FROM public.winner");
-        _idb.CustomSql("DELETE FROM public.userbet");
-        _idb.CustomSql("DELETE FROM public.case");
-        _idb.CustomSql("DELETE FROM public.user");
-        _idb.CustomSql("DELETE FROM public.bet");
-        _idb.CustomSql("ALTER SEQUENCE userbet_id_seq RESTART WITH 1");
-        _idb.CustomSql("ALTER SEQUENCE case_id_seq RESTART WITH 1");
-        _idb.CustomSql("ALTER SEQUENCE user_id_seq RESTART WITH 1");
-        _idb.CustomSql("ALTER SEQUENCE bet_id_seq RESTART WITH 1");
-        _idb.CustomSql("ALTER SEQUENCE winner_id_seq RESTART WITH 1");
+        _clearService = new ClearService(_idb);
     }
     
     [Test]
     public void TestCreateWinnerEmptyConstructor()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();
         
         //Creates User
         var localUser = new User(1, "Username", "Password", "Email");
@@ -77,7 +65,7 @@ public class WinnerServiceTest
     [Test]
     public void TestCreateWinnerConstructor()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();
         
         //Creates User
         var localUser = new User(1, "Username", "Password", "Email");
@@ -104,7 +92,7 @@ public class WinnerServiceTest
     [Test]
     public void TestGetWinnerById()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();
         
         //Creates User
         var localUser = new User(1, "Username", "Password", "Email");
@@ -134,7 +122,7 @@ public class WinnerServiceTest
     [Test]
     public void TestGetWinnersByBetId()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();
         
         //Creates User
         var localUser = new User(1, "Username", "Password", "Email");
@@ -164,7 +152,7 @@ public class WinnerServiceTest
     [Test]
     public void TestUpdateWinner()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();
         
         //Creates User
         var localUser = new User(1, "Username", "Password", "Email");
@@ -194,7 +182,7 @@ public class WinnerServiceTest
     [Test]
     public void TestDeleteWinner()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();
         
         //Creates User
         var localUser = new User(1, "Username", "Password", "Email");
