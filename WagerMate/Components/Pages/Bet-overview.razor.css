@@ -52,22 +52,6 @@ p {
     gap: 10px;
 }
 
-#individualBet {
-    border: 2px solid rgba(255, 128, 0, 0.5);
-    background: rgba(255, 128, 0, 0.5);
-    padding: 8px;
-    border-radius: 20px;
-    cursor: pointer;
-}
-
-#h2PopUpCreateNewBet {
-    background-image: linear-gradient(180deg, rgb(255, 94, 0) 0%, #FF8000 70%);
-    color: white;
-    padding: 8px;
-    margin: 1px;
-    border-radius: 10px;
-}
-
 #popup-overlay {
     position: fixed;
     top: 0;
@@ -96,3 +80,48 @@ p {
     border: 2px;
     border-radius: 30px;
 }
+
+#individualBet {
+    border: 2px solid rgba(255, 128, 0, 0.5);
+    background: rgba(255, 128, 0, 0.5);
+    padding: 8px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+#h2PopUpCreateNewBet {
+    background-image: linear-gradient(180deg, rgb(255, 94, 0) 0%, #FF8000 70%);
+    color: white;
+    padding: 8px;
+    margin: 1px;
+    border-radius: 10px;
+}
+
+#h2PopUpBetDetails {
+    background-image: linear-gradient(180deg, rgb(255, 94, 0) 0%, #FF8000 70%);
+    color: white;
+    padding: 8px;
+    margin: 1px;
+    border-radius: 10px;
+}
+
+.cancel-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.cancel-button:hover {
+    background-color: #c9302c;
+}
+
+.detail-label {
+    font-size: 5em !important;
+}
+
+
