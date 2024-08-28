@@ -79,13 +79,25 @@
     <div id="popup-overlay" @onclick="HidePopup" class="active">
         <div id="popup-content" @onclick:stopPropagation="true">
             <h2 id="h2PopUpBetDetails">Bet Details</h2>
-            <br/>
-            <br/>
-            <label>Title:</label>@_betPopup.Title<br/>
-            <label>Description:</label>@_betPopup.Description<br/>
-            <label>Bet Amount:</label>@_userbetPopup.Amount<br/>
-            <label>Expiration Date:</label>@_betPopup.Expiration<br/>
-            <button class="btn btn-secondary" @onclick="HideDetailsPopup">Cancel</button>
+            <div class="bet-details-container">
+                <div class="bet-detail">
+                    <label class="detail-label">Title:</label>
+                    <span class="detail-value">@_betPopup.Title</span> 
+                </div>
+                <div class="bet-detail">
+                    <label class="detail-label">Description:</label>
+                    <span class="detail-value">@_betPopup.Description</span>
+                </div>
+                <div class="bet-detail">
+                    <label class="detail-label">Bet Amount:</label>
+                    <span class="detail-value">@_userbetPopup.Amount</span>
+                </div>
+                <div class="bet-detail">
+                    <label class="detail-label">Expiration Date:</label>
+                    <span class="detail-value">@_betPopup.Expiration</span>
+                </div>
+                <button class="btn btn-secondary cancel-button" @onclick="HideDetailsPopup">Cancel</button>
+            </div>
 
         </div>
     </div>
@@ -232,4 +244,5 @@
         }
     }
 
+}
 }
