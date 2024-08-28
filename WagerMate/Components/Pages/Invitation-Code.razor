@@ -55,17 +55,22 @@
 
             <button class="submit-btn" @onclick="SubmitValues">Submit</button>
         }
-        @if (CreatedNewUserBet)
+        @* @if (CreatedNewUserBet) *@
+        @* { *@
+        @* <p class="alert alert-success">You are now participating in the bet!</p> *@
+        @* } *@
+
+        @if (HasNotificationMessage)
         {
-        <p class="alert alert-success">You are now participating in the bet!</p>
+        <p class=@NotificationClass>@NotificationMessage</p>
         }
     </div>
     
 
-@if (HasNotificationMessage)
-{
-<p class=@NotificationClass>@NotificationMessage</p>
-}
+@* @if (HasNotificationMessage) *@
+@* { *@
+@* <p class=@NotificationClass>@NotificationMessage</p> *@
+@* } *@
 
 @code {
     //AutoRedirect to the LoginPage
@@ -135,11 +140,14 @@
         {
             UserBetService.CreateUserBet(tempUserBet);
             CreatedNewUserBet = true;
+            HasNotificationMessage = true;
+            NotificationMessage = "You are now participating in this bet!";
+            NotificationClass = "alert alert-success";
         }
         else
         {
             HasNotificationMessage = true;
-            NotificationMessage = "You already are participating in this Bet!";
+            NotificationMessage = "You are already participating in this bet!";
             NotificationClass = "alert alert-danger";
         }
         

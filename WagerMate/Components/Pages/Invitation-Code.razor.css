@@ -28,6 +28,13 @@ p{
     margin-top: 10px;
 }
 
+.alert-danger{
+    background: #ffc7bd;
+    margin: initial;
+    text-align: center;
+    margin-top: 10px;
+}
+
 .form-group {
     display: flex;
     justify-content: start;
