@@ -47,9 +47,9 @@
         <div id="allBetsLayout">
             @foreach (var bet in _bets)
             {
-                @if ((bet.BetState == State.Active && DisplayAcceptedBets) || 
-                     (bet.BetState == State.Closed && DisplayClosedBets) ||
-                     (bet.BetState == State.Pending && DisplayPendingBets)
+                @if ((bet.State == State.Active && DisplayAcceptedBets) || 
+                     (bet.State == State.Closed && DisplayClosedBets) ||
+                     (bet.State == State.Pending && DisplayPendingBets)
                 )
                 {
                     <div id="individualBet">
@@ -57,11 +57,13 @@
                         <br/>
                         <strong>Description:</strong> @bet.Description
                         <br/>
-                        <strong>State:</strong> @bet.BetState
+                        <strong>State:</strong> @bet.State
                         <br/>
                         <strong>Created:</strong> @bet.Created.ToShortDateString()
                         <br/>
                         <strong>Expires:</strong> @bet.Expiration.ToShortDateString()
+                        <br/>
+                        <strong>State:</strong> @bet.State.ToString();
                         <br/>
                     </div>
                 }
@@ -151,8 +153,8 @@
             InvitationCode = "13df870a-b1c7-4a1b-8183-29904a1e36ae", //TODO: Add real UUID 
             Created = DateTime.Now,
             Expiration = _newBetDetails.NewBetExpiration,
-            BetAccess = Access.Private,
-            BetState = State.Pending
+            Access = Access.Private,
+            State = State.Pending
         };
         if (_loggedInUser == null) return;
 

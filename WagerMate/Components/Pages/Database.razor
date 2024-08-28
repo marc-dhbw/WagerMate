@@ -162,8 +162,8 @@
         updatedB.Title = "Updated Titel";
         updatedB.Description = "updated description";
         updatedB.InvitationCode = "ALJFKDKJFSDL";
-        updatedB.BetAccess = Access.Restricted;
-        updatedB.BetState = State.Closed;
+        updatedB.Access = Access.Restricted;
+        updatedB.State = State.Closed;
         updatedB.Id = 47;
 
         var result = BetService.UpdateBet(updatedB);
@@ -204,8 +204,8 @@
         bet2.InvitationCode = "LSDJFHSGAJDIEWU";
         bet2.Created = DateTime.Now;
         bet2.Expiration = DateTime.Now.AddYears(50);
-        bet2.BetAccess = Access.Public;
-        bet2.BetState = State.Pending;
+        bet2.Access = Access.Public;
+        bet2.State = State.Pending;
 
         Console.WriteLine("bet locally created");
         try
@@ -226,8 +226,8 @@
         bet.InvitationCode = "SDFHUKSNVBSHEIFWE";
         bet.Created = DateTime.Now;
         bet.Expiration = DateTime.Now.AddYears(50);
-        bet.BetAccess = Access.Private;
-        bet.BetState = State.Active;
+        bet.Access = Access.Private;
+        bet.State = State.Active;
         return bet;
     }
 
