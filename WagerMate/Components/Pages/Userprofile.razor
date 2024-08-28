@@ -61,7 +61,10 @@ else
                 <label>Confirm with password:</label>
             </div>
             <InputText type="password" @bind-Value="_editedUserData.NewEmailPassword"/>
-            <ValidationMessage For=@(() => _editedUserData.NewEmailPassword)/>
+            @if (!_validPassword)
+            {
+                <p class="alert alert-danger">Incorrect password!</p>
+            }
         </div>
         <div id="registerspace">
             <input type="button" value="Cancel" @onclick="@CancelEditingEMail"/>
@@ -132,7 +135,6 @@ else
         [Compare("Password", ErrorMessage = "Must match Password!")]
         public string? PasswordRepeat { get; set; }
         
-        //[PasswordCorrect]
         public string? NewEmailPassword { get; set; }
     }
 
@@ -180,25 +182,7 @@ else
         _editingUsername = false;
     }
 
-    /*public class PasswordCorrectAttribute : ValidationAttribute
-    {
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
-        {
-            var password = value as string;
-            var loggedInUser = (User)validationContext.GetService(typeof(User));
-
-            var userService = (IUserService)validationContext.GetService(typeof(IUserService));
-            var hashService = (IHashService)validationContext.GetService(typeof(IHashService));
-            var user = userService.GetUserByEmail(loggedInUser.Email);
-
-            if (!hashService.CreateHash(loggedInUser.Email, password).Equals(user.Password))
-            {
-                return new ValidationResult("Incorrect password!");
-            }
-            
-            return ValidationResult.Success;
-        }
-    }*/
+    private bool _validPassword = true;
 
     private void EditEMail()
     {
@@ -214,7 +198,13 @@ else
                 CookieService.SetCookieByNameAndValue("CookieID", tempUser.Password!, 7);
                 _loggedInUser = tempUser;
             }
+
+            _validPassword = true;
             _editingEMail = false;
+        }
+        else
+        {
+            _validPassword = false;
         }
     }
 
