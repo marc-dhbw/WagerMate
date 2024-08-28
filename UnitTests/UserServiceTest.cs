@@ -1,9 +1,3 @@
-using Microsoft.Extensions.Configuration;
-using Npgsql;
-using WagerMate.Service_Implementation.database;
-using WagerMate.Service_Implementation.user;
-using WagerMate.Services.database;
-
 namespace UnitTests;
 
 [TestFixture]
@@ -74,7 +68,7 @@ public class UserServiceTest
         
         //Get all users
         var result = _userService.GetAllUsers();
-        Assert.IsNotNull(result);
+        Assert.IsNotEmpty(result);
     }
 
     [Test]
