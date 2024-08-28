@@ -1,4 +1,5 @@
 @page "/"
+@using Dapper
 @using WagerMate.Services.auth
 @using WagerMate.Services.betting
 @using WagerMate.Services.user
@@ -65,6 +66,8 @@
                         <br/>
                         <strong>State:</strong> @bet.State.ToString();
                         <br/>
+                        <strong>Total amount:</strong> @getTotalAmount(bet);
+                        <br/>
                     </div>
                 }
             }
@@ -130,13 +133,22 @@
     private List<Bet> _bets = new();
     private bool _isPopupVisible;
     private bool _firstLogin = true;
+    private bool DisplayAcceptedBets { get; set; } = true;
+    private bool DisplayPendingBets { get; set; } = true;
+    private bool DisplayClosedBets { get; set; } = false;
     private User? _loggedInUser = new();
     private FormBetDetails _formBetDetails = new();
     private string? ErrorMessage { get; set; }
+    private int _totalAmount { get; set; }
 
     // Define properties and fields
     private static int MaxFields { get; set; } = 5;
     private List<string> _dynamicInputs = new List<string>(MaxFields);
+
+    public double getTotalAmount(Bet bet)
+    {
+        return UserBetService.GetAllUserBetIdsFromBet(bet).Sum(userBet => userBet.Amount);
+    }
 
     // Method to add a new input field
     private void AddInputField()
@@ -271,9 +283,6 @@
             Console.WriteLine($"BetOverview: Error fetching bets - {ex.Message}");
         }
     }
-
-    private bool DisplayAcceptedBets { get; set; } = true;
-    private bool DisplayPendingBets { get; set; } = true;
-    private bool DisplayClosedBets { get; set; } = false;
+    
 
 }
