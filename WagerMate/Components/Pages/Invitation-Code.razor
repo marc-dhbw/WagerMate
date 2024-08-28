@@ -22,7 +22,7 @@
 
         <div class="form-group">
             <label for="inviteCode">Invite Code:</label>
-            <input @bind="inviteCode" class="form-control" id="inviteCode" placeholder="Enter your invitation code here..."/>
+            <input @bind="inviteCode" class="form-control" id="inviteCode" placeholder=@inviteCodePlaceholder/>
         </div>
 
         <button class="submit-btn" @onclick="SubmitCode">Submit</button>
@@ -70,6 +70,7 @@
     //AutoRedirect to the LoginPage
     private bool _firstLogin = true;
     private User? _loggedInUser = new();
+    private string inviteCodePlaceholder = "Enter your invitation code here...";
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -86,7 +87,6 @@
     }
     
     private string inviteCode { get; set; }
-    private string submittedInviteCode { get; set; }
     private bool DisplayBetInputs { get; set; } = false;
     private int _moneyValue { get; set; }
     private Bet _acceptedBet { get; set; }
@@ -99,20 +99,18 @@
 
     private void SubmitCode()
     {
-        submittedInviteCode = inviteCode;
-
-        _acceptedBet = BetService.GetBetByInviteCode(submittedInviteCode);
+        _acceptedBet = BetService.GetBetByInviteCode(inviteCode);
         if (_acceptedBet == null)
         {
-            submittedInviteCode = "No such code found";
+            inviteCode = "";
+            inviteCodePlaceholder = "Invite Code does not exist!";
+            StateHasChanged();
             return;
         }
-
         if (_acceptedBet.BetState == State.Active) _betStateString = "Active";
         if (_acceptedBet.BetState == State.Closed) _betStateString = "Closed";
         if (_acceptedBet.BetState == State.Pending) _betStateString = "Pending";
         
-        submittedInviteCode = "";
         DisplayBetInputs = true;
     }
 
@@ -123,6 +121,7 @@
         tempCase.Bet_Id = _acceptedBet.Id;
         tempCase.Casetype = "Money";
         tempCase.Id = CaseService.CreateCase(tempCase);
+        
         //create userbet
         UserBet tempUserBet = new UserBet();
         tempUserBet.Bet_Id = _acceptedBet.Id;
