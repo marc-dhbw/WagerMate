@@ -52,6 +52,16 @@
                 <label for="moneyValue">Amount:</label>
                 <input id="moneyValue" type="number" @bind="_moneyValue" min="0"/>
             </div>
+            
+            <div class="form-group">
+                <label for="betoptions">Bet Options</label>
+                <select id="betoptions" @bind="_selectedCaseId">
+                    @foreach (Case betOption in _betOptions)
+                    {
+                        <option value="@betOption.Id">@betOption.Casetype</option>
+                    }
+                </select>
+            </div>
 
             <button class="submit-btn" @onclick="SubmitValues">Submit</button>
         }
@@ -88,10 +98,13 @@
     private int _moneyValue { get; set; } 
     private Bet _acceptedBet { get; set; }
     private bool CreatedNewUserBet { get; set; }
-    private string _betStateString { get; set; }
+    private string _betStateString { get; set; } = "";
     private bool HasNotificationMessage { get; set; }
     private string NotificationMessage { get; set; }
     private string NotificationClass { get; set; }
+    private int _selectedCaseId { get; set; }
+    private List<Case> _betOptions { get; set; }
+    
     
 
     private void SubmitCode()
@@ -107,28 +120,23 @@
         if (_acceptedBet.BetState == State.Active) _betStateString = "Active";
         if (_acceptedBet.BetState == State.Closed) _betStateString = "Closed";
         if (_acceptedBet.BetState == State.Pending) _betStateString = "Pending";
-        
+        _betOptions = CaseService.GetCasesByBetId(_acceptedBet.Id);
         DisplayBetInputs = true;
     }
 
     private void SubmitValues()
     {
-        //create case
-        Case tempCase = new Case();
-        tempCase.Bet_Id = _acceptedBet.Id;
-        tempCase.Casetype = "Money";
-        tempCase.Id = CaseService.CreateCase(tempCase);
-        
-        //create userbet
-        UserBet tempUserBet = new UserBet();
-        tempUserBet.Bet_Id = _acceptedBet.Id;
-        tempUserBet.User_Id = _loggedInUser.Id;
-        tempUserBet.Amount = _moneyValue;
-        tempUserBet.Case_Id = tempCase.Id;
 
         List<Bet> ParticipatingInBetWithId = BetService.GetBetsByUserId(_loggedInUser.Id);
         if (ParticipatingInBetWithId.All(bet => bet.Id != _acceptedBet.Id) && _moneyValue >= 0)
         {
+            //create userbet
+            UserBet tempUserBet = new UserBet();
+            tempUserBet.Bet_Id = _acceptedBet.Id;
+            tempUserBet.User_Id = _loggedInUser.Id;
+            tempUserBet.Amount = _moneyValue;
+            tempUserBet.Case_Id = _selectedCaseId;
+            
             UserBetService.CreateUserBet(tempUserBet);
             CreatedNewUserBet = true;
             HasNotificationMessage = true;
