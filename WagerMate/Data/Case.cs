@@ -6,9 +6,8 @@ public class Case
     {
     }
 
-    public Case(int id, int betId, string? casetype)
+    public Case(int betId, string? casetype)
     {
-        Id = id;
         Bet_Id = betId;
         Casetype = casetype;
     }

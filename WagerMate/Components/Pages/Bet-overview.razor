@@ -81,13 +81,29 @@
             <br/>
             <br/>
             <label>Title:</label><br/>
-            <input type="text" @bind="_newBetDetails.NewBetTitle"/><br/><br/>
+            <input type="text" @bind="_formBetDetails.NewBetTitle"/><br/><br/>
             <label>Description:</label><br/>
-            <input type="text" @bind="_newBetDetails.NewBetDescription"/><br/><br/>
+            <input type="text" @bind="_formBetDetails.NewBetDescription"/><br/><br/>
             <label>Bet Amount:</label><br/>
-            <input type="number" @bind="_newBetDetails.NewBetMoney"/><br/><br/>
+            <input type="number" @bind="_formBetDetails.NewBetMoney"/><br/><br/>
             <label>Set Expiration Date:</label><br/>
-            <input type="date" @bind="_newBetDetails.NewBetExpiration"/><br/><br/>
+            <input type="date" @bind="_formBetDetails.NewBetExpiration"/><br/><br/>
+
+            <label>Your Expected Case</label><br/>
+            <input type="text" @bind="_formBetDetails.CaseBetCreator"/><br/><br/>
+            
+            <form>
+                <div>
+                    @for (int i = 0; i < _dynamicInputs.Count; i++)
+                    {
+                        int index = i;
+                        <input type="text"  @oninput="(e) => UpdateInputValue(index, e.Value.ToString())"/>
+                    }
+
+                </div>
+                <button type="button" @onclick="AddInputField">Add Entry</button>
+            </form>
+
             <button class="btn btn-success" @onclick="CreateNewBet">Create Bet</button>
             <button class="btn btn-secondary" @onclick="HidePopup">Cancel</button>
 
@@ -106,22 +122,58 @@
 
 @code{
 
+    private List<Bet> _bets = new();
     private bool _isPopupVisible;
+    private bool _firstLogin = true;
+    private User? _loggedInUser = new();
+    private FormBetDetails _formBetDetails = new();
+    private string? ErrorMessage { get; set; }
 
-    private NewBetDetails _newBetDetails = new();
+    // Define properties and fields
+    private static int MaxFields { get; set; } = 5;
+    private List<string> _dynamicInputs = new List<string>(MaxFields);
 
-    public class NewBetDetails
+    // Method to add a new input field
+    private void AddInputField()
+    {
+        if (_dynamicInputs.Count < MaxFields)
+        {
+            _dynamicInputs.Add(string.Empty);
+        }
+        else
+        {
+            // Optionally alert the user if the max is reached
+            Console.WriteLine("Maximum number of fields reached.");
+        }
+    }
+
+    private void UpdateInputValue(int index, string value)
+    {
+        if (index >= 0 && index < _dynamicInputs.Count)
+        {
+            _dynamicInputs[index]=value; 
+        }
+    }
+
+
+    private void ResetFields()
+    {
+        _dynamicInputs.Clear(); // Clears all input fields
+    }
+
+    public class FormBetDetails
     {
         public string NewBetTitle { get; set; } = null!;
         public string NewBetDescription { get; set; } = null!;
         public uint NewBetMoney { get; set; }
         public DateTime NewBetExpiration { get; set; } = DateTime.Now;
+        public string CaseBetCreator { get; set; } = null!;
     }
 
     private void ShowPopup()
     {
         _isPopupVisible = true;
-        _newBetDetails = new NewBetDetails();
+        _formBetDetails = new FormBetDetails();
         StateHasChanged();
     }
 
@@ -129,18 +181,18 @@
     {
         _isPopupVisible = false;
         StateHasChanged();
+        ResetFields();
     }
 
-    private string? ErrorMessage { get; set; }
 
     private void CreateNewBet()
     {
         ErrorMessage = string.Empty;
 
-        if (string.IsNullOrWhiteSpace(_newBetDetails.NewBetTitle) ||
-            string.IsNullOrWhiteSpace(_newBetDetails.NewBetDescription) ||
-            _newBetDetails.NewBetMoney <= 0 ||
-            _newBetDetails.NewBetExpiration == default)
+        if (string.IsNullOrWhiteSpace(_formBetDetails.NewBetTitle) ||
+            string.IsNullOrWhiteSpace(_formBetDetails.NewBetDescription) ||
+            _formBetDetails.NewBetMoney <= 0 ||
+            _formBetDetails.NewBetExpiration == default)
         {
             ErrorMessage = "Please fill out all fields correctly before creating a new bet.";
             return;
@@ -148,40 +200,33 @@
 
         var newBet = new Bet
         {
-            Title = _newBetDetails.NewBetTitle,
-            Description = _newBetDetails.NewBetDescription,
+            Title = _formBetDetails.NewBetTitle,
+            Description = _formBetDetails.NewBetDescription,
             InvitationCode = "13df870a-b1c7-4a1b-8183-29904a1e36ae", //TODO: Add real UUID 
             Created = DateTime.Now,
-            Expiration = _newBetDetails.NewBetExpiration,
+            Expiration = _formBetDetails.NewBetExpiration,
             Access = Access.Private,
             State = State.Pending
         };
         if (_loggedInUser == null) return;
 
-        var tempCase = new Case
-        {
-            Casetype = "Money" //TODO: adjust value depending on ?
-        };
-        var tempUserBet = new UserBet
-        {
-            User_Id = _loggedInUser.Id,
-            Amount = _newBetDetails.NewBetMoney
-        };
-
         try
         {
             // creating Bet, then Case, then UserBet
             var createdBet = BetService.CreateBet(newBet);
-            _bets = BetService.GetBetsByUserId(_loggedInUser.Id);
-            tempCase.Bet_Id = createdBet.Id;
-            tempUserBet.Bet_Id = createdBet.Id;
 
-            var caseId = CaseService.CreateCase(tempCase);
-            tempCase.Id = caseId;
-            tempUserBet.Case_Id = caseId;
+            for (var i = 0; i < _dynamicInputs.Count; i++)
+            {
+                CaseService.CreateCase(new Case(createdBet.Id, _dynamicInputs[i]));
+            }
 
-            var userBetId = UserBetService.CreateUserBet(tempUserBet);
-            tempUserBet.Id = userBetId;
+            UserBet userBet = new UserBet();
+            userBet.Bet_Id = createdBet.Id;
+            userBet.User_Id = _loggedInUser.Id;
+            userBet.Amount = _formBetDetails.NewBetMoney;
+            var creatorcaseId = CaseService.CreateCase(new Case(createdBet.Id, _formBetDetails.CaseBetCreator));
+            userBet.Case_Id = creatorcaseId;
+            UserBetService.CreateUserBet(userBet);
         }
         catch (Exception)
         {
@@ -191,12 +236,6 @@
         HidePopup();
         StateHasChanged();
     }
-
-    private List<Bet> _bets = new();
-
-    //AutoRedirect to the LoginPage
-    private bool _firstLogin = true;
-    private User? _loggedInUser = new();
 
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
