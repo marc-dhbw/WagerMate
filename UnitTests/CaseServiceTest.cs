@@ -4,16 +4,15 @@ public class CaseServiceTest
 {
     private BetService _betService;
     private CaseService _caseService;
-    private NpgsqlConnection _connection;
     private IDbService _idb;
     private ClearService _clearService;
 
     [SetUp]
     public void Setup()
     {
-        _connection =
+        NpgsqlConnection connection =
             new NpgsqlConnection("Host=localhost;Port=5432;Database=mydatabase;UserId=postgres;Password=password");
-        _connection.Open();
+        connection.Open();
         IConfiguration iconf = new ConfigurationManager();
         iconf["ConnectionStrings:Wagerdb"] =
             "Host=localhost;Port=5432;Database=mydatabase;UserId=postgres;Password=password";
