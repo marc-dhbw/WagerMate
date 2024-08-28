@@ -8,7 +8,8 @@
 @inject ICaseService CaseService;
 @inject ICookieService CookieService;
 @inject IUserBetService UserBetService;
-@inject NavigationManager Navigation
+
+@inherits BasePage;
 
 <PageTitle>Bet Overview</PageTitle>
 
@@ -171,7 +172,7 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await CookieService.RedirectToLogin("CookieID", Navigation);
+        await base.OnAfterRenderAsync(firstRender);
         var value = await CookieService.GetCookieByName("CookieID");
         if (_firstLogin)
         {

@@ -1,8 +1,7 @@
 @page "/logout"
-@using WagerMate.Services.auth
 @rendermode InteractiveServer
-@inject NavigationManager Navigation
 @inject ICookieService CookieService
+@inherits BasePage;
 
 <div>
     <p>Logging out...</p>
@@ -12,6 +11,5 @@
     protected override void OnInitialized()
     {
         CookieService.DeleteCookie("CookieID");
-        CookieService.RedirectToLogin("CookieID", Navigation);
     }
 }
