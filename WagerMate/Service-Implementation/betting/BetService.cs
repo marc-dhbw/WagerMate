@@ -44,7 +44,7 @@ public class BetService : IBetService
 
     public bool DeleteBet(int key)
     {
-        var result = _service.Delete<Bet>("DELETE FROM bet.bet WHERE bet.Id = @Id", new { id = key });
+        var result = _service.Delete<Bet>("DELETE FROM public.bet WHERE bet.Id = @Id", new { id = key });
         return result;
     }
 
