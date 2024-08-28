@@ -14,52 +14,53 @@
 @inject IUserService UserService
 @inject NavigationManager Navigation
 
-<div class="form-container">
+<PageTitle>Invitation Code</PageTitle>
+
+<h1>Invitation Link</h1>
+    <div class="form-container">
+        
+        @if (!DisplayBetInputs)
+        {
+            <div class="form-group">
+                <label for="inviteCode">Invite Code:</label>
+                <input @bind="inviteCode" class="form-control" id="inviteCode" placeholder="Enter your invitation code here..."/>
+            </div>
+
+            <button class="submit-btn" @onclick="SubmitCode">Submit</button>
+        }
+
+        @if (DisplayBetInputs)
+        {
+            <h2>Submit Bet</h2>
+            
+            <div class="form-group">
+                <label>Title:</label>
+                <p>@_acceptedBet.Title</p>            
+            </div>
+
+            <div class="form-group">
+                <label>Description:</label>
+                <p>@_acceptedBet.Description</p>
+            </div>
+
+            <div class="form-group">
+                <label>State:</label>
+                <p>@_betStateString</p>
+            </div>
+
+            <div class="form-group">
+                <label for="moneyValue">Amount:</label>
+                <input id="moneyValue" type="number" @bind="_moneyValue" />
+            </div>
+
+            <button class="submit-btn" @onclick="SubmitValues">Submit</button>
+        }
+        @if (CreatedNewUserBet)
+        {
+        <p class="alert alert-success">You are now participating in the bet!</p>
+        }
+    </div>
     
-    @if (!DisplayBetInputs)
-    {
-        <h2>Invitation Code</h2>
-
-        <div class="form-group">
-            <label for="inviteCode">Invite Code:</label>
-            <input @bind="inviteCode" class="form-control" id="inviteCode" placeholder="Enter your invitation code here..."/>
-        </div>
-
-        <button class="submit-btn" @onclick="SubmitCode">Submit</button>
-    }
-
-    @if (DisplayBetInputs)
-    {
-        <h2>Submit Bet</h2>
-
-        <div class="form-group">
-            <label for="title">Title:</label>
-            <InputText id="title" @bind-Value="_acceptedBet.Title" readonly class="no-border"></InputText>
-        </div>
-
-        <div class="form-group">
-            <label for="description">Description:</label>
-            <InputText id="description" @bind-Value="_acceptedBet.Description" readonly class="no-border"></InputText>
-        </div>
-
-        <div class="form-group">
-            <label for="state">State:</label>
-            <InputText id="state" @bind-Value="_betStateString" readonly class="no-border"></InputText>
-        </div>
-
-        <div class="form-group">
-            <label for="moneyValue">Amount:</label>
-            <input id="moneyValue" type="number" @bind="_moneyValue" />
-        </div>
-
-        <button class="submit-btn" @onclick="SubmitValues">Submit</button>
-    }
-</div>
-    
-@if (CreatedNewUserBet)
-{
-    <p class="alert alert-success">You are now participating in the bet!</p>
-}
 
 @code {
     //AutoRedirect to the LoginPage
