@@ -50,27 +50,18 @@
 
             <div class="form-group">
                 <label for="moneyValue">Amount:</label>
-                <input id="moneyValue" type="number" @bind="_moneyValue" />
+                <input id="moneyValue" type="number" @bind="_moneyValue" min="0"/>
             </div>
 
             <button class="submit-btn" @onclick="SubmitValues">Submit</button>
         }
-        @* @if (CreatedNewUserBet) *@
-        @* { *@
-        @* <p class="alert alert-success">You are now participating in the bet!</p> *@
-        @* } *@
-
+        
         @if (HasNotificationMessage)
         {
         <p class=@NotificationClass>@NotificationMessage</p>
         }
     </div>
-    
 
-@* @if (HasNotificationMessage) *@
-@* { *@
-@* <p class=@NotificationClass>@NotificationMessage</p> *@
-@* } *@
 
 @code {
     //AutoRedirect to the LoginPage
@@ -94,7 +85,7 @@
     
     private string inviteCode { get; set; }
     private bool DisplayBetInputs { get; set; } = false;
-    private int _moneyValue { get; set; }
+    private int _moneyValue { get; set; } 
     private Bet _acceptedBet { get; set; }
     private bool CreatedNewUserBet { get; set; }
     private string _betStateString { get; set; }
@@ -136,7 +127,7 @@
         tempUserBet.Case_Id = tempCase.Id;
 
         List<Bet> ParticipatingInBetWithId = BetService.GetBetsByUserId(_loggedInUser.Id);
-        if (ParticipatingInBetWithId.All(bet => bet.Id != _acceptedBet.Id))
+        if (ParticipatingInBetWithId.All(bet => bet.Id != _acceptedBet.Id) && _moneyValue >= 0)
         {
             UserBetService.CreateUserBet(tempUserBet);
             CreatedNewUserBet = true;
@@ -146,9 +137,18 @@
         }
         else
         {
-            HasNotificationMessage = true;
-            NotificationMessage = "You are already participating in this bet!";
-            NotificationClass = "alert alert-danger";
+            //check moneyValue >= 0
+            if (_moneyValue < 0) {
+                HasNotificationMessage = true;
+                NotificationMessage = "The Amount has to be at least 0!";
+                NotificationClass = "alert alert-danger";
+            }
+            else {
+                HasNotificationMessage = true;
+                NotificationMessage = "You are already participating in this bet!";
+                NotificationClass = "alert alert-danger";
+            }
+            
         }
         
     }
