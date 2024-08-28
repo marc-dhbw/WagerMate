@@ -6,6 +6,7 @@ public class UserServiceTest
     private UserService _userService;
     private NpgsqlConnection _connection;
     private IDbService _idb;
+    private ClearService _clearService;
 
     [SetUp]
     public void Setup()
@@ -18,18 +19,13 @@ public class UserServiceTest
             "Host=localhost;Port=5432;Database=mydatabase;UserId=postgres;Password=password";
         _idb = new DbService(iconf);
         _userService = new UserService(_idb);
+        _clearService = new ClearService(_idb);
     }
 
-    public void ClearDatabase()
-    {
-        _idb.CustomSql("DELETE FROM public.user");
-        _idb.CustomSql("ALTER SEQUENCE user_id_seq RESTART WITH 1");
-    }
-    
     [Test]
     public void TestCreateUserEmptyConstructor()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();;
         
         //Creates User with Empty Constructor
         var localUser = new User();
@@ -44,7 +40,7 @@ public class UserServiceTest
     [Test]
     public void TestCreateUserKonstructor()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();;
         
         //Creates User with Constructor
         User localUser = new User(1, "test@gmail.com", "TestName", "TestPassword");
@@ -56,7 +52,7 @@ public class UserServiceTest
     [Test]
     public void TestGetAllUser()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();;
         
         //Create 3 users
         var localUser1 = new User(2, "Name", "Email", "Password");
@@ -74,7 +70,7 @@ public class UserServiceTest
     [Test]
     public void TestUpdateUser()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();;
         
         //Create User to be updated
         var localUser = new User(1, "Name", "Email", "Password");
@@ -89,7 +85,7 @@ public class UserServiceTest
     [Test]
     public void TestGetUserById()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();;
         
         //Create User
         var localUser = new User(1, "Name", "Email", "Password");
@@ -103,7 +99,7 @@ public class UserServiceTest
     [Test]
     public void TestDeletUser()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();;
         
         //Create User
         var localUser = new User(1, "Name", "Email", "Password");
@@ -117,7 +113,7 @@ public class UserServiceTest
     [Test]
     public void TestGetUserByEmail()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();;
         
         //Create User
         var localUser = new User(1, "Name", "mail@mail.de", "Password");
@@ -131,7 +127,7 @@ public class UserServiceTest
     [Test]
     public void TestGetUserByPassword()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();;
         
         //Create User
         var localUser = new User(1, "Name", "Email", "Password");
@@ -145,7 +141,7 @@ public class UserServiceTest
     [Test]
     public void TestDoesUserPasswordExist()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();;
         
         //Create User
         var localUser = new User(1, "Name", "Email", "Password");
@@ -159,7 +155,7 @@ public class UserServiceTest
     [Test]
     public void TestEmailIsRegistered()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();;
 
         //Create User
         var localUser = new User(1, "Name", "mail@mail.de", "Password");
@@ -173,7 +169,7 @@ public class UserServiceTest
     [Test]
     public void TestGetUserIfPasswordExists()
     {
-        ClearDatabase();
+        _clearService.ClearDatabase();;
         
         //Create User
         var localUser = new User(1, "Name", "Email", "Password");
