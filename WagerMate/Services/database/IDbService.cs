@@ -13,4 +13,5 @@ public interface IDbService
         where T : class;
 
     public int CreateWithReturn(string sql, object parameters);
+    public bool CustomSql(string sql);
 }
