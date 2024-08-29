@@ -271,7 +271,7 @@
             return;
         }
         
-        if (_newBetDetails.NewBetExpiration < DateTime.Now.Date || _newBetDetails.NewBetExpiration == default)
+        if (_formBetDetails.NewBetExpiration < DateTime.Now.Date || _formBetDetails.NewBetExpiration == default)
         {
             ErrorMessage = "The expiration date cannot be in the past.";
             return;
