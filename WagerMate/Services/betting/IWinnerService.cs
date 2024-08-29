@@ -9,4 +9,5 @@ public interface IWinnerService
     public List<Winner> GetWinnersByBetId(int betId);
     public bool UpdateWinner(Winner newWinner);
     public bool DeleteWinner(int winnerId);
+    public Winner? GetWinnerByUserBetIdIfExists(int userBetId);
 }
