@@ -58,10 +58,19 @@ p{
     margin-left: 15px;
 }
 
+#betoptions{
+    border: 1px solid black;
+    margin-left: 15px;
+    width: 57%;
+    height: 25px;
+    border-radius: 5px;
+}
+
 .form-group input[type="number"] {
     width: 57%;
     border: 1px solid black;
     margin-left: 15px;
+    height: 25px;
 }
 
 
