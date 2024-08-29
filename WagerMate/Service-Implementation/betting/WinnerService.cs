@@ -15,7 +15,7 @@ public class WinnerService : IWinnerService
 
     public Winner CreateWinner(Winner createdWinner)
     {
-        int newId = _service.CreateWithReturn("INSERT INTO public.winner(bet_id, userbet_id, amount) VALUES(@Bet_Id, @UserBet_Id, @Amount)",
+        int newId = _service.CreateWithReturn("INSERT INTO public.winner(bet_id, userbet_id, amount) VALUES(@Bet_Id, @UserBet_Id, @Amount) returning Id",
             createdWinner);
         createdWinner.Id = newId;
         return createdWinner;
