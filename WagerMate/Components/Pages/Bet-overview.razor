@@ -54,6 +54,7 @@
         <div id="allBetsLayout">
             @foreach (var bet in _bets)
             {
+                // filtering which bets should being displayed
                 @if ((bet.State == State.Active && DisplayAcceptedBets) ||
                      (bet.State == State.Closed && DisplayClosedBets) ||
                      (bet.State == State.Pending && DisplayPendingBets)
@@ -156,10 +157,42 @@
                     <label class="detail-label">Description:</label>
                     <span class="detail-value">@_betPopup.Description</span>
                 </div>
-                <div class="bet-detail">
-                    <label class="detail-label">Bet Amount:</label>
-                    <span class="detail-value">@_userbetPopup.Amount</span>
-                </div>
+                @if (_betPopup.State != State.Closed)
+                {
+                    <div class="bet-detail">
+                        <label class="detail-label">Bet Amount:</label>
+                        <span class="detail-value">@_userbetPopup.Amount</span>
+                    </div>
+                }
+                else
+                {
+                    // winning or losing amount
+                    if (_popupDetailsWinner != null)
+                    {
+                        <div class="bet-detail">
+                            <label class="detail-label">Winning Amount:</label>
+                            <span class="detail-value">@_popupDetailsWinner.Amount</span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="bet-detail">
+                            <label class="detail-label">Lost Amount:</label>
+                            <span class="detail-value">@_userbetPopup.Amount</span>
+                        </div>
+                    }
+
+                    // list of all winenr names
+                    if (_winnersList.Count > 0)
+                    {
+                        <p>Winners: </p><br/>
+                    }
+                    foreach (string winnerName in _winnerNameList)
+                    {
+                        <p>@winnerName</p><br/>
+                    }
+                }
+                
                 <div class="bet-detail">
                     <label class="detail-label">Expiration Date:</label>
                     <span class="detail-value">@_betPopup.Expiration.ToShortDateString()</span>
@@ -198,6 +231,9 @@
     private int _totalAmount { get; set; }
     private bool _isDetailsPopupVisible;
     private List<SelectedCase> _popupSelectedCases { get; set; } = new List<SelectedCase>();
+    private Winner? _popupDetailsWinner { get; set; }
+    private List<Winner>? _winnersList { get; set; }
+    private List<string> _winnerNameList { get; set; } = new List<string>();
 
     // Define properties and fields
     private static int MaxFields { get; set; } = 5;
@@ -266,6 +302,21 @@
             tempSelectedCase = new SelectedCase(betCase, true);
             _popupSelectedCases.Add(tempSelectedCase);
         }
+
+        var maybeWinner = WinnerService.GetWinnerByUserBetIdIfExists(_userbetPopup.Id);
+        if (maybeWinner != null) _popupDetailsWinner = maybeWinner;
+        _winnersList = WinnerService.GetWinnersByBetId(_betPopup.Id);
+        
+        if (_winnersList.Count > 0)
+        {
+            List<UserBet> winnerUserBets = new List<UserBet>();
+            _winnersList.ForEach(winner => { winnerUserBets.Add(UserBetService.GetUserBetById(winner.UserBet_Id)); });
+
+            List<User> users = new List<User>();
+            winnerUserBets.ForEach(userBet => { users.Add(UserService.GetUserById(userBet.User_Id)); });
+
+            users.ForEach(user => { _winnerNameList.Add(user.Name); });
+        }
         
         _isDetailsPopupVisible = true;
         StateHasChanged();
@@ -280,6 +331,9 @@
     
     private void HideDetailsPopup()
     {
+        _winnersList = new List<Winner>();
+        _winnerNameList = new List<string>();
+        
         _isDetailsPopupVisible = false;
         StateHasChanged();
     }
@@ -365,6 +419,14 @@
         {
             if (_loggedInUser == null) return;
             _bets = BetService.GetBetsByUserId(_loggedInUser.Id);
+            _bets.ForEach(bet =>
+            {
+                if (bet.Expiration.Date < DateTime.Now.Date)
+                {
+                    bet.State = State.Closed;
+                    BetService.UpdateBet(bet);
+                }
+            });
             StateHasChanged();
         }
         catch (Exception ex)
@@ -378,7 +440,6 @@
         List<int> idsFromSelectedCases = new List<int>();
         foreach (SelectedCase popupSelectedCase in _popupSelectedCases)
         {
-            Console.WriteLine("popupSelectedCase: "+popupSelectedCase.isSelected.ToString());
             if(popupSelectedCase.isSelected) idsFromSelectedCases.Add(popupSelectedCase._case.Id);
         }
         BetSettlingService.SettleBet(_betPopup, idsFromSelectedCases.ToArray());
