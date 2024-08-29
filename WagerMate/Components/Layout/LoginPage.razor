@@ -34,11 +34,11 @@
                 <InputText class="input" type="password" @bind-Value="_existingUserData.Password"/>
                 @if (!_correctLoginEmail || !_correctLoginPassword)
                 {
-                    <p class="alert alert-danger">E-mail address or password is incorrect!</p>
+                    <p class="warnings">E-mail address or password is incorrect!</p>
                 }
                 @if (!_loginRequiredElements)
                 {
-                    <p class="alert alert-danger">All fields are required!</p>
+                    <p class="warnings">All fields are required!</p>
                 }
             </div>
             <div id="loginspace">
@@ -67,7 +67,7 @@
                 <InputText class="input" @bind-Value="_newUserData.EMail"/>
                 @if (!_newRegisterEmail)
                 {
-                    <p class="alert alert-danger">Please choose another e-mail address!</p>
+                    <p class="warnings">Please choose another e-mail address!</p>
                 }
             </div>
             <div class="field">
@@ -83,7 +83,7 @@
                 <InputText class="input" type="password" @bind-Value="_newUserData.PasswordRepeat"/>
                 @if (_passwordTypo)
                 {
-                    <p class="alert alert-danger">Must match Password!</p>
+                    <p class="warnings">Must match Password!</p>
                 }
             </div>
             <div class="field">
@@ -93,11 +93,11 @@
                 <InputText class="input" @bind-Value="_newUserData.InviteCode"/>
                 @if (!_correctInviteCode)
                 {
-                    <p class="alert alert-danger">Invite code is incorrect!</p>
+                    <p class="warnings">Invite code is incorrect!</p>
                 }
                 @if (!_registerRequiredElements)
                 {
-                    <p class="alert alert-danger">All fields are required!</p>
+                    <p class="warnings">All fields are required!</p>
                 }
             </div>
             <div id="registerspace">
