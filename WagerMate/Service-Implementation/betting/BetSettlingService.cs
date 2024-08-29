@@ -34,7 +34,7 @@ public class BetSettlingService : IBetSettlingService
         return false;
     }
 
-    public bool SettleBet(Bet bet, int[] caseIds)
+    public bool SettleBet(Bet bet, int[] winnerCaseIds)
     {
         if (bet.State == State.Closed) return false;
         try
@@ -45,7 +45,7 @@ public class BetSettlingService : IBetSettlingService
             
             foreach (var userBet in userBets)
             {
-                if (caseIds.Contains(userBet.Case_Id))
+                if (winnerCaseIds.Contains(userBet.Case_Id))
                 {
                     Winner newWinner = new Winner();
                     newWinner.Bet_Id = bet.Id;
