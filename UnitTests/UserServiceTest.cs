@@ -28,12 +28,17 @@ public class UserServiceTest
         
         //Creates User with Empty Constructor
         var localUser = new User();
+        localUser.Id = 1;
         localUser.Email = "Email";
         localUser.Name = "Name";
         localUser.Password = "Password";
 
         var result = _userService.CreateUser(localUser);
         Assert.IsNotNull(result);
+        Assert.That(result.Id, Is.EqualTo(1));
+        Assert.That(result.Email, Is.EqualTo("Email"));
+        Assert.That(result.Name, Is.EqualTo("Name"));
+        Assert.That(result.Password, Is.EqualTo("Password"));
     }
 
     [Test]
@@ -42,10 +47,14 @@ public class UserServiceTest
         _clearService.ClearDatabase();;
         
         //Creates User with Constructor
-        User localUser = new User(1, "test@gmail.com", "TestName", "TestPassword");
+        User localUser = new User(1, "TestName", "test@gmail.com", "TestPassword");
         
         var result = _userService.CreateUser(localUser);
         Assert.IsNotNull(result);
+        Assert.That(result.Id, Is.EqualTo(1));
+        Assert.That(result.Name, Is.EqualTo("TestName"));
+        Assert.That(result.Email, Is.EqualTo("test@gmail.com"));
+        Assert.That(result.Password, Is.EqualTo("TestPassword"));
     }
 
     [Test]
@@ -54,9 +63,9 @@ public class UserServiceTest
         _clearService.ClearDatabase();;
         
         //Create 3 users
-        var localUser1 = new User(2, "Name", "Email", "Password");
-        var localUser2 = new User(3, "Name", "Email", "Password");
-        var localUser3 = new User(4, "Name", "Email", "Password");
+        var localUser1 = new User(2, "Name1", "Email1", "Password1");
+        var localUser2 = new User(3, "Name2", "Email2", "Password2");
+        var localUser3 = new User(4, "Name3", "Email3", "Password3");
         _userService.CreateUser(localUser1);
         _userService.CreateUser(localUser2);
         _userService.CreateUser(localUser3);
@@ -64,12 +73,25 @@ public class UserServiceTest
         //Get all users
         var result = _userService.GetAllUsers();
         Assert.IsNotEmpty(result);
+        Assert.That(result.Count, Is.EqualTo(3));
+        Assert.That(result[0].Id, Is.EqualTo(1));
+        Assert.That(result[1].Id, Is.EqualTo(2));
+        Assert.That(result[2].Id, Is.EqualTo(3));
+        Assert.That(result[0].Name, Is.EqualTo("Name1"));
+        Assert.That(result[1].Name, Is.EqualTo("Name2"));
+        Assert.That(result[2].Name, Is.EqualTo("Name3"));
+        Assert.That(result[0].Email, Is.EqualTo("Email1"));
+        Assert.That(result[1].Email, Is.EqualTo("Email2"));
+        Assert.That(result[2].Email, Is.EqualTo("Email3"));
+        Assert.That(result[0].Password, Is.EqualTo("Password1"));
+        Assert.That(result[1].Password, Is.EqualTo("Password2"));
+        Assert.That(result[2].Password, Is.EqualTo("Password3"));
     }
 
     [Test]
     public void TestUpdateUser()
     {
-        _clearService.ClearDatabase();;
+        _clearService.ClearDatabase();
         
         //Create User to be updated
         var localUser = new User(1, "Name", "Email", "Password");
@@ -93,6 +115,10 @@ public class UserServiceTest
         //Get User by ID
         var result = _userService.GetUserById(1);
         Assert.IsNotNull(result);
+        Assert.That(result.Id, Is.EqualTo(1));
+        Assert.That(result.Name, Is.EqualTo("Name"));
+        Assert.That(result.Email, Is.EqualTo("Email"));
+        Assert.That(result.Password, Is.EqualTo("Password"));
     }
 
     [Test]
@@ -121,6 +147,10 @@ public class UserServiceTest
         //Get User by Email
         var result = _userService.GetUserByEmail("mail@mail.de");
         Assert.IsNotNull(result);
+        Assert.That(result.Id, Is.EqualTo(1));
+        Assert.That(result.Name, Is.EqualTo("Name"));
+        Assert.That(result.Email, Is.EqualTo("mail@mail.de"));
+        Assert.That(result.Password, Is.EqualTo("Password"));
     }
 
     [Test]
@@ -135,6 +165,10 @@ public class UserServiceTest
         //Get User by Password
         var result = _userService.GetUserByPassword("Password");
         Assert.IsNotNull(result);
+        Assert.That(result.Id, Is.EqualTo(1));
+        Assert.That(result.Name, Is.EqualTo("Name"));
+        Assert.That(result.Email, Is.EqualTo("Email"));
+        Assert.That(result.Password, Is.EqualTo("Password"));
     }
     
     [Test]
@@ -177,5 +211,9 @@ public class UserServiceTest
         //Get User if Password exists
         var result = _userService.GetUserIfPasswordExists("Password");
         Assert.IsNotNull(result);
+        Assert.That(result.Id, Is.EqualTo(1));
+        Assert.That(result.Name, Is.EqualTo("Name"));
+        Assert.That(result.Email, Is.EqualTo("Email"));
+        Assert.That(result.Password, Is.EqualTo("Password"));
     }
 }

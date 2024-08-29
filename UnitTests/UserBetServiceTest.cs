@@ -54,7 +54,7 @@ public class UserBetServiceTest
         localUserBet.Amount = 1;
         
         var result = _userBetService.CreateUserBet(localUserBet);
-        Assert.AreEqual(1, result);
+        Assert.That(result, Is.EqualTo(1));
     }
     
     [Test]
@@ -78,7 +78,7 @@ public class UserBetServiceTest
         var localUserBet = new UserBet(1, 1, 1, 1, 1);
         
         var result = _userBetService.CreateUserBet(localUserBet);
-        Assert.AreEqual(1, result);
+        Assert.That(result, Is.EqualTo(1));
     }
     
     [Test]
@@ -154,6 +154,11 @@ public class UserBetServiceTest
         
         var result = _userBetService.GetUserBetById(1);
         Assert.IsNotNull(result);
+        Assert.That(result.Id, Is.EqualTo(1));
+        Assert.That(result.User_Id, Is.EqualTo(1));
+        Assert.That(result.Bet_Id, Is.EqualTo(1));
+        Assert.That(result.Case_Id, Is.EqualTo(1));
+        Assert.That(result.Amount, Is.EqualTo(1));
     }
     
     [Test]
@@ -179,6 +184,11 @@ public class UserBetServiceTest
         
         var result = _userBetService.GetUserBetById(1, 1);
         Assert.IsNotNull(result);
+        Assert.That(result.Id, Is.EqualTo(1));
+        Assert.That(result.User_Id, Is.EqualTo(1));
+        Assert.That(result.Bet_Id, Is.EqualTo(1));
+        Assert.That(result.Case_Id, Is.EqualTo(1));
+        Assert.That(result.Amount, Is.EqualTo(1));
     }
     
     [Test]
@@ -199,10 +209,18 @@ public class UserBetServiceTest
         _caseService.CreateCase(localCase);
         
         //Creates UserBet
-        var localUserBet = new UserBet(1, 1, 1, 1, 1);
-        _userBetService.CreateUserBet(localUserBet);
+        var localUserBet1 = new UserBet(1, 1, 1, 1, 1);
+        var localUserBet2 = new UserBet(2, 1, 1, 1, 1);
+        var localUserBet3 = new UserBet(3, 1, 1, 1, 1);
+        _userBetService.CreateUserBet(localUserBet1);
+        _userBetService.CreateUserBet(localUserBet2);
+        _userBetService.CreateUserBet(localUserBet3);
         
         var result = _userBetService.GetAllUserIdsFromBet(localBet);
         Assert.IsNotEmpty(result);
+        Assert.That(result.Count, Is.EqualTo(3));
+        Assert.That(result[0], Is.EqualTo(1));
+        Assert.That(result[1], Is.EqualTo(2));
+        Assert.That(result[2], Is.EqualTo(3));
     }
 }
