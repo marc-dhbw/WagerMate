@@ -34,6 +34,7 @@ builder.Services.AddScoped<IBetService, BetService>();
 builder.Services.AddScoped<IUserBetService, UserBetService>();
 builder.Services.AddScoped<ICaseService, CaseService>();
 builder.Services.AddScoped<IWinnerService, WinnerService>();
+builder.Services.AddScoped<IBetSettlingService, BetSettlingService>();
 
 builder.Services.AddScoped<ICookieService, CookieService>();
 builder.Services.AddScoped<IHashService, HashService>();

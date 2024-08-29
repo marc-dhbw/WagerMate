@@ -38,7 +38,7 @@
 <button class="btn btn-primary" @onclick="DeleteUserBet">DeleteUserBet</button>
 <button class="btn btn-primary" @onclick="DeleteUserBet2">DeleteUserBet2</button>
 <button class="btn btn-primary" @onclick="GetUserBetById">GetUserBetById</button>
-<button class="btn btn-primary" @onclick="ConsoleGetAllUserIdsFromBet">ConsoleGetAllUserIdsFromBet</button>
+<button class="btn btn-primary" @onclick="ConsoleGetAllUserBetIdsFromBet">ConsoleGetAllUserBetsFromBet</button>
 <br/>
 
 <p>WinnerService Buttons</p>
@@ -162,8 +162,8 @@
         updatedB.Title = "Updated Titel";
         updatedB.Description = "updated description";
         updatedB.InvitationCode = "ALJFKDKJFSDL";
-        updatedB.BetAccess = Access.Restricted;
-        updatedB.BetState = State.Closed;
+        updatedB.Access = Access.Restricted;
+        updatedB.State = State.Closed;
         updatedB.Id = 47;
 
         var result = BetService.UpdateBet(updatedB);
@@ -204,8 +204,8 @@
         bet2.InvitationCode = "LSDJFHSGAJDIEWU";
         bet2.Created = DateTime.Now;
         bet2.Expiration = DateTime.Now.AddYears(50);
-        bet2.BetAccess = Access.Public;
-        bet2.BetState = State.Pending;
+        bet2.Access = Access.Public;
+        bet2.State = State.Pending;
 
         Console.WriteLine("bet locally created");
         try
@@ -226,8 +226,8 @@
         bet.InvitationCode = "SDFHUKSNVBSHEIFWE";
         bet.Created = DateTime.Now;
         bet.Expiration = DateTime.Now.AddYears(50);
-        bet.BetAccess = Access.Private;
-        bet.BetState = State.Active;
+        bet.Access = Access.Private;
+        bet.State = State.Active;
         return bet;
     }
 
@@ -285,15 +285,15 @@
         }
     }
 
-    private void ConsoleGetAllUserIdsFromBet()
+    private void ConsoleGetAllUserBetIdsFromBet()
     {
         Console.WriteLine("Get ALl UserIdsFromBet executing: ");
         var bet = new Bet();
         bet.Id = 1;
-        var result = UserBetService.GetAllUserIdsFromBet(bet);
-        foreach (var userId in result)
+        var result = UserBetService.GetAllUserBetsFromBet(bet);
+        foreach (var userBet in result)
         {
-            Console.WriteLine(userId);
+            Console.WriteLine(userBet.Id);
         }
     }
 
