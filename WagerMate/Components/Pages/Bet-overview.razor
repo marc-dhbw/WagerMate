@@ -1,5 +1,6 @@
 @page "/"
 @using Dapper
+@using WagerMate.Service_Implementation.betting
 @using WagerMate.Services.auth
 @using WagerMate.Services.betting
 @using WagerMate.Services.user
@@ -10,6 +11,8 @@
 @inject ICookieService CookieService;
 @inject IUserBetService UserBetService;
 @inject NavigationManager Navigation
+@inject IBetSettlingService BetSettlingService
+@inject IWinnerService WinnerService
 
 <PageTitle>Bet Overview</PageTitle>
 
@@ -62,8 +65,8 @@
                   </div>
                   <div class="bet-body">
                       <strong>Description:</strong> @bet.Description <br/>
-                      <strong>State:</strong> @bet.State.ToString(); <br/>
-                      <strong>Total amount:</strong> @getTotalAmount(bet);
+                      <strong>State:</strong> @bet.State.ToString() <br/>
+                      <strong>Total amount:</strong> @getTotalAmount(bet)
                   </div>
                   <div class="bet-footer">
                       <span class="bet-date"><strong>Created:</strong> @bet.Created.ToShortDateString()</span>
@@ -159,9 +162,22 @@
                 </div>
                 <div class="bet-detail">
                     <label class="detail-label">Expiration Date:</label>
-                    <span class="detail-value">@_betPopup.Expiration</span>
+                    <span class="detail-value">@_betPopup.Expiration.ToShortDateString()</span>
                 </div>
-                <button class="btn btn-secondary cancel-button" @onclick="HideDetailsPopup">Cancel</button>
+                @if(_popupSelectedCases.Count > 0)
+                {
+                    @foreach (SelectedCase popupSelectedCase in _popupSelectedCases)
+                    {
+                        <div>
+                            <input type="checkbox" @bind="popupSelectedCase.isSelected"/> @popupSelectedCase._case.Casetype
+                        </div>
+                    }
+                }
+                
+                <button class="btn btn-secondary" @onclick="HideDetailsPopup">Cancel</button>
+                <button class="btn btn-secondary" @onclick="SettleBet">Settle Bet</button>
+                <button class="btn btn-secondary" @onclick="CancelBet">Cancel Bet</button>
+                <button class="btn btn-secondary" @onclick="DeleteBet">Delete Bet</button>
             </div>
 
         </div>
@@ -181,6 +197,7 @@
     private string? ErrorMessage { get; set; }
     private int _totalAmount { get; set; }
     private bool _isDetailsPopupVisible;
+    private List<SelectedCase> _popupSelectedCases { get; set; } = new List<SelectedCase>();
 
     // Define properties and fields
     private static int MaxFields { get; set; } = 5;
@@ -241,6 +258,15 @@
     {
         _userbetPopup = UserBetService.GetUserBetById(_loggedInUser.Id, bet.Id);
         _betPopup = bet;
+        _popupSelectedCases = new List<SelectedCase>();
+        SelectedCase tempSelectedCase;
+        List<Case> betCases = CaseService.GetCasesByBetId(_betPopup.Id);
+        foreach (Case betCase in betCases)
+        {
+            tempSelectedCase = new SelectedCase(betCase, true);
+            _popupSelectedCases.Add(tempSelectedCase);
+        }
+        
         _isDetailsPopupVisible = true;
         StateHasChanged();
     }
@@ -251,6 +277,7 @@
         StateHasChanged();
         ResetFields();
     }
+    
     private void HideDetailsPopup()
     {
         _isDetailsPopupVisible = false;
@@ -343,6 +370,50 @@
         catch (Exception ex)
         {
             Console.WriteLine($"BetOverview: Error fetching bets - {ex.Message}");
+        }
+    }
+
+    public void SettleBet()
+    {
+        List<int> idsFromSelectedCases = new List<int>();
+        foreach (SelectedCase popupSelectedCase in _popupSelectedCases)
+        {
+            Console.WriteLine("popupSelectedCase: "+popupSelectedCase.isSelected.ToString());
+            if(popupSelectedCase.isSelected) idsFromSelectedCases.Add(popupSelectedCase._case.Id);
+        }
+        BetSettlingService.SettleBet(_betPopup, idsFromSelectedCases.ToArray());
+    }
+
+    public void CancelBet()
+    {
+        UserBet popupUserbet = UserBetService.GetUserBetById(_loggedInUser.Id, _betPopup.Id);
+        BetSettlingService.CloseBet(popupUserbet);
+        _isDetailsPopupVisible = false;
+        RenderData();
+    }
+
+    public void DeleteBet()
+    {
+        // delete winner, userbet, case and then bet
+        List<Winner> winnerOfBet = WinnerService.GetWinnersByBetId(_betPopup.Id);
+        winnerOfBet.ForEach(winner => { WinnerService.DeleteWinner(winner.Id);});
+        List<UserBet> userBetsOfBet = UserBetService.GetAllUserBetsFromBet(_betPopup);
+        userBetsOfBet.ForEach(userBet => { UserBetService.DeleteUserBet(userBet);});
+        CaseService.DeleteCasesOfBetId(_betPopup.Id);
+        BetService.DeleteBet(_betPopup.Id);
+        _isDetailsPopupVisible = false;
+        RenderData();
+    }
+
+    public class SelectedCase
+    {
+        public Case _case;
+        public bool isSelected = false;
+
+        public SelectedCase(Case selectedCase, bool selected)
+        {
+            _case = selectedCase;
+            isSelected = selected;
         }
     }
     
