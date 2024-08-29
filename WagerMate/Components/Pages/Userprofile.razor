@@ -11,89 +11,120 @@
 
 
 <h1>Profile Settings</h1>
+<div class="form-container">
 @if (!_editingUsername)
 {
-    <div style="margin-top: 20px">
+    <div class="space-between-lines">
         <b>Username:</b> @_loggedInUser.Name
     </div>
-    <div style="margin-top: 10px; margin-bottom: 10px;">
-        <input type="button" value="Edit Username" @onclick="@EnableEditingUsername"/>
+    <div class="space-between-lines">
+        <input class="edit-btn" type="button" value="Edit Username" @onclick="@EnableEditingUsername"/>
     </div>
 }
 else
 {
-    <EditForm Model="@_loggedInUser" FormName="testUsername">
+    <EditForm Model="@_loggedInUser" OnValidSubmit="EditUsername" FormName="testUsername">
         <DataAnnotationsValidator/>
         <div>
-            <div>
+            <div class="space-between-lines">
                 <label>Username:</label>
             </div>
             <InputText @bind-Value="_editedUserData.Username"/>
+            @if (_requiredUsername)
+            {
+                <p class="alert alert-danger">Username is required!</p>
+            }
         </div>
-        <div id="registerspace">
-            <input type="button" value="Cancel" @onclick="@CancelEditingUsername"/>
-            <input type="submit" value="Save" @onclick="@EditUsername"/>
+        <div class="buttons-container, space-between-lines" id="registerspace">
+            <input class="submit-btn" type="button" value="Cancel" @onclick="@CancelEditingUsername"/>
+            <input class="submit-btn" type="submit" value="Save"/>
         </div>
     </EditForm>
 }
 
 @if (!_editingEMail)
 {
-    <div style="margin-top: 20px">
+    <div class="space-between-lines">
         <b>E-mail address:</b> @_loggedInUser.Email
     </div>
-    <div style="margin-top: 10px; margin-bottom: 10px;">
-        <input type="button" value="Edit E-mail address" @onclick="@EnableEditingEMail"/>
+    <div class="space-between-lines">
+        <input class="edit-btn" type="button" value="Edit E-mail address" @onclick="@EnableEditingEMail"/>
     </div>
 }
 else
 {
-    <EditForm Model="@_loggedInUser" FormName="testEMail">
+    <EditForm Model="@_loggedInUser" OnValidSubmit="EditEMail" FormName="testEMail">
         <DataAnnotationsValidator/>
         <div>
-            <div>
+            <div class="space-between-lines">
                 <label>E-mail address:</label>
             </div>
             <InputText type="email" @bind-Value="_editedUserData.EMail"/>
+            @if (_emailExists)
+            {
+            <p class="alert alert-danger">Please choose another e-mail address!</p>
+            }
+            @if (_requiredEmail)
+            {
+                <p class="alert alert-danger">E-mail address is required!</p>
+            }
         </div>
-        <div id="registerspace">
-            <input type="button" value="Cancel" @onclick="@CancelEditingEMail"/>
-            <input type="submit" value="Save" @onclick="@EditEMail"/>
+        <div>
+            <div class="space-between-lines">
+                <label>Confirm with password:</label>
+            </div>
+            <InputText type="password" @bind-Value="_editedUserData.Password"/>
+            @if (!_validPassword)
+            {
+                <p class="alert alert-danger">Incorrect password!</p>
+            }
+        </div>
+        <div class="buttons-container, space-between-lines" id="registerspace">
+            <input class="submit-btn" type="button" value="Cancel" @onclick="@CancelEditingEMail"/>
+            <input class="submit-btn" type="submit" value="Save"/>
         </div>
     </EditForm>
 }
 @if (!_editingPassword)
 {
-    <div style="margin-top: 20px">
+    <div class="space-between-lines">
         <b>Password: ************ </b>
     </div>
-    <div style="margin-top: 10px; margin-bottom: 10px;">
-        <input type="button" value="Edit Password" @onclick="@EnableEditingPassword"/>
+    <div class="space-between-lines">
+        <input class="edit-btn" type="button" value="Edit Password" @onclick="@EnableEditingPassword"/>
     </div>
 }
 else
 {
-    <EditForm Model="@_loggedInUser" FormName="testPassword">
+    <EditForm Model="@_loggedInUser" OnValidSubmit="EditPassword" FormName="testPassword">
         <DataAnnotationsValidator/>
         <div>
-            <div>
+            <div class="space-between-lines">
                 <label>Password:</label>
             </div>
             <InputText type="password" @bind-Value="_editedUserData.Password"/>
         </div>
         <div>
-            <div>
+            <div class="space-between-lines">
                 <label>Repeat Password:</label>
             </div>
             <InputText type="password" @bind-Value="_editedUserData.PasswordRepeat"/>
-            <ValidationMessage For=@(() => _editedUserData.PasswordRepeat)/>
+            @if (!_correctPassword)
+            {
+                <p class="alert alert-danger">Password must match the repeated password!</p>
+            }
+            @if (_requiredPassword)
+            {
+                <p class="alert alert-danger">Both fields are required!</p>
+            }
         </div>
-        <div id="registerspace">
-            <input type="button" value="Cancel" @onclick="@CancelEditingPassword"/>
-            <input type="submit" value="Save" @onclick="@EditPassword"/>
+        <div class="buttons-container, space-between-lines" id="registerspace">
+            <input class="submit-btn" type="button" value="Cancel" @onclick="@CancelEditingPassword"/>
+            <input class="submit-btn" type="submit" value="Save"/>
         </div>
     </EditForm>
 }
+</div>
 
 @code{
 
@@ -121,8 +152,6 @@ else
         public string? Username { get; set; }
         public string? EMail { get; set; }
         public string? Password { get; set; }
-
-        [Compare("Password", ErrorMessage = "Must match Password!")]
         public string? PasswordRepeat { get; set; }
     }
 
@@ -133,65 +162,119 @@ else
     private void EnableEditingUsername()
     {
         _editingUsername = true;
+        _editedUserData.Username = null;
     }
 
     private void EnableEditingEMail()
     {
         _editingEMail = true;
+        _editedUserData.EMail = null;
+        _editedUserData.Password = null;
     }
 
     private void EnableEditingPassword()
     {
         _editingPassword = true;
+        _editedUserData.Password = null;
+        _editedUserData.PasswordRepeat = null;
     }
 
     private void CancelEditingUsername()
     {
         _editingUsername = false;
+        _requiredUsername = false;
     }
 
     private void CancelEditingEMail()
     {
         _editingEMail = false;
+        _requiredEmail = false;
+        _validPassword = true;
+        _emailExists = false;
     }
 
     private void CancelEditingPassword()
     {
         _editingPassword = false;
+        _requiredPassword = false;
+        _correctPassword = true;
     }
 
-    // Needs to be replaced with a function to write values into a database
+
+    private bool _requiredUsername;
+    
     private void EditUsername()
     {
-        if (_editedUserData.Username == null) return;
+        if (_editedUserData.Username == null)
+        {
+            _requiredUsername = true;
+            return;
+        }
         var tempUser = new User(_loggedInUser.Id, _editedUserData.Username, _loggedInUser.Email!, _loggedInUser.Password!);
         var updateSuccessful = UserService.UpdateUser(tempUser);
         if (updateSuccessful) _loggedInUser = tempUser;
+        _requiredUsername = false;
         _editingUsername = false;
     }
 
+    private bool _validPassword = true;
+    private bool _emailExists;
+    private bool _requiredEmail;
 
     private void EditEMail()
     {
-        if (_editedUserData.EMail == null) return;
-        var tempUser = new User(_loggedInUser.Id, _loggedInUser.Name!, _editedUserData.EMail, _loggedInUser.Password!);
-        var updateSuccessful = UserService.UpdateUser(tempUser);
-        if (updateSuccessful) _loggedInUser = tempUser;
-        _editingEMail = false;
+        if (_editedUserData.EMail == null)
+        {
+            _requiredEmail = true;
+            return;
+        }
+        
+        _requiredEmail = false;
+        
+        var user = UserService.GetUserByEmail(_loggedInUser.Email!);
+        _emailExists = UserService.EmailIsRegistered(_editedUserData.EMail);
+        _validPassword = HashService.CreateHash(_loggedInUser.Email!, _editedUserData.Password!).Equals(user.Password);
+        if (_validPassword && !_emailExists)
+        {
+            var hashed = HashService.CreateHash(_editedUserData.EMail!, _editedUserData.Password!);
+            var tempUser = new User(_loggedInUser.Id, _loggedInUser.Name!, _editedUserData.EMail, hashed);
+            var updateSuccessful = UserService.UpdateUser(tempUser);
+            if (updateSuccessful)
+            {
+                CookieService.SetCookieByNameAndValue("CookieID", tempUser.Password!, 7);
+                _loggedInUser = tempUser;
+            }
+            _editingEMail = false;
+        }
     }
 
+    private bool _requiredPassword;
+    private bool _correctPassword = true;
+    
     private void EditPassword()
     {
-        var hashed = HashService.CreateHash(_editedUserData.EMail!, _loggedInUser.Password!);
-        var tempUser = new User(_loggedInUser.Id, _loggedInUser.Name!, _loggedInUser.Email!, hashed);
-        var updateSuccessful = UserService.UpdateUser(tempUser);
-        if (updateSuccessful)
+        if ((_editedUserData.Password == null) || (_editedUserData.PasswordRepeat == null))
         {
-            CookieService.SetCookieByNameAndValue("CookieID", tempUser.Password!, 7);
-            _loggedInUser = tempUser;
+            _requiredPassword = true;
+            return;
         }
+        
+        _requiredPassword = false;
 
-        _editingPassword = false;
+        _correctPassword = (_editedUserData.Password == _editedUserData.PasswordRepeat);
+        
+        if (_correctPassword)
+        {
+            var hashed = HashService.CreateHash(_loggedInUser.Email!, _editedUserData.Password!);
+            var tempUser = new User(_loggedInUser.Id, _loggedInUser.Name!, _loggedInUser.Email!, hashed);
+            var updateSuccessful = UserService.UpdateUser(tempUser);
+            if (updateSuccessful)
+            {
+                CookieService.SetCookieByNameAndValue("CookieID", tempUser.Password!, 7);
+                _loggedInUser = tempUser;
+                _editingPassword = false;
+            }
+        }
     }
 
 }

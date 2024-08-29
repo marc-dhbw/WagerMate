@@ -97,7 +97,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Set Expiration Date:</label>
-                    <input type="date" class="form-input" @bind="_formBetDetails.NewBetExpiration" />
+                    <input type="date" class="form-input" @bind="_formBetDetails.NewBetExpiration" min="@DateTime.Now.ToString("yyyy-MM-dd")"/>
                 </div>
                 <div class="form-group">
                   <label>Your bet option</label><br/>
@@ -119,6 +119,7 @@
                             <button type="button" @onclick="AddInputField">add bet option</button>
                         }
                     </form>
+
                 </div>
                 <div class="button-group">
                     <button class="btn btn-success create-button" @onclick="CreateNewBet">Create Bet</button>
@@ -261,12 +262,18 @@
     {
         ErrorMessage = string.Empty;
 
+
         if (string.IsNullOrWhiteSpace(_formBetDetails.NewBetTitle) ||
             string.IsNullOrWhiteSpace(_formBetDetails.NewBetDescription) ||
-            _formBetDetails.NewBetMoney <= 0 ||
-            _formBetDetails.NewBetExpiration == default)
+            _formBetDetails.NewBetMoney <= 0)
         {
             ErrorMessage = "Please fill out all fields correctly before creating a new bet.";
+            return;
+        }
+        
+        if (_newBetDetails.NewBetExpiration < DateTime.Now.Date || _newBetDetails.NewBetExpiration == default)
+        {
+            ErrorMessage = "The expiration date cannot be in the past.";
             return;
         }
 
@@ -306,7 +313,7 @@
         }
 
         HidePopup();
-        StateHasChanged();
+        RenderData();
     }
 
 
