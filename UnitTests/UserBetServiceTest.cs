@@ -42,7 +42,7 @@ public class UserBetServiceTest
         _betService.CreateBet(localBet);
         
         //Creates Case
-        var localCase = new Case(1, 1, "CaseType");
+        var localCase = new Case(1, "CaseType");
         _caseService.CreateCase(localCase);
         
         //Creates UserBet
@@ -71,7 +71,7 @@ public class UserBetServiceTest
         _betService.CreateBet(localBet);
         
         //Creates Case
-        var localCase = new Case(1, 1, "CaseType");
+        var localCase = new Case(1, "CaseType");
         _caseService.CreateCase(localCase);
         
         //Creates UserBet
@@ -95,7 +95,7 @@ public class UserBetServiceTest
         _betService.CreateBet(localBet);
         
         //Creates Case
-        var localCase = new Case(1, 1, "CaseType");
+        var localCase = new Case(1, "CaseType");
         _caseService.CreateCase(localCase);
         
         //Creates UserBet
@@ -120,7 +120,7 @@ public class UserBetServiceTest
         _betService.CreateBet(localBet);
         
         //Creates Case
-        var localCase = new Case(1, 1, "CaseType");
+        var localCase = new Case(1, "CaseType");
         _caseService.CreateCase(localCase);
         
         //Creates UserBet
@@ -145,7 +145,7 @@ public class UserBetServiceTest
         _betService.CreateBet(localBet);
         
         //Creates Case
-        var localCase = new Case(1, 1, "CaseType");
+        var localCase = new Case(1, "CaseType");
         _caseService.CreateCase(localCase);
         
         //Creates UserBet
@@ -175,7 +175,7 @@ public class UserBetServiceTest
         _betService.CreateBet(localBet);
         
         //Creates Case
-        var localCase = new Case(1, 1, "CaseType");
+        var localCase = new Case(1, "CaseType");
         _caseService.CreateCase(localCase);
         
         //Creates UserBet
@@ -205,7 +205,7 @@ public class UserBetServiceTest
         _betService.CreateBet(localBet);
         
         //Creates Case
-        var localCase = new Case(1, 1, "CaseType");
+        var localCase = new Case(1, "CaseType");
         _caseService.CreateCase(localCase);
         
         //Creates UserBet
@@ -216,11 +216,23 @@ public class UserBetServiceTest
         _userBetService.CreateUserBet(localUserBet2);
         _userBetService.CreateUserBet(localUserBet3);
         
-        var result = _userBetService.GetAllUserIdsFromBet(localBet);
+        var result = _userBetService.GetAllUserBetsFromBet(localBet);
         Assert.IsNotEmpty(result);
         Assert.That(result.Count, Is.EqualTo(3));
-        Assert.That(result[0], Is.EqualTo(1));
-        Assert.That(result[1], Is.EqualTo(2));
-        Assert.That(result[2], Is.EqualTo(3));
+        Assert.That(result[0].Id, Is.EqualTo(1));
+        Assert.That(result[1].Id, Is.EqualTo(2));
+        Assert.That(result[2].Id, Is.EqualTo(3));
+        Assert.That(result[0].User_Id, Is.EqualTo(1));
+        Assert.That(result[1].User_Id, Is.EqualTo(1));
+        Assert.That(result[2].User_Id, Is.EqualTo(1));
+        Assert.That(result[0].Bet_Id, Is.EqualTo(1));
+        Assert.That(result[1].Bet_Id, Is.EqualTo(1));
+        Assert.That(result[2].Bet_Id, Is.EqualTo(1));
+        Assert.That(result[0].Case_Id, Is.EqualTo(1));
+        Assert.That(result[1].Case_Id, Is.EqualTo(1));
+        Assert.That(result[2].Case_Id, Is.EqualTo(1));
+        Assert.That(result[0].Amount, Is.EqualTo(1));
+        Assert.That(result[1].Amount, Is.EqualTo(1));
+        Assert.That(result[2].Amount, Is.EqualTo(1));
     }
 }

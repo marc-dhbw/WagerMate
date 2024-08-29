@@ -40,8 +40,8 @@ public class BetServiceTest
         localBet.InvitationCode = "InvitationCode";
         localBet.Created = DateTime.Today;
         localBet.Expiration = DateTime.Today;
-        localBet.BetAccess = Access.Public;
-        localBet.BetState = State.Active;
+        localBet.Access = Access.Public;
+        localBet.State = State.Active;
 
         var result = _betService.CreateBet(localBet);
 
@@ -51,8 +51,8 @@ public class BetServiceTest
         Assert.That(result.InvitationCode, Is.EqualTo("InvitationCode"));
         Assert.That(result.Created, Is.EqualTo(DateTime.Today));
         Assert.That(result.Expiration, Is.EqualTo(DateTime.Today));
-        //Assert.That(result.BetAccess, Is.EqualTo(Access.Private));
-        Assert.That(result.BetState, Is.EqualTo(State.Active));
+        //Assert.That(result.Access, Is.EqualTo(Access.Private));
+        Assert.That(result.State, Is.EqualTo(State.Active));
     }
 
     [Test]
@@ -72,8 +72,8 @@ public class BetServiceTest
         Assert.That(result.InvitationCode, Is.EqualTo("InvitationCode"));
         Assert.That(result.Created, Is.EqualTo(DateTime.Today));
         Assert.That(result.Expiration, Is.EqualTo(DateTime.Today));
-        Assert.That(result.BetAccess, Is.EqualTo(Access.Private));
-        Assert.That(result.BetState, Is.EqualTo(State.Active));
+        Assert.That(result.Access, Is.EqualTo(Access.Private));
+        Assert.That(result.State, Is.EqualTo(State.Active));
     }
 
     [Test]
@@ -116,12 +116,12 @@ public class BetServiceTest
         Assert.That(result[0].Expiration, Is.EqualTo(DateTime.Today));
         Assert.That(result[1].Expiration, Is.EqualTo(DateTime.Today));
         Assert.That(result[2].Expiration, Is.EqualTo(DateTime.Today));
-        //Assert.That(result[0].BetAccess, Is.EqualTo(Access.Private));
-        Assert.That(result[1].BetAccess, Is.EqualTo(Access.Public));
-        //Assert.That(result[2].BetAccess, Is.EqualTo(Access.Restricted));
-        //Assert.That(result[0].BetState, Is.EqualTo(State.Active));
-        Assert.That(result[1].BetState, Is.EqualTo(State.Pending));
-        //Assert.That(result[2].BetState, Is.EqualTo(State.Closed));
+        //Assert.That(result[0].Access, Is.EqualTo(Access.Private));
+        Assert.That(result[1].Access, Is.EqualTo(Access.Public));
+        //Assert.That(result[2].Access, Is.EqualTo(Access.Restricted));
+        Assert.That(result[0].State, Is.EqualTo(State.Active));
+        Assert.That(result[1].State, Is.EqualTo(State.Pending));
+        Assert.That(result[2].State, Is.EqualTo(State.Closed));
     }
 
     [Test]
@@ -161,8 +161,8 @@ public class BetServiceTest
         //Assert.That(result.InvitationCode, Is.EqualTo("InvitationCode"));
         Assert.That(result.Created, Is.EqualTo(DateTime.Today));
         Assert.That(result.Expiration, Is.EqualTo(DateTime.Today));
-        //Assert.That(result.BetAccess, Is.EqualTo(Access.Private));
-        //Assert.That(result.BetState, Is.EqualTo(State.Active));
+        Assert.That(result.Access, Is.EqualTo(Access.Private));
+        Assert.That(result.State, Is.EqualTo(State.Active));
     }
 
     [Test]
@@ -204,7 +204,7 @@ public class BetServiceTest
         _userService.CreateUser(localUser);
 
         //Create Case
-        var localCase = new Case(1, 1, "CaseType");
+        var localCase = new Case(1, "CaseType");
         _caseService.CreateCase(localCase);
 
         //Create UserBet
@@ -236,12 +236,12 @@ public class BetServiceTest
         Assert.That(result[0].Expiration, Is.EqualTo(DateTime.Today));
         Assert.That(result[1].Expiration, Is.EqualTo(DateTime.Today));
         Assert.That(result[2].Expiration, Is.EqualTo(DateTime.Today));
-        //Assert.That(result.[0].BetAccess, Is.EqualTo(Access.Private));
-        Assert.That(result[1].BetAccess, Is.EqualTo(Access.Public));
-        //Assert.That(result[2].BetAccess, Is.EqualTo(Access.Restricted));
-        //Assert.That(result.[0].BetState, Is.EqualTo(State.Active));
-        Assert.That(result[1].BetState, Is.EqualTo(State.Pending));
-        //Assert.That(result[2].BetState, Is.EqualTo(State.Closed));
+        Assert.That(result[0].Access, Is.EqualTo(Access.Private));
+        Assert.That(result[1].Access, Is.EqualTo(Access.Public));
+        Assert.That(result[2].Access, Is.EqualTo(Access.Restricted));
+        Assert.That(result[0].State, Is.EqualTo(State.Active));
+        Assert.That(result[1].State, Is.EqualTo(State.Pending));
+        Assert.That(result[2].State, Is.EqualTo(State.Closed));
     }
 
     [Test]
@@ -264,7 +264,7 @@ public class BetServiceTest
         //Assert.That(result.InvitationCode, Is.EqualTo("InvitationCode"));
         Assert.That(result.Created, Is.EqualTo(DateTime.Today));
         Assert.That(result.Expiration, Is.EqualTo(DateTime.Today));
-        //Assert.That(result.BetAccess, Is.EqualTo(Access.Private));
-        //Assert.That(result.BetState, Is.EqualTo(State.Active));
+        Assert.That(result.Access, Is.EqualTo(Access.Private));
+        Assert.That(result.State, Is.EqualTo(State.Active));
     }
 }
