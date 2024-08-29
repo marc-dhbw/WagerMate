@@ -50,7 +50,7 @@ public class UserBetService : IUserBetService
         return result;
     }
 
-    public List<UserBet> GetAllUserBetIdsFromBet(Bet bet)
+    public List<UserBet> GetAllUserBetsFromBet(Bet bet)
     {
         var result = _service.GetAllWithParams<UserBet>("SELECT * FROM public.userbet WHERE bet_id = @Id", bet);
         return result;

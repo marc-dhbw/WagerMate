@@ -38,7 +38,7 @@
 <button class="btn btn-primary" @onclick="DeleteUserBet">DeleteUserBet</button>
 <button class="btn btn-primary" @onclick="DeleteUserBet2">DeleteUserBet2</button>
 <button class="btn btn-primary" @onclick="GetUserBetById">GetUserBetById</button>
-<button class="btn btn-primary" @onclick="ConsoleGetAllUserBetIdsFromBet">ConsoleGetAllUserBetIdsFromBet</button>
+<button class="btn btn-primary" @onclick="ConsoleGetAllUserBetIdsFromBet">ConsoleGetAllUserBetsFromBet</button>
 <br/>
 
 <p>WinnerService Buttons</p>
@@ -290,7 +290,7 @@
         Console.WriteLine("Get ALl UserIdsFromBet executing: ");
         var bet = new Bet();
         bet.Id = 1;
-        var result = UserBetService.GetAllUserBetIdsFromBet(bet);
+        var result = UserBetService.GetAllUserBetsFromBet(bet);
         foreach (var userBet in result)
         {
             Console.WriteLine(userBet.Id);

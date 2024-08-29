@@ -147,7 +147,7 @@
 
     public double getTotalAmount(Bet bet)
     {
-        return UserBetService.GetAllUserBetIdsFromBet(bet).Sum(userBet => userBet.Amount);
+        return UserBetService.GetAllUserBetsFromBet(bet).Sum(userBet => userBet.Amount);
     }
 
     // Method to add a new input field
