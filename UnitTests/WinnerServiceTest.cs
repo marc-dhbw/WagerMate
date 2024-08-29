@@ -44,7 +44,7 @@ public class WinnerServiceTest
         _betService.CreateBet(localBet);
         
         //Creates Case
-        var localCase = new Case(1, 1, "CaseType");
+        var localCase = new Case(1, "CaseType");
         _caseService.CreateCase(localCase);
         
         //Creates UserBet
@@ -56,12 +56,14 @@ public class WinnerServiceTest
         localWinner.Id = 1;
         localWinner.Bet_Id = 1;
         localWinner.UserBet_Id = 1;
+        localWinner.Amount = 10.0;
         
         var result = _winnerService.CreateWinner(localWinner);
         Assert.IsNotNull(result);
         Assert.That(result.Id, Is.EqualTo(1));
         Assert.That(result.Bet_Id, Is.EqualTo(1));
         Assert.That(result.UserBet_Id, Is.EqualTo(1));
+        Assert.That(result.Amount, Is.EqualTo(10.0));
     }
     
     [Test]
@@ -78,7 +80,7 @@ public class WinnerServiceTest
         _betService.CreateBet(localBet);
         
         //Creates Case
-        var localCase = new Case(1, 1, "CaseType");
+        var localCase = new Case(1, "CaseType");
         _caseService.CreateCase(localCase);
         
         //Creates UserBet
@@ -86,12 +88,13 @@ public class WinnerServiceTest
         _userBetService.CreateUserBet(localUserBet);
         
         //Creates Winner
-        var localWinner = new Winner(1, 1, 1);
+        var localWinner = new Winner(1, 1, 1, 10.0);
         var result = _winnerService.CreateWinner(localWinner);
         Assert.IsNotNull(result);
         Assert.That(result.Id, Is.EqualTo(1));
         Assert.That(result.Bet_Id, Is.EqualTo(1));
         Assert.That(result.UserBet_Id, Is.EqualTo(1));
+        Assert.That(result.Amount, Is.EqualTo(10.0));
     }
     
     [Test]
@@ -108,7 +111,7 @@ public class WinnerServiceTest
         _betService.CreateBet(localBet);
         
         //Creates Case
-        var localCase = new Case(1, 1, "CaseType");
+        var localCase = new Case(1, "CaseType");
         _caseService.CreateCase(localCase);
         
         //Creates UserBet
@@ -116,7 +119,7 @@ public class WinnerServiceTest
         _userBetService.CreateUserBet(localUserBet);
         
         //Creates Winner
-        var localWinner = new Winner(1, 1, 1);
+        var localWinner = new Winner(1, 1, 1, 10.1);
         _winnerService.CreateWinner(localWinner);
         
         //GetWinnerById
@@ -125,6 +128,7 @@ public class WinnerServiceTest
         Assert.That(result.Id, Is.EqualTo(1));
         Assert.That(result.Bet_Id, Is.EqualTo(1));
         Assert.That(result.UserBet_Id, Is.EqualTo(1));
+        Assert.That(result.Amount, Is.EqualTo(10.1));
     }
     
     [Test]
@@ -141,7 +145,7 @@ public class WinnerServiceTest
         _betService.CreateBet(localBet);
         
         //Creates Case
-        var localCase = new Case(1, 1, "CaseType");
+        var localCase = new Case(1, "CaseType");
         _caseService.CreateCase(localCase);
         
         //Creates UserBet
@@ -149,9 +153,9 @@ public class WinnerServiceTest
         _userBetService.CreateUserBet(localUserBet);
         
         //Creates Winner
-        var localWinner1 = new Winner(1, 1, 1);
-        var localWinner2 = new Winner(2, 1, 1);
-        var localWinner3 = new Winner(3, 1, 1);
+        var localWinner1 = new Winner(1, 1, 1, 10.1);
+        var localWinner2 = new Winner(2, 1, 1, 10.2);
+        var localWinner3 = new Winner(3, 1, 1, 10.3);
         _winnerService.CreateWinner(localWinner1);
         _winnerService.CreateWinner(localWinner2);
         _winnerService.CreateWinner(localWinner3);
@@ -169,6 +173,9 @@ public class WinnerServiceTest
         Assert.That(result[0].UserBet_Id, Is.EqualTo(1));
         Assert.That(result[1].UserBet_Id, Is.EqualTo(1));
         Assert.That(result[2].UserBet_Id, Is.EqualTo(1));
+        Assert.That(result[0].Amount, Is.EqualTo(10.1));
+        Assert.That(result[1].Amount, Is.EqualTo(10.2));
+        Assert.That(result[2].Amount, Is.EqualTo(10.3));
     }
     
     [Test]
@@ -185,7 +192,7 @@ public class WinnerServiceTest
         _betService.CreateBet(localBet);
         
         //Creates Case
-        var localCase = new Case(1, 1, "CaseType");
+        var localCase = new Case(1, "CaseType");
         _caseService.CreateCase(localCase);
         
         //Creates UserBet
@@ -193,7 +200,7 @@ public class WinnerServiceTest
         _userBetService.CreateUserBet(localUserBet);
         
         //Creates Winner
-        var localWinner = new Winner(1, 1, 1);
+        var localWinner = new Winner(1, 1, 1, 10.1);
         _winnerService.CreateWinner(localWinner);
         
         //UpdateWinner
@@ -215,7 +222,7 @@ public class WinnerServiceTest
         _betService.CreateBet(localBet);
         
         //Creates Case
-        var localCase = new Case(1, 1, "CaseType");
+        var localCase = new Case(1, "CaseType");
         _caseService.CreateCase(localCase);
         
         //Creates UserBet
@@ -223,7 +230,7 @@ public class WinnerServiceTest
         _userBetService.CreateUserBet(localUserBet);
         
         //Creates Winner
-        var localWinner = new Winner(1, 1, 1);
+        var localWinner = new Winner(1, 1, 1, 10.1);
         _winnerService.CreateWinner(localWinner);
         
         //DeleteWinner

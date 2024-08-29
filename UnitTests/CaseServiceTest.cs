@@ -51,7 +51,7 @@ public class CaseServiceTest
         _betService.CreateBet(localBet);
         
         //Creates Case
-        var localCase = new Case(1, 1, "Casetype");
+        var localCase = new Case(1, "Casetype");
 
         var result = _caseService.CreateCase(localCase);
         Assert.That(result, Is.EqualTo(1));
@@ -67,7 +67,7 @@ public class CaseServiceTest
         _betService.CreateBet(localBet);
         
         //Creates Case
-        var localCase = new Case(1, 1, "Casetype");
+        var localCase = new Case(1, "Casetype");
         _caseService.CreateCase(localCase);
 
         var result = _caseService.GetCaseById(1);
@@ -87,9 +87,9 @@ public class CaseServiceTest
         _betService.CreateBet(localBet);
 
         //Creates Case
-        var localCase1 = new Case(1, 1, "Casetype1");
-        var localCase2 = new Case(2, 1, "Casetype2");
-        var localCase3 = new Case(3, 1, "Casetype3");
+        var localCase1 = new Case(1, "Casetype1");
+        var localCase2 = new Case(1, "Casetype2");
+        var localCase3 = new Case(1, "Casetype3");
         _caseService.CreateCase(localCase1);
         _caseService.CreateCase(localCase2);
         _caseService.CreateCase(localCase3);
@@ -118,10 +118,11 @@ public class CaseServiceTest
         _betService.CreateBet(localBet);
 
         //Creates Case with Constructor
-        var localCase = new Case(1, 1, "Casetype");
+        var localCase = new Case(1, "Casetype");
         _caseService.CreateCase(localCase);
 
-        var updatedCase = new Case(1,1,"updatedCasetype");
+        var updatedCase = new Case(1, "updatedCasetype");
+        updatedCase.Id = 1;
         _caseService.CreateCase(updatedCase);
         
         var result = _caseService.UpdateCase(updatedCase);
@@ -138,7 +139,7 @@ public class CaseServiceTest
         _betService.CreateBet(localBet);
 
         //Creates Case with Constructor
-        var localCase = new Case(1, 1, "Casetype");
+        var localCase = new Case(1, "Casetype");
 
         _caseService.CreateCase(localCase);
 
@@ -156,9 +157,9 @@ public class CaseServiceTest
         _betService.CreateBet(localBet);
 
         //Creates Case with Constructor
-        var localCase1 = new Case(1, 1, "Casetype");
-        var localCase2 = new Case(2, 1, "Casetype");
-        var localCase3 = new Case(3, 1, "Casetype");
+        var localCase1 = new Case(1, "Casetype");
+        var localCase2 = new Case(1, "Casetype");
+        var localCase3 = new Case(1, "Casetype");
         _caseService.CreateCase(localCase1);
         _caseService.CreateCase(localCase2);
         _caseService.CreateCase(localCase3);
