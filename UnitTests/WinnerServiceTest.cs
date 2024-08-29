@@ -59,6 +59,9 @@ public class WinnerServiceTest
         
         var result = _winnerService.CreateWinner(localWinner);
         Assert.IsNotNull(result);
+        Assert.That(result.Id, Is.EqualTo(1));
+        Assert.That(result.Bet_Id, Is.EqualTo(1));
+        Assert.That(result.UserBet_Id, Is.EqualTo(1));
     }
     
     [Test]
@@ -86,6 +89,9 @@ public class WinnerServiceTest
         var localWinner = new Winner(1, 1, 1);
         var result = _winnerService.CreateWinner(localWinner);
         Assert.IsNotNull(result);
+        Assert.That(result.Id, Is.EqualTo(1));
+        Assert.That(result.Bet_Id, Is.EqualTo(1));
+        Assert.That(result.UserBet_Id, Is.EqualTo(1));
     }
     
     [Test]
@@ -116,6 +122,9 @@ public class WinnerServiceTest
         //GetWinnerById
         var result = _winnerService.GetWinnerById(1);
         Assert.IsNotNull(result);
+        Assert.That(result.Id, Is.EqualTo(1));
+        Assert.That(result.Bet_Id, Is.EqualTo(1));
+        Assert.That(result.UserBet_Id, Is.EqualTo(1));
     }
     
     [Test]
@@ -140,12 +149,26 @@ public class WinnerServiceTest
         _userBetService.CreateUserBet(localUserBet);
         
         //Creates Winner
-        var localWinner = new Winner(1, 1, 1);
-        _winnerService.CreateWinner(localWinner);
+        var localWinner1 = new Winner(1, 1, 1);
+        var localWinner2 = new Winner(2, 1, 1);
+        var localWinner3 = new Winner(3, 1, 1);
+        _winnerService.CreateWinner(localWinner1);
+        _winnerService.CreateWinner(localWinner2);
+        _winnerService.CreateWinner(localWinner3);
         
         //GetWinnersByBetId
         var result = _winnerService.GetWinnersByBetId(1);
         Assert.IsNotEmpty(result);
+        Assert.That(result.Count(), Is.EqualTo(3));
+        Assert.That(result[0].Id, Is.EqualTo(1));
+        Assert.That(result[1].Id, Is.EqualTo(2));
+        Assert.That(result[2].Id, Is.EqualTo(3));
+        Assert.That(result[0].Bet_Id, Is.EqualTo(1));
+        Assert.That(result[1].Bet_Id, Is.EqualTo(1));
+        Assert.That(result[2].Bet_Id, Is.EqualTo(1));
+        Assert.That(result[0].UserBet_Id, Is.EqualTo(1));
+        Assert.That(result[1].UserBet_Id, Is.EqualTo(1));
+        Assert.That(result[2].UserBet_Id, Is.EqualTo(1));
     }
     
     [Test]
