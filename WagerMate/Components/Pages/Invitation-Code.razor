@@ -1,4 +1,5 @@
 @page "/invitation-code"
+@page "/invitation-code/{ParamInviteCode}"
 @using WagerMate.Service_Implementation.auth
 @using WagerMate.Service_Implementation.betting
 @using WagerMate.Service_Implementation.user
@@ -13,57 +14,70 @@
 @inject IUserService UserService
 @inject NavigationManager Navigation
 
-<div class="form-container">
-    
-    @if (!DisplayBetInputs)
-    {
-        <h2>Invitation Code</h2>
+<PageTitle>Invitation Code</PageTitle>
 
-        <div class="form-group">
-            <label for="inviteCode">Invite Code:</label>
-            <input @bind="inviteCode" class="form-control" id="inviteCode" placeholder="Enter your invitation code here..."/>
-        </div>
+<h1>Don't miss out on the fun! Join in the wager!</h1>
+    <div class="form-container">
+        
+        @if (!DisplayBetInputs)
+        {
+            <div class="form-group">
+                <label for="inviteCode">Invite Code:</label>
+                <input @bind="inviteCode" class="form-control" id="inviteCode" placeholder="Enter your invitation code here..."/>
+            </div>
 
-        <button class="submit-btn" @onclick="SubmitCode">Submit</button>
-    }
+            <button class="submit-btn" @onclick="SubmitCode">Submit</button>
+        }
 
-    @if (DisplayBetInputs)
-    {
-        <h2>Submit Bet</h2>
+        @if (DisplayBetInputs)
+        {
+            <h2>Submit Bet</h2>
+            
+            <div class="form-group">
+                <label>Title:</label>
+                <p>@_acceptedBet.Title</p>            
+            </div>
 
-        <div class="form-group">
-            <label for="title">Title:</label>
-            <InputText id="title" @bind-Value="_acceptedBet.Title" readonly class="no-border"></InputText>
-        </div>
+            <div class="form-group">
+                <label>Description:</label>
+                <p>@_acceptedBet.Description</p>
+            </div>
 
-        <div class="form-group">
-            <label for="description">Description:</label>
-            <InputText id="description" @bind-Value="_acceptedBet.Description" readonly class="no-border"></InputText>
-        </div>
+            <div class="form-group">
+                <label>State:</label>
+                <p>@_betStateString</p>
+            </div>
 
-        <div class="form-group">
-            <label for="state">State:</label>
-            <InputText id="state" @bind-Value="_betStateString" readonly class="no-border"></InputText>
-        </div>
+            <div class="form-group">
+                <label for="moneyValue">Amount:</label>
+                <input id="moneyValue" type="number" @bind="_moneyValue" min="0"/>
+            </div>
+            
+            <div class="form-group">
+                <label for="betoptions">Bet Options</label>
+                <select id="betoptions" @bind="_selectedCaseId">
+                    @foreach (Case betOption in _betOptions)
+                    {
+                        <option value="@betOption.Id">@betOption.Casetype</option>
+                    }
+                </select>
+            </div>
 
-        <div class="form-group">
-            <label for="moneyValue">Amount:</label>
-            <input id="moneyValue" type="number" @bind="_moneyValue" />
-        </div>
+            <button class="submit-btn" @onclick="SubmitValues">Submit</button>
+        }
+        
+        @if (HasNotificationMessage)
+        {
+        <p class=@NotificationClass>@NotificationMessage</p>
+        }
+    </div>
 
-        <button class="submit-btn" @onclick="SubmitValues">Submit</button>
-    }
-</div>
-    
-@if (CreatedNewUserBet)
-{
-    <p class="alert alert-success">You are now participating in the bet!</p>
-}
 
 @code {
     //AutoRedirect to the LoginPage
     private bool _firstLogin = true;
     private User? _loggedInUser = new();
+    private string inviteCodePlaceholder = "Enter your invitation code here...";
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -80,48 +94,83 @@
     }
     
     private string inviteCode { get; set; }
-    private string submittedInviteCode { get; set; }
     private bool DisplayBetInputs { get; set; } = false;
-    private int _moneyValue { get; set; }
+    private int _moneyValue { get; set; } 
     private Bet _acceptedBet { get; set; }
     private bool CreatedNewUserBet { get; set; }
-    private string _betStateString { get; set; }
+    private string _betStateString { get; set; } = "";
+    private bool HasNotificationMessage { get; set; }
+    private string NotificationMessage { get; set; }
+    private string NotificationClass { get; set; }
+    private int _selectedCaseId { get; set; }
+    private List<Case> _betOptions { get; set; }
+    
+    
 
     private void SubmitCode()
     {
-        submittedInviteCode = inviteCode;
-
-        _acceptedBet = BetService.GetBetByInviteCode(submittedInviteCode);
+        _acceptedBet = BetService.GetBetByInviteCode(inviteCode);
         if (_acceptedBet == null)
         {
-            submittedInviteCode = "No such code found";
-            Console.WriteLine("Invite Code not found!");
+            inviteCode = "";
+            inviteCodePlaceholder = "Invite Code does not exist!";
+            StateHasChanged();
             return;
         }
 
         if (_acceptedBet.State == State.Active) _betStateString = "Active";
         if (_acceptedBet.State == State.Closed) _betStateString = "Closed";
         if (_acceptedBet.State == State.Pending) _betStateString = "Pending";
+        _betOptions = CaseService.GetCasesByBetId(_acceptedBet.Id);
         
-        submittedInviteCode = "";
         DisplayBetInputs = true;
     }
 
     private void SubmitValues()
     {
-        //create case
-        Case tempCase = new Case();
-        tempCase.Bet_Id = _acceptedBet.Id;
-        tempCase.Casetype = "Money";
-        tempCase.Id = CaseService.CreateCase(tempCase);
-        //create userbet
-        UserBet tempUserBet = new UserBet();
-        tempUserBet.Bet_Id = _acceptedBet.Id;
-        tempUserBet.User_Id = _loggedInUser.Id;
-        tempUserBet.Amount = _moneyValue;
-        tempUserBet.Case_Id = tempCase.Id;
-        UserBetService.CreateUserBet(tempUserBet);
+
+        List<Bet> ParticipatingInBetWithId = BetService.GetBetsByUserId(_loggedInUser.Id);
+        if (ParticipatingInBetWithId.All(bet => bet.Id != _acceptedBet.Id) && _moneyValue >= 0)
+        {
+            //create userbet
+            UserBet tempUserBet = new UserBet();
+            tempUserBet.Bet_Id = _acceptedBet.Id;
+            tempUserBet.User_Id = _loggedInUser.Id;
+            tempUserBet.Amount = _moneyValue;
+            tempUserBet.Case_Id = _selectedCaseId;
+            
+            UserBetService.CreateUserBet(tempUserBet);
+            CreatedNewUserBet = true;
+            HasNotificationMessage = true;
+            NotificationMessage = "You are now participating in this bet!";
+            NotificationClass = "alert alert-success";
+        }
+        else
+        {
+            //check moneyValue >= 0
+            if (_moneyValue < 0) {
+                HasNotificationMessage = true;
+                NotificationMessage = "The Amount has to be at least 0!";
+                NotificationClass = "alert alert-danger";
+            }
+            else {
+                HasNotificationMessage = true;
+                NotificationMessage = "You are already participating in this bet!";
+                NotificationClass = "alert alert-danger";
+            }
+            
+        }
         
-        CreatedNewUserBet = true;
     }
+    
+    [Parameter]
+    public string? ParamInviteCode { get; set; }
+    
+    protected override void OnParametersSet()
+    {
+        if (ParamInviteCode != null)
+        inviteCode = ParamInviteCode;
+        StateHasChanged();
+    }
+
 }

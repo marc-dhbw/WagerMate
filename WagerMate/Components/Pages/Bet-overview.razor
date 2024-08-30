@@ -10,6 +10,8 @@
 @inject ICookieService CookieService;
 @inject IUserBetService UserBetService;
 @inject NavigationManager Navigation
+@inject IJSRuntime JsRuntime
+
 
 <PageTitle>Bet Overview</PageTitle>
 
@@ -76,7 +78,7 @@
     </div>
 </div>
 
-<!-- Popup Form -->
+<!-- Create Bet Popup Form -->
 @if (_isPopupVisible)
 {
     <div id="popup-overlay" @onclick="HidePopup" class="active">
@@ -139,6 +141,7 @@
     </div>
 }
 
+@*Details of Bet Popup Form*@
 @if (_isDetailsPopupVisible)
 {
     <div id="popup-overlay" @onclick="HidePopup" class="active">
@@ -161,9 +164,9 @@
                     <label class="detail-label">Expiration Date:</label>
                     <span class="detail-value">@_betPopup.Expiration</span>
                 </div>
+                <button class="btn btn-primary" id="copyButton" @onclick="CopyLinkToClipboard">Copy Invite Link!</button><br/>
                 <button class="btn btn-secondary cancel-button" @onclick="HideDetailsPopup">Cancel</button>
             </div>
-
         </div>
     </div>
 }
@@ -181,6 +184,7 @@
     private string? ErrorMessage { get; set; }
     private int _totalAmount { get; set; }
     private bool _isDetailsPopupVisible;
+    private string _inviteCode;
 
     // Define properties and fields
     private static int MaxFields { get; set; } = 5;
@@ -239,8 +243,9 @@
     
     private void ShowDetailsPopup(Bet bet)
     {
-        _userbetPopup = UserBetService.GetUserBetById(_loggedInUser.Id, bet.Id);
+        _userbetPopup = UserBetService.GetUserBetById(_loggedInUser!.Id, bet.Id);
         _betPopup = bet;
+        _inviteCode = Navigation.Uri + "invitation-code/" + _betPopup.Invitation_Code;
         _isDetailsPopupVisible = true;
         StateHasChanged();
     }
@@ -281,7 +286,7 @@
         {
             Title = _formBetDetails.NewBetTitle,
             Description = _formBetDetails.NewBetDescription,
-            InvitationCode = Guid.NewGuid().ToString(),
+            Invitation_Code = Guid.NewGuid().ToString(),
             Created = DateTime.Now,
             Expiration = _formBetDetails.NewBetExpiration,
             Access = Access.Private,
@@ -346,5 +351,8 @@
         }
     }
     
-
+    private async Task CopyLinkToClipboard()
+    {
+        await JsRuntime.InvokeVoidAsync("copyToClipboard", _inviteCode);
+    }
 }

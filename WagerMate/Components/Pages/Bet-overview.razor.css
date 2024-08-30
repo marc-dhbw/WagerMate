@@ -358,3 +358,9 @@ p {
 .detail-value {
     color: #555;
 }
+
+button#copyButton {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}   
