@@ -28,7 +28,7 @@ public class CaseServiceTest
         _clearService.ClearDatabase();;
         
         //Creates Bet
-        var localBet = new Bet(1, "Title", "Description", "InvitationCode", DateTime.Now, DateTime.Now, Access.Public, State.Active);
+        var localBet = new Bet(1, "Title", "Description", "Invitation_Code", DateTime.Now, DateTime.Now, Access.Public, State.Active);
         _betService.CreateBet(localBet);
         
         //Creates Case with Empty Constructor
@@ -47,7 +47,7 @@ public class CaseServiceTest
         _clearService.ClearDatabase();;
         
         //Creates Bet
-        var localBet = new Bet(1, "Title", "Description", "InvitationCode", DateTime.Now, DateTime.Now, Access.Public, State.Active);
+        var localBet = new Bet(1, "Title", "Description", "Invitation_Code", DateTime.Now, DateTime.Now, Access.Public, State.Active);
         _betService.CreateBet(localBet);
         
         //Creates Case
@@ -63,7 +63,7 @@ public class CaseServiceTest
         _clearService.ClearDatabase();;
         
         //Creates Bet
-        var localBet = new Bet(1, "Title", "Description", "InvitationCode", DateTime.Now, DateTime.Now, Access.Public, State.Active);
+        var localBet = new Bet(1, "Title", "Description", "Invitation_Code", DateTime.Now, DateTime.Now, Access.Public, State.Active);
         _betService.CreateBet(localBet);
         
         //Creates Case
@@ -83,7 +83,7 @@ public class CaseServiceTest
         _clearService.ClearDatabase();;
         
         //Creates Bet
-        var localBet = new Bet(1, "Title", "Description", "InvitationCode", DateTime.Now, DateTime.Now, Access.Public, State.Active);
+        var localBet = new Bet(1, "Title", "Description", "Invitation_Code", DateTime.Now, DateTime.Now, Access.Public, State.Active);
         _betService.CreateBet(localBet);
 
         //Creates Case
@@ -114,7 +114,7 @@ public class CaseServiceTest
         _clearService.ClearDatabase();;
         
         //Creates Bet for the Case
-        var localBet = new Bet(1, "Title", "Description", "InvitationCode", DateTime.Now, DateTime.Now, Access.Public, State.Active);
+        var localBet = new Bet(1, "Title", "Description", "Invitation_Code", DateTime.Now, DateTime.Now, Access.Public, State.Active);
         _betService.CreateBet(localBet);
 
         //Creates Case with Constructor
@@ -135,7 +135,7 @@ public class CaseServiceTest
         _clearService.ClearDatabase();;
         
         //Creates Bet for the Case
-        var localBet = new Bet(1, "Title", "Description", "InvitationCode", DateTime.Now, DateTime.Now, Access.Public, State.Active);
+        var localBet = new Bet(1, "Title", "Description", "Invitation_Code", DateTime.Now, DateTime.Now, Access.Public, State.Active);
         _betService.CreateBet(localBet);
 
         //Creates Case with Constructor
@@ -153,7 +153,7 @@ public class CaseServiceTest
         _clearService.ClearDatabase();;
         
         //Creates Bet for the Case
-        var localBet = new Bet(1, "Title", "Description", "InvitationCode", DateTime.Now, DateTime.Now, Access.Public, State.Active);
+        var localBet = new Bet(1, "Title", "Description", "Invitation_Code", DateTime.Now, DateTime.Now, Access.Public, State.Active);
         _betService.CreateBet(localBet);
 
         //Creates Case with Constructor

@@ -37,10 +37,10 @@ public class BetServiceTest
         localBet.Id = 1;
         localBet.Title = "Title";
         localBet.Description = "Description";
-        localBet.InvitationCode = "InvitationCode";
+        localBet.Invitation_Code = "Invitation_Code";
         localBet.Created = DateTime.Today;
         localBet.Expiration = DateTime.Today;
-        localBet.Access = Access.Public;
+        localBet.Access = Access.Private;
         localBet.State = State.Active;
 
         var result = _betService.CreateBet(localBet);
@@ -48,10 +48,10 @@ public class BetServiceTest
         Assert.That(result.Id, Is.EqualTo(1));
         Assert.That(result.Title, Is.EqualTo("Title"));
         Assert.That(result.Description, Is.EqualTo("Description"));
-        Assert.That(result.InvitationCode, Is.EqualTo("InvitationCode"));
+        Assert.That(result.Invitation_Code, Is.EqualTo("Invitation_Code"));
         Assert.That(result.Created, Is.EqualTo(DateTime.Today));
         Assert.That(result.Expiration, Is.EqualTo(DateTime.Today));
-        //Assert.That(result.Access, Is.EqualTo(Access.Private));
+        Assert.That(result.Access, Is.EqualTo(Access.Private));
         Assert.That(result.State, Is.EqualTo(State.Active));
     }
 
@@ -61,7 +61,7 @@ public class BetServiceTest
         _clearService.ClearDatabase();
 
         //Creates Bet with Constructor
-        var localBet = new Bet(1, "Title", "Description", "InvitationCode", DateTime.Today, DateTime.Today,
+        var localBet = new Bet(1, "Title", "Description", "Invitation_Code", DateTime.Today, DateTime.Today,
             Access.Private, State.Active);
 
         var result = _betService.CreateBet(localBet);
@@ -69,7 +69,7 @@ public class BetServiceTest
         Assert.That(result.Id, Is.EqualTo(1));
         Assert.That(result.Title, Is.EqualTo("Title"));
         Assert.That(result.Description, Is.EqualTo("Description"));
-        Assert.That(result.InvitationCode, Is.EqualTo("InvitationCode"));
+        Assert.That(result.Invitation_Code, Is.EqualTo("Invitation_Code"));
         Assert.That(result.Created, Is.EqualTo(DateTime.Today));
         Assert.That(result.Expiration, Is.EqualTo(DateTime.Today));
         Assert.That(result.Access, Is.EqualTo(Access.Private));
@@ -82,13 +82,13 @@ public class BetServiceTest
         _clearService.ClearDatabase();
 
         //Create 3 Bets
-        var localBet1 = new Bet(1, "Title1", "Description1", "InvitationCode1", DateTime.Today, DateTime.Today,
+        var localBet1 = new Bet(1, "Title1", "Description1", "Invitation_Code1", DateTime.Today, DateTime.Today,
             Access.Private,
             State.Active);
-        var localBet2 = new Bet(2, "Title2", "Description2", "InvitationCode2", DateTime.Today, DateTime.Today,
+        var localBet2 = new Bet(2, "Title2", "Description2", "Invitation_Code2", DateTime.Today, DateTime.Today,
             Access.Public,
             State.Pending);
-        var localBet3 = new Bet(3, "Title3", "Description3", "InvitationCode3", DateTime.Today, DateTime.Today,
+        var localBet3 = new Bet(3, "Title3", "Description3", "Invitation_Code3", DateTime.Today, DateTime.Today,
             Access.Restricted,
             State.Closed);
         _betService.CreateBet(localBet1);
@@ -107,18 +107,18 @@ public class BetServiceTest
         Assert.That(result[0].Description, Is.EqualTo("Description1"));
         Assert.That(result[1].Description, Is.EqualTo("Description2"));
         Assert.That(result[2].Description, Is.EqualTo("Description3"));
-        //Assert.That(result[0].InvitationCode, Is.EqualTo("InvitationCode1"));
-        //Assert.That(result[1].InvitationCode, Is.EqualTo("InvitationCode2"));
-        //Assert.That(result[2].InvitationCode, Is.EqualTo("InvitationCode3"));
+        Assert.That(result[0].Invitation_Code, Is.EqualTo("Invitation_Code1"));
+        Assert.That(result[1].Invitation_Code, Is.EqualTo("Invitation_Code2"));
+        Assert.That(result[2].Invitation_Code, Is.EqualTo("Invitation_Code3"));
         Assert.That(result[0].Created, Is.EqualTo(DateTime.Today));
         Assert.That(result[1].Created, Is.EqualTo(DateTime.Today));
         Assert.That(result[2].Created, Is.EqualTo(DateTime.Today));
         Assert.That(result[0].Expiration, Is.EqualTo(DateTime.Today));
         Assert.That(result[1].Expiration, Is.EqualTo(DateTime.Today));
         Assert.That(result[2].Expiration, Is.EqualTo(DateTime.Today));
-        //Assert.That(result[0].Access, Is.EqualTo(Access.Private));
+        Assert.That(result[0].Access, Is.EqualTo(Access.Private));
         Assert.That(result[1].Access, Is.EqualTo(Access.Public));
-        //Assert.That(result[2].Access, Is.EqualTo(Access.Restricted));
+        Assert.That(result[2].Access, Is.EqualTo(Access.Restricted));
         Assert.That(result[0].State, Is.EqualTo(State.Active));
         Assert.That(result[1].State, Is.EqualTo(State.Pending));
         Assert.That(result[2].State, Is.EqualTo(State.Closed));
@@ -130,9 +130,9 @@ public class BetServiceTest
         _clearService.ClearDatabase();
 
         //Create Bet to be updated
-        var localBet = new Bet(1, "Title", "Description", "InvitationCode", DateTime.Now, DateTime.Now, Access.Private,
+        var localBet = new Bet(1, "Title", "Description", "Invitation_Code", DateTime.Now, DateTime.Now, Access.Private,
             State.Active);
-        var updatedBet = new Bet(1, "updatedTitle", "updatedDescription", "updatedInvitationCode", DateTime.Now,
+        var updatedBet = new Bet(1, "updatedTitle", "updatedDescription", "updatedInvitation_Code", DateTime.Now,
             DateTime.Now, Access.Public, State.Pending);
         _betService.CreateBet(localBet);
 
@@ -147,7 +147,7 @@ public class BetServiceTest
         _clearService.ClearDatabase();
 
         //Create Bet
-        var localBet = new Bet(1, "Title", "Description", "InvitationCode", DateTime.Today, DateTime.Today,
+        var localBet = new Bet(1, "Title", "Description", "Invitation_Code", DateTime.Today, DateTime.Today,
             Access.Private,
             State.Active);
         _betService.CreateBet(localBet);
@@ -158,7 +158,7 @@ public class BetServiceTest
         Assert.That(result.Id, Is.EqualTo(1));
         Assert.That(result.Title, Is.EqualTo("Title"));
         Assert.That(result.Description, Is.EqualTo("Description"));
-        //Assert.That(result.InvitationCode, Is.EqualTo("InvitationCode"));
+        Assert.That(result.Invitation_Code, Is.EqualTo("Invitation_Code"));
         Assert.That(result.Created, Is.EqualTo(DateTime.Today));
         Assert.That(result.Expiration, Is.EqualTo(DateTime.Today));
         Assert.That(result.Access, Is.EqualTo(Access.Private));
@@ -171,7 +171,7 @@ public class BetServiceTest
         _clearService.ClearDatabase();
 
         //Create Bet
-        var localBet = new Bet(1, "Title", "Description", "InvitationCode", DateTime.Now, DateTime.Now, Access.Private,
+        var localBet = new Bet(1, "Title", "Description", "Invitation_Code", DateTime.Now, DateTime.Now, Access.Private,
             State.Active);
         _betService.CreateBet(localBet);
 
@@ -186,13 +186,13 @@ public class BetServiceTest
         _clearService.ClearDatabase();
 
         //Create Bet
-        var localBet1 = new Bet(1, "Title1", "Description1", "InvitationCode1", DateTime.Now, DateTime.Now,
+        var localBet1 = new Bet(1, "Title1", "Description1", "Invitation_Code1", DateTime.Now, DateTime.Now,
             Access.Private,
             State.Active);
-        var localBet2 = new Bet(2, "Title2", "Description2", "InvitationCode2", DateTime.Now, DateTime.Now,
+        var localBet2 = new Bet(2, "Title2", "Description2", "Invitation_Code2", DateTime.Now, DateTime.Now,
             Access.Public,
             State.Pending);
-        var localBet3 = new Bet(3, "Title3", "Description3", "InvitationCode3", DateTime.Now, DateTime.Now,
+        var localBet3 = new Bet(3, "Title3", "Description3", "Invitation_Code3", DateTime.Now, DateTime.Now,
             Access.Restricted,
             State.Closed);
         _betService.CreateBet(localBet1);
@@ -227,9 +227,9 @@ public class BetServiceTest
         Assert.That(result[0].Description, Is.EqualTo("Description1"));
         Assert.That(result[1].Description, Is.EqualTo("Description2"));
         Assert.That(result[2].Description, Is.EqualTo("Description3"));
-        //Assert.That(result[0].InvitationCode, Is.EqualTo("InvitationCode1"));
-        //Assert.That(result[1].InvitationCode, Is.EqualTo("InvitationCode2"));
-        //Assert.That(result[2].InvitationCode, Is.EqualTo("InvitationCode3"));
+        Assert.That(result[0].Invitation_Code, Is.EqualTo("Invitation_Code1"));
+        Assert.That(result[1].Invitation_Code, Is.EqualTo("Invitation_Code2"));
+        Assert.That(result[2].Invitation_Code, Is.EqualTo("Invitation_Code3"));
         Assert.That(result[0].Created, Is.EqualTo(DateTime.Today));
         Assert.That(result[1].Created, Is.EqualTo(DateTime.Today));
         Assert.That(result[2].Created, Is.EqualTo(DateTime.Today));
@@ -250,18 +250,18 @@ public class BetServiceTest
         _clearService.ClearDatabase();
 
         //Create Bet
-        var localBet = new Bet(1, "Title", "Description", "InvitationCode", DateTime.Today, DateTime.Today,
+        var localBet = new Bet(1, "Title", "Description", "Invitation_Code", DateTime.Today, DateTime.Today,
             Access.Private,
             State.Active);
         _betService.CreateBet(localBet);
 
         //GetBetByInviteCode
-        var result = _betService.GetBetByInviteCode("InvitationCode");
+        var result = _betService.GetBetByInviteCode("Invitation_Code");
 
         Assert.That(result.Id, Is.EqualTo(1));
         Assert.That(result.Title, Is.EqualTo("Title"));
         Assert.That(result.Description, Is.EqualTo("Description"));
-        //Assert.That(result.InvitationCode, Is.EqualTo("InvitationCode"));
+        Assert.That(result.Invitation_Code, Is.EqualTo("Invitation_Code"));
         Assert.That(result.Created, Is.EqualTo(DateTime.Today));
         Assert.That(result.Expiration, Is.EqualTo(DateTime.Today));
         Assert.That(result.Access, Is.EqualTo(Access.Private));

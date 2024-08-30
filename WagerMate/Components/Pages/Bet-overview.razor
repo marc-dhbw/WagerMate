@@ -243,7 +243,7 @@
     
     private void ShowDetailsPopup(Bet bet)
     {
-        _userBetPopup = UserBetService.GetUserBetById(_loggedInUser!.Id, bet.Id);
+        _userbetPopup = UserBetService.GetUserBetById(_loggedInUser!.Id, bet.Id);
         _betPopup = bet;
         _inviteCode = "https://wagermate-main.onrender.com/invitation-code/" +_betPopup.Invitation_Code;
         _isDetailsPopupVisible = true;
@@ -286,7 +286,7 @@
         {
             Title = _formBetDetails.NewBetTitle,
             Description = _formBetDetails.NewBetDescription,
-            InvitationCode = Guid.NewGuid().ToString(),
+            Invitation_Code = Guid.NewGuid().ToString(),
             Created = DateTime.Now,
             Expiration = _formBetDetails.NewBetExpiration,
             Access = Access.Private,
