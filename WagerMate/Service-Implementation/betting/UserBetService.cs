@@ -41,18 +41,20 @@ public class UserBetService : IUserBetService
     public UserBet GetUserBetById(int id)
     {
         var result = _service.GetById<UserBet>("SELECT * FROM public.userbet WHERE Id = @Id", new { id });
-        Console.WriteLine("result");
-        Console.WriteLine("id: " + result.Id);
-        Console.WriteLine("userId: " + result.User_Id);
-        Console.WriteLine("betid: " + result.Bet_Id);
-        Console.WriteLine("amount: " + result.Amount);
-        Console.WriteLine("caseid: " + result.Case_Id);
         return result;
     }
 
-    public List<int> GetAllUserIdsFromBet(Bet bet)
+    public UserBet GetUserBetById(int userId, int betId)
     {
-        var result = _service.GetAllWithParams<int>("SELECT * FROM public.userbet WHERE bet_id = @Id", bet);
+        var userbet =
+            _service.GetById<UserBet>("SELECT * FROM public.userbet WHERE user_id = @userId AND bet_id = @betId", new { userId, betId });
+        return userbet;
+    }
+
+    public List<UserBet> GetAllUserBetsFromBet(Bet bet)
+    {
+        var result = _service.GetAllWithParams<UserBet>("SELECT * FROM public.userbet WHERE bet_id = @Id", bet);
         return result;
     }
+    
 }

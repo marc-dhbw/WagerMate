@@ -1,31 +1,178 @@
 @page "/invitation-code"
+@page "/invitation-code/{ParamInviteCode}"
+@using WagerMate.Service_Implementation.auth
+@using WagerMate.Service_Implementation.betting
+@using WagerMate.Service_Implementation.user
+@using WagerMate.Services.auth
+@using WagerMate.Services.betting
+@using WagerMate.Services.user
 @rendermode InteractiveServer
+@inject IBetService BetService
+@inject ICaseService CaseService
+@inject IUserBetService UserBetService
+@inject ICookieService CookieService
+@inject IUserService UserService
+@inject NavigationManager Navigation
 
 @inherits BasePage;
 
-<h3>Invitation Code</h3>
+<PageTitle>Invitation Code</PageTitle>
 
-<div class="form-group">
-    <label for="inviteCode">Invite Code:</label>
-    <input @bind="inviteCode" class="form-control" id="inviteCode" placeholder="Enter your invitation code here..."/>
-</div>
+<h1>Don't miss out on the fun! Join in the wager!</h1>
+    <div class="form-container">
+        
+        @if (!DisplayBetInputs)
+        {
+            <div class="form-group">
+                <label for="inviteCode">Invite Code:</label>
+                <input @bind="inviteCode" class="form-control" id="inviteCode" placeholder="Enter your invitation code here..."/>
+            </div>
 
-<button class="btn btn-primary" @onclick="SubmitCode">Submit</button>
+            <button class="submit-btn" @onclick="SubmitCode">Submit</button>
+        }
 
-@if (!string.IsNullOrEmpty(submittedCode))
-{
-    <p class="alert alert-success">Invite Code Submitted: @submittedCode</p>
-}
+        @if (DisplayBetInputs)
+        {
+            <h2>Submit Bet</h2>
+            
+            <div class="form-group">
+                <label>Title:</label>
+                <p>@_acceptedBet.Title</p>            
+            </div>
+
+            <div class="form-group">
+                <label>Description:</label>
+                <p>@_acceptedBet.Description</p>
+            </div>
+
+            <div class="form-group">
+                <label>State:</label>
+                <p>@_betStateString</p>
+            </div>
+
+            <div class="form-group">
+                <label for="moneyValue">Amount:</label>
+                <input id="moneyValue" type="number" @bind="_moneyValue" min="0"/>
+            </div>
+            
+            <div class="form-group">
+                <label for="betoptions">Bet Options</label>
+                <select id="betoptions" @bind="_selectedCaseId">
+                    @foreach (Case betOption in _betOptions)
+                    {
+                        <option value="@betOption.Id">@betOption.Casetype</option>
+                    }
+                </select>
+            </div>
+
+            <button class="submit-btn" @onclick="SubmitValues">Submit</button>
+        }
+        
+        @if (HasNotificationMessage)
+        {
+        <p class=@NotificationClass>@NotificationMessage</p>
+        }
+    </div>
+
 
 @code {
+    //AutoRedirect to the LoginPage
+    private bool _firstLogin = true;
+    private User? _loggedInUser = new();
+    private string inviteCodePlaceholder = "Enter your invitation code here...";
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await CookieService.RedirectToLogin("CookieID", Navigation);
+        var value = await CookieService.GetCookieByName("CookieID");
+        if (_firstLogin)
+        {
+            _loggedInUser = UserService.GetUserIfPasswordExists(value);
+            if (_loggedInUser != null)
+            {
+                _firstLogin = false;
+            }
+        }
+    }
+    
     private string inviteCode { get; set; }
-    private string submittedCode { get; set; }
+    private bool DisplayBetInputs { get; set; } = false;
+    private int _moneyValue { get; set; } 
+    private Bet _acceptedBet { get; set; }
+    private bool CreatedNewUserBet { get; set; }
+    private string _betStateString { get; set; } = "";
+    private bool HasNotificationMessage { get; set; }
+    private string NotificationMessage { get; set; }
+    private string NotificationClass { get; set; }
+    private int _selectedCaseId { get; set; }
+    private List<Case> _betOptions { get; set; }
+    
+    
 
     private void SubmitCode()
     {
-        Console.WriteLine("SubmitCode method called");
+        _acceptedBet = BetService.GetBetByInviteCode(inviteCode);
+        if (_acceptedBet == null)
+        {
+            inviteCode = "";
+            inviteCodePlaceholder = "Invite Code does not exist!";
+            StateHasChanged();
+            return;
+        }
 
-        submittedCode = inviteCode;
+        if (_acceptedBet.State == State.Active) _betStateString = "Active";
+        if (_acceptedBet.State == State.Closed) _betStateString = "Closed";
+        if (_acceptedBet.State == State.Pending) _betStateString = "Pending";
+        _betOptions = CaseService.GetCasesByBetId(_acceptedBet.Id);
+        
+        DisplayBetInputs = true;
+    }
+
+    private void SubmitValues()
+    {
+
+        List<Bet> ParticipatingInBetWithId = BetService.GetBetsByUserId(_loggedInUser.Id);
+        if (ParticipatingInBetWithId.All(bet => bet.Id != _acceptedBet.Id) && _moneyValue >= 0)
+        {
+            //create userbet
+            UserBet tempUserBet = new UserBet();
+            tempUserBet.Bet_Id = _acceptedBet.Id;
+            tempUserBet.User_Id = _loggedInUser.Id;
+            tempUserBet.Amount = _moneyValue;
+            tempUserBet.Case_Id = _selectedCaseId;
+            
+            UserBetService.CreateUserBet(tempUserBet);
+            CreatedNewUserBet = true;
+            HasNotificationMessage = true;
+            NotificationMessage = "You are now participating in this bet!";
+            NotificationClass = "alert alert-success";
+        }
+        else
+        {
+            //check moneyValue >= 0
+            if (_moneyValue < 0) {
+                HasNotificationMessage = true;
+                NotificationMessage = "The Amount has to be at least 0!";
+                NotificationClass = "alert alert-danger";
+            }
+            else {
+                HasNotificationMessage = true;
+                NotificationMessage = "You are already participating in this bet!";
+                NotificationClass = "alert alert-danger";
+            }
+            
+        }
+        
+    }
+    
+    [Parameter]
+    public string? ParamInviteCode { get; set; }
+    
+    protected override void OnParametersSet()
+    {
+        if (ParamInviteCode != null)
+        inviteCode = ParamInviteCode;
+        StateHasChanged();
     }
 
 }

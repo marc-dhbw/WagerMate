@@ -165,4 +165,22 @@ public class DbService : IDbService
             throw;
         }
     }
+
+    public bool CustomSql(string sql)
+    {
+        using var connection = new NpgsqlConnection(_connectionString);
+        connection.Open();
+        try
+        {
+            var queryResult = connection.Execute(sql);
+            if (queryResult > 0) return true;
+            return false;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("DbService: Delete Table Failed");
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }
