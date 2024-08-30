@@ -19,7 +19,8 @@ CREATE TABLE "winner"
 (
     "id"         serial PRIMARY KEY,
     "bet_id"     int,
-    "userbet_id" int
+    "userbet_id" int,
+    "amount"     double precision
 );
 
 CREATE TABLE "bet"

@@ -8,7 +8,7 @@ public class Bet
 
     public Bet(int id, string? title, string? description, string? invitationCode, DateTime created,
         DateTime expiration,
-        Access betAccess, State betState)
+        Access access, State state)
     {
         Id = id;
         Title = title;
@@ -16,8 +16,8 @@ public class Bet
         Invitation_Code = invitationCode;
         Created = created;
         Expiration = expiration;
-        BetAccess = betAccess;
-        BetState = betState;
+        Access = access;
+        State = state;
     }
 
     public int Id { get; set; }
@@ -26,6 +26,6 @@ public class Bet
     public string? Invitation_Code { get; set; }
     public DateTime Created { get; set; }
     public DateTime Expiration { get; set; }
-    public Access BetAccess { get; set; }
-    public State BetState { get; set; }
+    public Access Access { get; set; }
+    public State State { get; set; }
 }

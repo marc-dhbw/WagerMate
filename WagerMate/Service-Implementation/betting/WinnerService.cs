@@ -15,8 +15,9 @@ public class WinnerService : IWinnerService
 
     public Winner CreateWinner(Winner createdWinner)
     {
-        _service.Create<Case>("INSERT INTO public.winner(bet_id, userbet_id) VALUES(@Bet_Id, @UserBet_Id)",
+        int newId = _service.CreateWithReturn("INSERT INTO public.winner(bet_id, userbet_id, amount) VALUES(@Bet_Id, @UserBet_Id, @Amount) returning Id",
             createdWinner);
+        createdWinner.Id = newId;
         return createdWinner;
     }
 
@@ -38,7 +39,7 @@ public class WinnerService : IWinnerService
     {
         var result =
             _service.Update<Winner>(
-                "UPDATE public.winner SET Id = @Id, bet_id = @bet_Id, userbet_id = @UserBet_Id WHERE Id = @Id",
+                "UPDATE public.winner SET Id = @Id, bet_id = @bet_Id, userbet_id = @UserBet_Id, amount = @Amount WHERE Id = @Id",
                 newWinner);
         return result;
     }

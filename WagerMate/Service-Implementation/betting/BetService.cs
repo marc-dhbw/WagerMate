@@ -16,7 +16,7 @@ public class BetService : IBetService
     public Bet CreateBet(Bet bet)
     {
         var betId = _service.CreateWithReturn(
-            "INSERT INTO public.bet(title, description, invitation_code, access, state, created, expiration) VALUES(@Title, @Description, @Invitation_Code, @BetAccess, @BetState, @Created, @Expiration)  RETURNING id",
+            "INSERT INTO public.bet(title, description, invitation_code, access, state, created, expiration) VALUES(@Title, @Description, @InvitationCode, @Access, @State, @Created, @Expiration)  RETURNING id",
             bet);
         bet.Id = betId;
         return bet;
@@ -31,7 +31,7 @@ public class BetService : IBetService
     public bool UpdateBet(Bet bet)
     {
         var result = _service.Update<Bet>(
-            "UPDATE public.bet SET id=@Id, title = @Title, description = @Description, invitation_code = @Invitation_Code, access=@BetAccess, state=@BetState, created=@Created, expiration=@Expiration WHERE bet.id = @Id",
+            "UPDATE public.bet SET id=@Id, title = @Title, description = @Description, invitation_code = @InvitationCode, access=@Access, state=@State, created=@Created, expiration=@Expiration WHERE bet.id = @Id",
             bet);
         return result;
     }
@@ -44,7 +44,7 @@ public class BetService : IBetService
 
     public bool DeleteBet(int key)
     {
-        var result = _service.Delete<Bet>("DELETE FROM bet.bet WHERE bet.Id = @Id", new { id = key });
+        var result = _service.Delete<Bet>("DELETE FROM public.bet WHERE bet.Id = @Id", new { id = key });
         return result;
     }
 

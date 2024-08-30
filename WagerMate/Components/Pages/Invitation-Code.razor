@@ -117,10 +117,13 @@
             StateHasChanged();
             return;
         }
-        if (_acceptedBet.BetState == State.Active) _betStateString = "Active";
-        if (_acceptedBet.BetState == State.Closed) _betStateString = "Closed";
-        if (_acceptedBet.BetState == State.Pending) _betStateString = "Pending";
+
+        if (_acceptedBet.State == State.Active) _betStateString = "Active";
+        if (_acceptedBet.State == State.Closed) _betStateString = "Closed";
+        if (_acceptedBet.State == State.Pending) _betStateString = "Pending";
         _betOptions = CaseService.GetCasesByBetId(_acceptedBet.Id);
+        
+        submittedInviteCode = "";
         DisplayBetInputs = true;
     }
 

@@ -1,4 +1,5 @@
 @page "/"
+@using Dapper
 @using WagerMate.Services.auth
 @using WagerMate.Services.betting
 @using WagerMate.Services.user
@@ -14,31 +15,64 @@
 
 <PageTitle>Bet Overview</PageTitle>
 
-<h1>Bet Overview</h1>
+<div id="pageHeader">
+    <h1>Bet Overview</h1>
+</div>
 
 <div id="betOverviewPage">
-    <div id="placeholder">
-        <h2>This is the perfect place to showcase your amazing advert!</h2>
+    <div id="betsCount">
+        <h2>Total Bets: @(_bets.Count)</h2>
     </div>
     <div id="creatNewBet">
-        <h2> Create a new bet here</h2>
-        <button class="btn btn-primary" @onclick="ShowPopup">New Bet</button>
+        <h2>Create a new bet here</h2>
+        <button class="new-bet-button" @onclick="ShowPopup">+ New Bet</button>
     </div>
+
+    @* hier sind schon die checkboxen aer die werden später erste gerendert?!??!? *@
+    <div class="check-box-line">
+        <div class="bet-state">
+            <label for="Accepted">Accepted Bets</label>
+            <input type="checkbox" id="Accepted" @bind="DisplayAcceptedBets"/>
+        </div>
+
+        <div class="bet-state">
+            <label for="Pending">Pending Bets</label>
+            <input type="checkbox" id="Pending" @bind="DisplayPendingBets"/>
+        </div>
+
+        <div class="bet-state">
+            <label for="Closed">Closed Bets</label>
+            <input type="checkbox" id="Closed" @bind="DisplayClosedBets"/>
+        </div>
+    </div>
+
+    @* Listing the bets of the user: *@
     <div id="allBets">
-        <h2>Here are your bets:</h2>
+        <h2 class="bets-heading">Here are your bets:</h2>
+
         <div id="allBetsLayout">
             @foreach (var bet in _bets)
-            { 
-                <div id="individualBet" @onclick="() => ShowDetailsPopup(bet)">
-                    <strong>ID:</strong> @bet.Id
-                    <br/>
-                    <strong>Description:</strong> @bet.Description
-                    <br/>
-                    <strong>Created:</strong> @bet.Created.ToShortDateString()
-                    <br/>
-                    <strong>Expires:</strong> @bet.Expiration.ToShortDateString()
-                    <br/>
-                </div>
+            {
+                @if ((bet.State == State.Active && DisplayAcceptedBets) ||
+                     (bet.State == State.Closed && DisplayClosedBets) ||
+                     (bet.State == State.Pending && DisplayPendingBets)
+                    )
+              {
+              <div id="individualBet" @onclick="() => ShowDetailsPopup(bet)">
+                  <div class="bet-header">
+                      <strong>Title:</strong> @bet.Title
+                  </div>
+                  <div class="bet-body">
+                      <strong>Description:</strong> @bet.Description <br/>
+                      <strong>State:</strong> @bet.State.ToString(); <br/>
+                      <strong>Total amount:</strong> @getTotalAmount(bet);
+                  </div>
+                  <div class="bet-footer">
+                      <span class="bet-date"><strong>Created:</strong> @bet.Created.ToShortDateString()</span>
+                      <span class="bet-date"><strong>Expires:</strong> @bet.Expiration.ToShortDateString()</span>
+                  </div>
+              </div>
+              }
             }
         </div>
     </div>
@@ -50,19 +84,50 @@
     <div id="popup-overlay" @onclick="HidePopup" class="active">
         <div id="popup-content" @onclick:stopPropagation="true">
             <h2 id="h2PopUpCreateNewBet">Create New Bet</h2>
-            <br/>
-            <br/>
-            <label>Title:</label><br/>
-            <input type="text" @bind="_newBetDetails.NewBetTitle"/><br/><br/>
-            <label>Description:</label><br/>
-            <input type="text" @bind="_newBetDetails.NewBetDescription"/><br/><br/>
-            <label>Bet Amount:</label><br/>
-            <input type="number" @bind="_newBetDetails.NewBetMoney"/><br/><br/>
-            <label>Set Expiration Date:</label><br/>
-            <input type="date" @bind="_newBetDetails.NewBetExpiration"/><br/><br/>
-            <button class="btn btn-success" @onclick="CreateNewBet">Create Bet</button>
-            <button class="btn btn-secondary" @onclick="HidePopup">Cancel</button>
+            <div class="create-bet-container">
+                <div class="form-group">
+                    <label class="form-label">Title:</label>
+                    <input type="text" class="form-input" @bind="_formBetDetails.NewBetTitle" placeholder="Enter bet title" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description:</label>
+                    <input type="text" class="form-input" @bind="_formBetDetails.NewBetDescription" placeholder="Enter bet description" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Bet Amount:</label>
+                    <input type="number" class="form-input" @bind="_formBetDetails.NewBetMoney" placeholder="Enter amount" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Set Expiration Date:</label>
+                    <input type="date" class="form-input" @bind="_formBetDetails.NewBetExpiration" min="@DateTime.Now.ToString("yyyy-MM-dd")"/>
+                </div>
+                <div class="form-group">
+                  <label>Your bet option</label><br/>
+                    <input type="text" @bind="_formBetDetails.CaseBetCreator"/><br/><br/>
 
+                    <label>Other possible bet options</label>
+                    <form>
+                        <div>
+                            @for (int i = 0; i < _dynamicInputs.Count; i++)
+                            {
+                                int index = i;
+                                <input type="text" @oninput="(e) => UpdateInputValue(index, e.Value.ToString())"/>
+                                <br/>
+                            }
+
+                        </div>
+                        @if (_dynamicInputs.Count != MaxFields)
+                        {
+                            <button type="button" @onclick="AddInputField">add bet option</button>
+                        }
+                    </form>
+
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-success create-button" @onclick="CreateNewBet">Create Bet</button>
+                    <button class="btn btn-secondary cancel-button" @onclick="HidePopup">Cancel</button>
+                </div>
+            </div>
             @if (!string.IsNullOrEmpty(ErrorMessage))
             {
                 <br/>
@@ -82,42 +147,97 @@
     <div id="popup-overlay" @onclick="HidePopup" class="active">
         <div id="popup-content" @onclick:stopPropagation="true">
             <h2 id="h2PopUpBetDetails">Bet Details</h2>
-            <br/>
-            <br/>
-            <label>Title:</label>@_betPopup.Title<br/>
-            <label>Description:</label>@_betPopup.Description<br/>
-            <label>Bet Amount:</label>@_userBetPopup.Amount<br/>
-            <label>Expiration Date:</label>@_betPopup.Expiration.ToShortDateString()<br/>
-            <button class="btn btn-primary" id="copyButton" @onclick="CopyLinkToClipboard">Copy Invite Link!</button><br/>
-            <button class="btn btn-secondary" @onclick="HideDetailsPopup">Cancel</button>
-
+            <div class="bet-details-container">
+                <div class="bet-detail">
+                    <label class="detail-label">Title:</label>
+                    <span class="detail-value">@_betPopup.Title</span> 
+                </div>
+                <div class="bet-detail">
+                    <label class="detail-label">Description:</label>
+                    <span class="detail-value">@_betPopup.Description</span>
+                </div>
+                <div class="bet-detail">
+                    <label class="detail-label">Bet Amount:</label>
+                    <span class="detail-value">@_userbetPopup.Amount</span>
+                </div>
+                <div class="bet-detail">
+                    <label class="detail-label">Expiration Date:</label>
+                    <span class="detail-value">@_betPopup.Expiration</span>
+                </div>
+                <button class="btn btn-primary" id="copyButton" @onclick="CopyLinkToClipboard">Copy Invite Link!</button><br/>
+                <button class="btn btn-secondary cancel-button" @onclick="HideDetailsPopup">Cancel</button>
+            </div>
         </div>
     </div>
 }
 
 @code{
 
+    private List<Bet> _bets = new();
     private bool _isPopupVisible;
+    private bool _firstLogin = true;
+    private bool DisplayAcceptedBets { get; set; } = true;
+    private bool DisplayPendingBets { get; set; } = true;
+    private bool DisplayClosedBets { get; set; } = false;
+    private User? _loggedInUser = new();
+    private FormBetDetails _formBetDetails = new();
+    private string? ErrorMessage { get; set; }
+    private int _totalAmount { get; set; }
     private bool _isDetailsPopupVisible;
     private string _inviteCode = "https://wagermate-main.onrender.com/invitation-code";
 
+    // Define properties and fields
+    private static int MaxFields { get; set; } = 5;
+    private List<string> _dynamicInputs = new List<string>(MaxFields);
 
-    private NewBetDetails _newBetDetails = new();
+    public double getTotalAmount(Bet bet)
+    {
+        return UserBetService.GetAllUserBetsFromBet(bet).Sum(userBet => userBet.Amount);
+    }
+
+    // Method to add a new input field
+    private void AddInputField()
+    {
+        if (_dynamicInputs.Count < MaxFields)
+        {
+            _dynamicInputs.Add(string.Empty);
+        }
+        else
+        {
+            // Optionally alert the user if the max is reached
+            Console.WriteLine("Maximum number of fields reached.");
+        }
+    }
+
+    private void UpdateInputValue(int index, string value)
+    {
+        if (index >= 0 && index < _dynamicInputs.Count)
+        {
+            _dynamicInputs[index] = value;
+        }
+    }
+
+
+    private void ResetFields()
+    {
+        _dynamicInputs.Clear(); // Clears all input fields
+    }
 
     private Bet _betPopup = new();
-    private UserBet _userBetPopup = new();
-    public class NewBetDetails
+    private UserBet _userbetPopup = new();
+    public class FormBetDetails
     {
         public string NewBetTitle { get; set; } = null!;
         public string NewBetDescription { get; set; } = null!;
         public uint NewBetMoney { get; set; }
         public DateTime NewBetExpiration { get; set; } = DateTime.Now;
+        public string CaseBetCreator { get; set; } = null!;
     }
 
     private void ShowPopup()
     {
         _isPopupVisible = true;
-        _newBetDetails = new NewBetDetails();
+        _formBetDetails = new FormBetDetails();
         StateHasChanged();
     }
     
@@ -134,6 +254,7 @@
     {
         _isPopupVisible = false;
         StateHasChanged();
+        ResetFields();
     }
     private void HideDetailsPopup()
     {
@@ -141,57 +262,55 @@
         StateHasChanged();
     }
 
-    private string? ErrorMessage { get; set; }
 
     private void CreateNewBet()
     {
         ErrorMessage = string.Empty;
 
-        if (string.IsNullOrWhiteSpace(_newBetDetails.NewBetTitle) ||
-            string.IsNullOrWhiteSpace(_newBetDetails.NewBetDescription) ||
-            _newBetDetails.NewBetMoney <= 0 ||
-            _newBetDetails.NewBetExpiration == default)
+
+        if (string.IsNullOrWhiteSpace(_formBetDetails.NewBetTitle) ||
+            string.IsNullOrWhiteSpace(_formBetDetails.NewBetDescription) ||
+            _formBetDetails.NewBetMoney <= 0)
         {
             ErrorMessage = "Please fill out all fields correctly before creating a new bet.";
+            return;
+        }
+        
+        if (_formBetDetails.NewBetExpiration < DateTime.Now.Date || _formBetDetails.NewBetExpiration == default)
+        {
+            ErrorMessage = "The expiration date cannot be in the past.";
             return;
         }
 
         var newBet = new Bet
         {
-            Title = _newBetDetails.NewBetTitle,
-            Description = _newBetDetails.NewBetDescription,
-            Invitation_Code = Guid.NewGuid().ToString(),
+            Title = _formBetDetails.NewBetTitle,
+            Description = _formBetDetails.NewBetDescription,
+            InvitationCode = Guid.NewGuid().ToString(),
             Created = DateTime.Now,
-            Expiration = _newBetDetails.NewBetExpiration,
-            BetAccess = Access.Private,
-            BetState = State.Pending
+            Expiration = _formBetDetails.NewBetExpiration,
+            Access = Access.Private,
+            State = State.Pending
         };
         if (_loggedInUser == null) return;
-
-        var tempCase = new Case
-        {
-            Casetype = "Money" //TODO: adjust value depending on ?
-        };
-        var tempUserBet = new UserBet
-        {
-            User_Id = _loggedInUser.Id,
-            Amount = _newBetDetails.NewBetMoney
-        };
 
         try
         {
             // creating Bet, then Case, then UserBet
             var createdBet = BetService.CreateBet(newBet);
-            _bets = BetService.GetBetsByUserId(_loggedInUser.Id);
-            tempCase.Bet_Id = createdBet.Id;
-            tempUserBet.Bet_Id = createdBet.Id;
 
-            var caseId = CaseService.CreateCase(tempCase);
-            tempCase.Id = caseId;
-            tempUserBet.Case_Id = caseId;
+            for (var i = 0; i < _dynamicInputs.Count; i++)
+            {
+                CaseService.CreateCase(new Case(createdBet.Id, _dynamicInputs[i]));
+            }
 
-            var userBetId = UserBetService.CreateUserBet(tempUserBet);
-            tempUserBet.Id = userBetId;
+            UserBet userBet = new UserBet();
+            userBet.Bet_Id = createdBet.Id;
+            userBet.User_Id = _loggedInUser.Id;
+            userBet.Amount = _formBetDetails.NewBetMoney;
+            var creatorcaseId = CaseService.CreateCase(new Case(createdBet.Id, _formBetDetails.CaseBetCreator));
+            userBet.Case_Id = creatorcaseId;
+            UserBetService.CreateUserBet(userBet);
         }
         catch (Exception)
         {
@@ -199,14 +318,8 @@
         }
 
         HidePopup();
-        StateHasChanged();
+        RenderData();
     }
-
-    private List<Bet> _bets = new();
-
-    //AutoRedirect to the LoginPage
-    private bool _firstLogin = true;
-    private User? _loggedInUser = new();
 
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -242,5 +355,4 @@
     {
         await JsRuntime.InvokeVoidAsync("copyToClipboard", _inviteCode);
     }
-
 }
