@@ -184,7 +184,7 @@
     private string? ErrorMessage { get; set; }
     private int _totalAmount { get; set; }
     private bool _isDetailsPopupVisible;
-    private string _inviteCode = "https://wagermate-main.onrender.com/invitation-code";
+    private string _inviteCode;
 
     // Define properties and fields
     private static int MaxFields { get; set; } = 5;
@@ -245,7 +245,7 @@
     {
         _userbetPopup = UserBetService.GetUserBetById(_loggedInUser!.Id, bet.Id);
         _betPopup = bet;
-        _inviteCode = "https://wagermate-main.onrender.com/invitation-code/" +_betPopup.Invitation_Code;
+        _inviteCode = Navigation.Uri + "invitation-code/" + _betPopup.Invitation_Code;
         _isDetailsPopupVisible = true;
         StateHasChanged();
     }
