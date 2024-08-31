@@ -193,9 +193,21 @@ p {
     max-width: 600px;
 }
 
-#individualBet {
-    border: 1px solid rgba(255, 128, 0, 0.5);
+.Pending {
+    background: rgba(255,128,0,0.48);
+}
+
+.Active {
     background: linear-gradient(135deg, rgba(255, 128, 0, 0.8), rgba(255, 188, 146, 0.8));
+}
+
+.Closed {
+    background: indianred;
+}
+
+#individualBet {
+    /*border: 1px solid rgba(255, 128, 0, 0.5);*/
+    /*background: linear-gradient(135deg, rgba(255, 128, 0, 0.8), rgba(255, 188, 146, 0.8));*/
     padding: 15px;
     border-radius: 15px;
     cursor: pointer;
@@ -210,7 +222,7 @@ p {
 #individualBet:hover {
     transform: translateY(-5px) scale(1.05);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); 
-    background: linear-gradient(135deg, rgba(255, 128, 0, 0.9), rgba(255, 188, 146, 0.9));
+    /*background: linear-gradient(135deg, rgba(255, 128, 0, 0.9), rgba(255, 188, 146, 0.9));*/
 }
 
 .bet-header {

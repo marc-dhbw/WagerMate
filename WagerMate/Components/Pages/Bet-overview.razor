@@ -60,7 +60,7 @@
                      (bet.State == State.Pending && DisplayPendingBets)
                     )
               {
-              <div id="individualBet" @onclick="() => ShowDetailsPopup(bet)">
+              <div id="individualBet" class=@bet.State @onclick="() => ShowDetailsPopup(bet)">
                   <div class="bet-header">
                       <strong>Title:</strong> @bet.Title
                   </div>
