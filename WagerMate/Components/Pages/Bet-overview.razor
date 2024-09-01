@@ -60,30 +60,47 @@
                      (bet.State == State.Pending && DisplayPendingBets)
                     ) 
                 {
-                    BetResultText = string.Empty;
-                    _winnersList = WinnerService.GetWinnersByBetId(bet.Id);
-                    var loggedInUserBet = UserBetService.GetUserBetById(_loggedInUser.Id, bet.Id);
+                    BackgroundColorIndividualBet = string.Empty;
+                    BetIcon = string.Empty;
+                    if (bet.State == State.Active || bet.State == State.Pending) {
+                        BackgroundColorIndividualBet = "indiBet-Orange";
+                    }
+
+                    if (bet.State == State.Pending) {
+                        BetIcon = "icon-hourglass-split";
+                    }
+                    if (bet.State == State.Closed){
+                        BetResultText = string.Empty;
+                        _winnersList = WinnerService.GetWinnersByBetId(bet.Id);
+                        var loggedInUserBet = UserBetService.GetUserBetById(_loggedInUser.Id, bet.Id);
+
+                        if (_winnersList == null || !_winnersList.Any())
+                        {
+                            BetResultText = "No one won this bet.";
+                            BackgroundColorIndividualBet = "indiBet-Grey";
+                        }
+                        else if (_winnersList.Any(winner => winner.UserBet_Id == loggedInUserBet.Id))
+                        {
+                            BetResultText = $"Congratulations! {_loggedInUser.Name}! You are a Winner!";
+                            BackgroundColorIndividualBet = "indiBet-Green";
+                            BetIcon = "icon-trophy";
+                        }
+                        else
+                        {
+                            BetResultText = "You lost this bet.";
+                            BackgroundColorIndividualBet = "indiBet-Grey";
+                            BetIcon = "icon-lost-bet";
+                        }
+                        
+                    }
                     
-                    if (_winnersList == null || !_winnersList.Any())
-                    {
-                        BetResultText = "No one won this bet.";
-                    }
-                    else if (_winnersList.Any(winner => winner.UserBet_Id == loggedInUserBet.Id))
-                    {
-                        BetResultText = $"Congratulations! {_loggedInUser.Name}! You are a Winner!";
-                    }
-                    else
-                    {
-                        BetResultText = "You lost this bet.";
-                    }
-                    
-                  <div id="individualBet" class=@bet.State @onclick="() => ShowDetailsPopup(bet)">
+                  <div id="individualBet" class=@BackgroundColorIndividualBet @onclick="() => ShowDetailsPopup(bet)">
                       <div class="bet-header">
                           <strong>Title:</strong> @bet.Title
                       </div>
                       @if (bet.State == State.Closed) {
                           <div class="bet-body">
-                              <strong>@BetResultText</strong><br/> <br/>
+                              <strong> <span class=@BetIcon></span> @BetResultText</strong><br/> <br/>
                               <strong>Description:</strong> @bet.Description <br/>
                               <strong>State:</strong> @bet.State.ToString()<br/>
                               <strong>Total amount:</strong> @getTotalAmount(bet)
@@ -92,7 +109,12 @@
                       else {
                           <div class="bet-body">
                               <strong>Description:</strong> @bet.Description <br/>
-                              <strong>State:</strong> @bet.State.ToString() <br/>
+                              @if (bet.State == State.Pending) {
+                                  <strong>State:</strong> @bet.State.ToString() <span class=@BetIcon></span><br/>
+                              }
+                              else {
+                                  <strong>State:</strong> @bet.State.ToString() <br/>
+                              }
                               <strong>Total amount:</strong> @getTotalAmount(bet)
                           </div>
                       }
@@ -262,6 +284,8 @@
     private List<Winner>? _winnersList { get; set; }
     private List<string> _winnerNameList { get; set; } = new List<string>();
     private string BetResultText { get; set; } 
+    private string BackgroundColorIndividualBet { get; set; }
+    private string BetIcon { get; set; }
 
     // Define properties and fields
     private static int MaxFields { get; set; } = 5;
