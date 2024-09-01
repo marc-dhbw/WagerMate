@@ -69,6 +69,7 @@
                     if (bet.State == State.Pending) {
                         BetIcon = "icon-hourglass-split";
                     }
+                    
                     if (bet.State == State.Closed){
                         BetResultText = string.Empty;
                         _winnersList = WinnerService.GetWinnersByBetId(bet.Id);
@@ -91,7 +92,6 @@
                             BackgroundColorIndividualBet = "indiBet-Grey";
                             BetIcon = "icon-lost-bet";
                         }
-                        
                     }
                     
                   <div id="individualBet" class=@BackgroundColorIndividualBet @onclick="() => ShowDetailsPopup(bet)">
@@ -99,23 +99,24 @@
                           <strong>Title:</strong> @bet.Title
                       </div>
                       @if (bet.State == State.Closed) {
+                          <strong><span class=@BetIcon></span> @BetResultText</strong>
                           <div class="bet-body">
-                              <strong> <span class=@BetIcon></span> @BetResultText</strong><br/> <br/>
-                              <strong>Description:</strong> @bet.Description <br/>
-                              <strong>State:</strong> @bet.State.ToString()<br/>
-                              <strong>Total amount:</strong> @getTotalAmount(bet)
+                              <strong>Description:</strong> <div class="bet-body-value">@bet.Description</div>
+                              <strong>State:</strong> <div class="bet-body-value">@bet.State.ToString()</div>
+                              <strong>Total amount:</strong> <div class="bet-body-value">@getTotalAmount(bet)</div>
                           </div>
                       }
                       else {
                           <div class="bet-body">
-                              <strong>Description:</strong> @bet.Description <br/>
+                              <strong>Description:</strong> <div class="bet-body-value">@bet.Description</div>
                               @if (bet.State == State.Pending) {
-                                  <strong>State:</strong> @bet.State.ToString() <span class=@BetIcon></span><br/>
+                                  <strong>State:</strong> 
+                                  <div class="bet-body-value">@bet.State.ToString() <span class=@BetIcon></span></div>
                               }
                               else {
-                                  <strong>State:</strong> @bet.State.ToString() <br/>
+                                  <strong>State:</strong> <div class="bet-body-value">@bet.State.ToString()</div>
                               }
-                              <strong>Total amount:</strong> @getTotalAmount(bet)
+                              <strong>Total amount:</strong> <div class="bet-body-value">@getTotalAmount(bet)</div>
                           </div>
                       }
                       <div class="bet-footer">

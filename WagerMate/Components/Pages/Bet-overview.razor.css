@@ -118,9 +118,6 @@ p {
     outline: none;
 }
 
-
-
-
 #allBets {
     padding: 20px;
     grid-row: 3;
@@ -152,8 +149,6 @@ p {
     margin: 10px auto 0; 
     border-radius: 5px; 
 }
-
-
 
 #allBetsLayout {
     display: grid;
@@ -223,7 +218,6 @@ p {
     margin-right: 4px;
 }
 
-
 .icon-lost-bet {
     display: inline-block;
     width: 16px;
@@ -259,9 +253,21 @@ p {
 }
 
 .bet-body {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
     font-size: 1em;
     color: #fefefe;
     margin-bottom: 5px;
+    column-gap: 5px;
+    row-gap: 10px;
+}
+
+.bet-body strong {
+    grid-column: 1;
+}
+
+.bet-body-value{
+    grid-column: 2;
 }
 
 .bet-footer {
@@ -273,7 +279,7 @@ p {
 
 .bet-date {
     background: rgba(0, 0, 0, 0.3); 
-    padding: 5px 10px;
+    padding: 6px;
     border-radius: 10px;
 }
 
@@ -397,4 +403,11 @@ p {
 
 .detail-value {
     color: #555;
+}
+
+@media (max-width: 960px) {
+    #allBetsLayout {
+        grid-template-columns: 1fr;  /* Single column */
+        grid-template-rows: 1fr;     /* Single row */
+    }
 }
