@@ -58,23 +58,50 @@
                 @if ((bet.State == State.Active && DisplayAcceptedBets) ||
                      (bet.State == State.Closed && DisplayClosedBets) ||
                      (bet.State == State.Pending && DisplayPendingBets)
-                    )
-              {
-              <div id="individualBet" class=@bet.State @onclick="() => ShowDetailsPopup(bet)">
-                  <div class="bet-header">
-                      <strong>Title:</strong> @bet.Title
+                    ) 
+                {
+                    BetResultText = string.Empty;
+                    _winnersList = WinnerService.GetWinnersByBetId(bet.Id);
+                    var loggedInUserBet = UserBetService.GetUserBetById(_loggedInUser.Id, bet.Id);
+                    
+                    if (_winnersList == null || !_winnersList.Any())
+                    {
+                        BetResultText = "No one won this bet.";
+                    }
+                    else if (_winnersList.Any(winner => winner.UserBet_Id == loggedInUserBet.Id))
+                    {
+                        BetResultText = $"Congratulations! {_loggedInUser.Name}! You are a Winner!";
+                    }
+                    else
+                    {
+                        BetResultText = "You lost this bet.";
+                    }
+                    
+                  <div id="individualBet" class=@bet.State @onclick="() => ShowDetailsPopup(bet)">
+                      <div class="bet-header">
+                          <strong>Title:</strong> @bet.Title
+                      </div>
+                      @if (bet.State == State.Closed) {
+                          <div class="bet-body">
+                              <strong>@BetResultText</strong><br/> <br/>
+                              <strong>Description:</strong> @bet.Description <br/>
+                              <strong>State:</strong> @bet.State.ToString()<br/>
+                              <strong>Total amount:</strong> @getTotalAmount(bet)
+                          </div>
+                      }
+                      else {
+                          <div class="bet-body">
+                              <strong>Description:</strong> @bet.Description <br/>
+                              <strong>State:</strong> @bet.State.ToString() <br/>
+                              <strong>Total amount:</strong> @getTotalAmount(bet)
+                          </div>
+                      }
+                      <div class="bet-footer">
+                          <span class="bet-date"><strong>Created:</strong> @bet.Created.ToShortDateString()</span>
+                          <span class="bet-date"><strong>Expires:</strong> @bet.Expiration.ToShortDateString()</span>
+                      </div>
                   </div>
-                  <div class="bet-body">
-                      <strong>Description:</strong> @bet.Description <br/>
-                      <strong>State:</strong> @bet.State.ToString() <br/>
-                      <strong>Total amount:</strong> @getTotalAmount(bet)
-                  </div>
-                  <div class="bet-footer">
-                      <span class="bet-date"><strong>Created:</strong> @bet.Created.ToShortDateString()</span>
-                      <span class="bet-date"><strong>Expires:</strong> @bet.Expiration.ToShortDateString()</span>
-                  </div>
-              </div>
-              }
+                }
             }
         </div>
     </div>
@@ -234,6 +261,7 @@
     private Winner? _popupDetailsWinner { get; set; }
     private List<Winner>? _winnersList { get; set; }
     private List<string> _winnerNameList { get; set; } = new List<string>();
+    private string BetResultText { get; set; } 
 
     // Define properties and fields
     private static int MaxFields { get; set; } = 5;
