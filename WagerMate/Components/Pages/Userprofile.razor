@@ -1,11 +1,11 @@
 @page "/user"
 @using System.ComponentModel.DataAnnotations
-@using WagerMate.Services.auth
 @using WagerMate.Services.user
-@inject NavigationManager Navigation
 @inject ICookieService CookieService;
 @inject IUserService UserService;
 @inject IHashService HashService;
+
+@inherits BasePage;
 
 @rendermode InteractiveServer
 
@@ -134,7 +134,7 @@ else
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await CookieService.RedirectToLogin("CookieID", Navigation);
+        await base.OnAfterRenderAsync(firstRender);
         var hashFromCookie = await CookieService.GetCookieByName("CookieID");
         if (_firstLogin)
         {

@@ -1,0 +1,13 @@
+@inject ICookieService CookieService;
+@inject NavigationManager Navigation;
+
+@code {
+
+    //AutoRedirect to the LoginPage
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        Console.WriteLine("OnAfterRenderAsync");
+        await CookieService.RedirectToLogin("CookieID", Navigation);
+    }
+
+}

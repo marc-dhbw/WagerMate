@@ -12,6 +12,8 @@
 @inject NavigationManager Navigation
 @inject IJSRuntime JsRuntime
 
+@inherits BasePage;
+
 
 <PageTitle>Bet Overview</PageTitle>
 
@@ -28,7 +30,7 @@
         <button class="new-bet-button" @onclick="ShowPopup">+ New Bet</button>
     </div>
 
-    @* hier sind schon die checkboxen aer die werden später erste gerendert?!??!? *@
+    @* hier sind schon die checkboxen aber die werden später erste gerendert?!??!? *@
     <div class="check-box-line">
         <div class="bet-state">
             <label for="Accepted">Accepted Bets</label>
@@ -324,7 +326,7 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await CookieService.RedirectToLogin("CookieID", Navigation);
+        await base.OnAfterRenderAsync(firstRender);
         var value = await CookieService.GetCookieByName("CookieID");
         if (_firstLogin)
         {
