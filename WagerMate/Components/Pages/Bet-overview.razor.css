@@ -269,6 +269,15 @@ p{
 
 .bet-body-value{
     grid-column: 2;
+    overflow: auto;
+    word-wrap: break-word;
+}
+
+.bet-body-value-description{
+    grid-column: 2;
+    overflow: auto;
+    word-wrap: break-word;
+    height: max(25px);
 }
 
 .bet-footer {
@@ -407,7 +416,6 @@ p{
 }
 
 .winnerList {
-    /*background: darkgoldenrod;*/
     margin-bottom: 15px;
     box-shadow: 0 6px 15px rgba(34, 139, 34, 0.3);
     border: rgb(34, 139, 34) 2px solid;
