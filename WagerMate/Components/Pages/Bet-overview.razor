@@ -20,6 +20,98 @@
     <h1>Bet Overview</h1>
 </div>
 
+<!-- Popup Form Bet Details-->
+@if (_isDetailsPopupVisible)
+{
+<div id="popup-overlay" class="active">
+    <div id="popup-content" @onclick:stopPropagation="true">
+        <h2 id="h2PopUpBetDetails">Bet Details</h2>
+        <div class="bet-details-container">
+            <div class="bet-detail">
+                <label class="detail-label">Title:</label>
+                <span class="detail-value">@_betPopup.Title</span>
+            </div>
+            <div class="bet-detail">
+                <label class="detail-label">Description:</label>
+                <span class="detail-value detail-value-description">@_betPopup.Description</span>
+            </div>
+            <div class="bet-detail">
+                <label class="detail-label">Selected Option:</label>
+                <span class="detail-value">@_popupUserCase.Casetype</span>
+            </div>
+            @if (_betPopup.State != State.Closed)
+            {
+            <div class="bet-detail">
+                <label class="detail-label">Bet Amount:</label>
+                <span class="detail-value">@_userbetPopup.Amount</span>
+            </div>
+            }
+            else
+            {
+            // winning or losing amount
+            if (_popupDetailsWinner != null)
+            {
+            <div class="bet-detail">
+                <label class="detail-label">Winning Amount:</label>
+                <span class="detail-value">@_popupDetailsWinner.Amount</span>
+            </div>
+            }
+            else
+            {
+            <div class="bet-detail">
+                <label class="detail-label">Lost Amount:</label>
+                <span class="detail-value">@_userbetPopup.Amount</span>
+            </div>
+            }
+
+            @if (_winnersList.Count > 0) {
+            <div class="winnerList">
+                <div class="winner-header">
+                    @if(_winnersList.Count == 1)
+                    {
+                    <p>Winner</p>
+                    } else
+                    {
+                    <p>Winners</p>
+                    }
+                </div>
+                @foreach (string winnerName in _winnerNameList) {
+                <p>@winnerName</p>
+                }
+            </div>
+
+            }
+            }
+
+            <div class="bet-detail">
+                <label class="detail-label">Expiration Date:</label>
+                <span class="detail-value">@_betPopup.Expiration.ToShortDateString()</span>
+            </div>
+            @if(_popupSelectedCases.Count > 0)
+            {
+            <div class="bet-detail">
+                <label class="detail-label">Winning options: </label>
+                @foreach (SelectedCase popupSelectedCase in _popupSelectedCases)
+                {
+                <span class="detail-value">
+                                <input type="checkbox" @bind="popupSelectedCase.isSelected" disabled="@(_betPopup.State == State.Closed)" /> @popupSelectedCase._case.Casetype
+                            </span>
+                }
+            </div>
+            }
+            <button class="btn btn-secondary" @onclick="HideDetailsPopup">Cancel</button>
+            @if (_betPopup.State != State.Closed)
+            {
+            <button class="btn btn-secondary" @onclick="SettleBet">Settle Bet</button>
+            <button class="btn btn-secondary" @onclick="CancelBet">Cancel Bet</button>
+            <button class="btn btn-secondary" @onclick="DeleteBet">Delete Bet</button>
+            }
+        </div>
+
+    </div>
+</div>
+}
+
 <div id="betOverviewPage">
     <div id="betsCount">
         <h2>Total Bets: @(_filteredBets.Count)</h2>
@@ -90,33 +182,47 @@
                     
                 <div id="individualBet" class=@BackgroundColorIndividualBet @onclick="() => ShowDetailsPopup(bet)">
                     <div class="bet-header">
-                        <strong>Title:</strong> @bet.Title
+                        @if (bet.State == State.Pending) {
+                            
+                            <strong class="detail-value">@bet.Title</strong><div class="icon-hourglass-split"></div>
+                        }
+                        
+                        else if (bet.State == State.Closed){
+                            var loggedInUserBet = UserBetService.GetUserBetById(_loggedInUser.Id, bet.Id);
+
+                            BetIcon = _winnersList.Any(winner => winner.UserBet_Id == loggedInUserBet.Id) ? "icon-trophy" : "icon-lost-bet";
+                            BetIcon = (_winnersList.Count == 0) ? "" : BetIcon;
+                            <strong class="detail-value">@bet.Title</strong><span class=@BetIcon></span>
+                        }
+                        else {
+                            <strong class="detail-value">@bet.Title</strong>
+                        }
                     </div>
                     @if (bet.State == State.Closed) {
                         <strong><span class=@BetIcon></span> @BetResultText</strong>
                         <div class="bet-body">
                             <strong>Description:</strong> <div class="bet-body-value-description">@bet.Description</div>
-                            <strong>State:</strong> <div class="bet-body-value">@bet.State.ToString()</div>
+                            @* <strong>State:</strong> <div class="bet-body-value">@bet.State.ToString()</div> *@
                             <strong>Total amount:</strong> <div class="bet-body-value">@getTotalAmount(bet)</div>
                         </div>
                     }
                     else {
                         <div class="bet-body">
                             <strong>Description:</strong> <div class="bet-body-value-description">@bet.Description</div>
-                            @if (bet.State == State.Pending) {
-                                <strong>State:</strong> 
-                                <div class="bet-body-value">@bet.State.ToString() <span class=@BetIcon></span></div>
-                            }
-                            else {
-                                <strong>State:</strong> <div class="bet-body-value">@bet.State.ToString()</div>
-                            }
+                            @* @if (bet.State == State.Pending) { *@
+                            @*     <strong>State:</strong>  *@
+                            @*     <div class="bet-body-value">@bet.State.ToString() <span class=@BetIcon></span></div> *@
+                            @* } *@
+                            @* else { *@
+                            @*     <strong>State:</strong> <div class="bet-body-value">@bet.State.ToString()</div> *@
+                            @* } *@
                             <strong>Total amount:</strong> <div class="bet-body-value">@getTotalAmount(bet)</div>
                         </div>
                     }
-                    <div class="bet-footer">
+                    <footer class="bet-footer">
                         <span class="bet-date"><strong>Created:</strong> @bet.Created.ToShortDateString()</span>
                         <span class="bet-date"><strong>Expires:</strong> @bet.Expiration.ToShortDateString()</span>
-                    </div>
+                    </footer>
                 </div>
                 
             }
@@ -124,7 +230,7 @@
     </div>
 </div>
 
-<!-- Popup Form -->
+<!-- Popup Form Creat New Bet-->
 @if (_isPopupVisible)
 {
     <div id="popup-overlay" class="active">
@@ -187,95 +293,7 @@
     </div>
 }
 
-@if (_isDetailsPopupVisible)
-{
-    <div id="popup-overlay" class="active">
-        <div id="popup-content" @onclick:stopPropagation="true">
-            <h2 id="h2PopUpBetDetails">Bet Details</h2>
-            <div class="bet-details-container">
-                <div class="bet-detail">
-                    <label class="detail-label">Title:</label>
-                    <span class="detail-value">@_betPopup.Title</span> 
-                </div>
-                <div class="bet-detail">
-                    <label class="detail-label">Description:</label>
-                    <span class="detail-value">@_betPopup.Description</span>
-                </div>
-                <div class="bet-detail">
-                    <label class="detail-label">Selected Option:</label>
-                    <span class="detail-value">@_popupUserCase.Casetype</span>
-                </div>
-                @if (_betPopup.State != State.Closed)
-                {
-                    <div class="bet-detail">
-                        <label class="detail-label">Bet Amount:</label>
-                        <span class="detail-value">@_userbetPopup.Amount</span>
-                    </div>
-                }
-                else
-                {
-                    // winning or losing amount
-                    if (_popupDetailsWinner != null)
-                    {
-                        <div class="bet-detail">
-                            <label class="detail-label">Winning Amount:</label>
-                            <span class="detail-value">@_popupDetailsWinner.Amount</span>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="bet-detail">
-                            <label class="detail-label">Lost Amount:</label>
-                            <span class="detail-value">@_userbetPopup.Amount</span>
-                        </div>
-                    }
-                    @if (_winnersList.Count > 0) {
-                        <div class="winnerList">
-                            <div class="winner-header">
-                                @if(_winnersList.Count == 1)
-                                {
-                                    <p>Winner</p>
-                                } else
-                                {
-                                    <p>Winners</p>
-                                }
-                            </div>
-                            @foreach (string winnerName in _winnerNameList) {
-                                <p>@winnerName</p>
-                            }
-                        </div>
-                        
-                    }
-                }
-                
-                <div class="bet-detail">
-                    <label class="detail-label">Expiration Date:</label>
-                    <span class="detail-value">@_betPopup.Expiration.ToShortDateString()</span>
-                </div>
-                @if(_popupSelectedCases.Count > 0)
-                {
-                    <div class="bet-detail">
-                        <label class="detail-label">Winning options: </label>
-                        @foreach (SelectedCase popupSelectedCase in _popupSelectedCases)
-                        {
-                            <span class="detail-value">
-                                <input type="checkbox" @bind="popupSelectedCase.isSelected" disabled="@(_betPopup.State == State.Closed)" /> @popupSelectedCase._case.Casetype
-                            </span>
-                        }
-                    </div>
-                }
-                <button class="btn btn-secondary" @onclick="HideDetailsPopup">Cancel</button>
-                @if (_betPopup.State != State.Closed)
-                {
-                    <button class="btn btn-secondary" @onclick="SettleBet">Settle Bet</button>
-                    <button class="btn btn-secondary" @onclick="CancelBet">Cancel Bet</button>
-                    <button class="btn btn-secondary" @onclick="DeleteBet">Delete Bet</button>
-                }
-            </div>
 
-        </div>
-    </div>
-}
 
 @code{
 
@@ -356,7 +374,6 @@
         }
     }
 
-
     private void ResetFields()
     {
         _dynamicInputs.Clear(); // Clears all input fields
@@ -385,6 +402,10 @@
         _userbetPopup = UserBetService.GetUserBetById(_loggedInUser.Id, bet.Id);
         _betPopup = bet;
         _popupSelectedCases = new List<SelectedCase>();
+        
+        _winnersList = new List<Winner>();
+        _winnerNameList = new List<string>();
+        
         SelectedCase tempSelectedCase;
         List<Case> betCases = CaseService.GetCasesByBetId(_betPopup.Id);
         foreach (Case betCase in betCases)
@@ -436,9 +457,6 @@
     
     private void HideDetailsPopup()
     {
-        _winnersList = new List<Winner>();
-        _winnerNameList = new List<string>();
-        
         _isDetailsPopupVisible = false;
         StateHasChanged();
     }
@@ -447,7 +465,6 @@
     private void CreateNewBet()
     {
         ErrorMessage = string.Empty;
-
 
         if (string.IsNullOrWhiteSpace(_formBetDetails.NewBetTitle) ||
             string.IsNullOrWhiteSpace(_formBetDetails.NewBetDescription) ||
@@ -503,7 +520,6 @@
         HidePopup();
         RenderData();
     }
-
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
