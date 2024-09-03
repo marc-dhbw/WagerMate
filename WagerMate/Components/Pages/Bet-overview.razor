@@ -259,7 +259,7 @@
                         @foreach (SelectedCase popupSelectedCase in _popupSelectedCases)
                         {
                             <span class="detail-value">
-                                <input type="checkbox" @bind="popupSelectedCase.isSelected"/> @popupSelectedCase._case.Casetype
+                                <input type="checkbox" @bind="popupSelectedCase.isSelected" disabled="@(_betPopup.State == State.Closed)" /> @popupSelectedCase._case.Casetype
                             </span>
                         }
                     </div>
@@ -389,7 +389,7 @@
         List<Case> betCases = CaseService.GetCasesByBetId(_betPopup.Id);
         foreach (Case betCase in betCases)
         {
-            tempSelectedCase = new SelectedCase(betCase, true);
+            tempSelectedCase = new SelectedCase(betCase, false);
             _popupSelectedCases.Add(tempSelectedCase);
             if (_userbetPopup.Case_Id == betCase.Id)
             {
@@ -406,12 +406,23 @@
             List<UserBet> winnerUserBets = new List<UserBet>();
             _winnersList.ForEach(winner => { winnerUserBets.Add(UserBetService.GetUserBetById(winner.UserBet_Id)); });
 
+            List<int> winnerCaseIds = new List<int>();
             List<User> users = new List<User>();
-            winnerUserBets.ForEach(userBet => { users.Add(UserService.GetUserById(userBet.User_Id)); });
+            winnerUserBets.ForEach(userBet =>
+            {
+                users.Add(UserService.GetUserById(userBet.User_Id)); 
+                winnerCaseIds.Add(userBet.Case_Id);
+            });
 
             users.ForEach(user => { _winnerNameList.Add(user.Name); });
+            
+            
+            foreach (var selectedCase in _popupSelectedCases)
+            {
+                selectedCase.isSelected = winnerCaseIds.Contains(selectedCase._case.Id);
+            }
+            
         }
-        
         _isDetailsPopupVisible = true;
         StateHasChanged();
     }
