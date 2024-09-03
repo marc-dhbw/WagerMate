@@ -127,7 +127,7 @@
 <!-- Popup Form -->
 @if (_isPopupVisible)
 {
-    <div id="popup-overlay" @onclick="HidePopup" class="active">
+    <div id="popup-overlay" class="active">
         <div id="popup-content" @onclick:stopPropagation="true">
             <h2 id="h2PopUpCreateNewBet">Create New Bet</h2>
             <div class="create-bet-container">
@@ -189,7 +189,7 @@
 
 @if (_isDetailsPopupVisible)
 {
-    <div id="popup-overlay" @onclick="HidePopup" class="active">
+    <div id="popup-overlay" class="active">
         <div id="popup-content" @onclick:stopPropagation="true">
             <h2 id="h2PopUpBetDetails">Bet Details</h2>
             <div class="bet-details-container">
@@ -257,11 +257,13 @@
                         }
                     </div>
                 }
-                
                 <button class="btn btn-secondary" @onclick="HideDetailsPopup">Cancel</button>
-                <button class="btn btn-secondary" @onclick="SettleBet">Settle Bet</button>
-                <button class="btn btn-secondary" @onclick="CancelBet">Cancel Bet</button>
-                <button class="btn btn-secondary" @onclick="DeleteBet">Delete Bet</button>
+                @if (_betPopup.State != State.Closed)
+                {
+                    <button class="btn btn-secondary" @onclick="SettleBet">Settle Bet</button>
+                    <button class="btn btn-secondary" @onclick="CancelBet">Cancel Bet</button>
+                    <button class="btn btn-secondary" @onclick="DeleteBet">Delete Bet</button>
+                }
             </div>
 
         </div>
