@@ -535,6 +535,7 @@
         }
         BetSettlingService.SettleBet(_betPopup, idsFromSelectedCases.ToArray());
         FilterBets();
+        _isDetailsPopupVisible = false;
     }
 
     public void CancelBet()
