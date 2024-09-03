@@ -135,7 +135,7 @@
 
     private async Task HandleLogin()
     {
-        _loginRequiredElements = (_existingUserData.EMail != null) && (_existingUserData.Password != null);
+        _loginRequiredElements = (!String.IsNullOrEmpty(_existingUserData.EMail)) && (!String.IsNullOrEmpty(_existingUserData.Password));
         _correctLoginEmail = UserService.EmailIsRegistered(_existingUserData.EMail!);
         if (_loginRequiredElements && _correctLoginEmail)
         {
