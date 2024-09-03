@@ -230,15 +230,18 @@
                         </div>
                     }
 
-                    // list of all winenr names
-                    if (_winnersList.Count > 0)
-                    {
-                        <p>Winners: </p><br/>
-                    }
-                    foreach (string winnerName in _winnerNameList)
-                    {
-                        <p>@winnerName</p><br/>
-                    }
+                    <div class="winnerList">
+                        @* list of all winner names *@
+                        @if (_winnersList.Count > 0) {
+                            <div class="winner-header">
+                                <p>Winners </p>
+                            </div>
+                            
+                        }
+                        @foreach (string winnerName in _winnerNameList) {
+                            <p>@winnerName</p>
+                        }
+                    </div>
                 }
                 
                 <div class="bet-detail">
@@ -575,6 +578,4 @@
             (bet.State == State.Pending && DisplayPendingBets))
             .ToList();
     }
-    
-
 }
