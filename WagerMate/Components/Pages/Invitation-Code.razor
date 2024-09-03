@@ -121,7 +121,8 @@
         tempUserBet.Amount = _moneyValue;
         tempUserBet.Case_Id = tempCase.Id;
         UserBetService.CreateUserBet(tempUserBet);
-        
         CreatedNewUserBet = true;
+        _acceptedBet.State = State.Active;
+        BetService.UpdateBet(_acceptedBet);
     }
 }
