@@ -170,7 +170,7 @@
     
     public async Task HandleRegister()
     {
-        _registerRequiredElements = (_newUserData.EMail != null) && (_newUserData.Username != null) && (_newUserData.Password != null) && (_newUserData.PasswordRepeat != null) && (_newUserData.InviteCode != null);
+        _registerRequiredElements = (!String.IsNullOrEmpty(_newUserData.EMail)) && (!String.IsNullOrEmpty(_newUserData.Username)) && (!String.IsNullOrEmpty(_newUserData.Password)) && (!String.IsNullOrEmpty(_newUserData.PasswordRepeat)) && (!String.IsNullOrEmpty(_newUserData.InviteCode));
         _newRegisterEmail = !UserService.EmailIsRegistered(_newUserData.EMail!);
         _passwordTypo = _newUserData.Password != _newUserData.PasswordRepeat;
         _correctInviteCode = _newUserData.InviteCode == "42";
