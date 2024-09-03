@@ -247,12 +247,15 @@
                 </div>
                 @if(_popupSelectedCases.Count > 0)
                 {
-                    @foreach (SelectedCase popupSelectedCase in _popupSelectedCases)
-                    {
-                        <div>
-                            <input type="checkbox" @bind="popupSelectedCase.isSelected"/> @popupSelectedCase._case.Casetype
-                        </div>
-                    }
+                    <div class="bet-detail">
+                        <label class="detail-label">Winning options: </label>
+                        @foreach (SelectedCase popupSelectedCase in _popupSelectedCases)
+                        {
+                            <span class="detail-value">
+                                <input type="checkbox" @bind="popupSelectedCase.isSelected"/> @popupSelectedCase._case.Casetype
+                            </span>
+                        }
+                    </div>
                 }
                 
                 <button class="btn btn-secondary" @onclick="HideDetailsPopup">Cancel</button>
