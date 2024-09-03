@@ -480,10 +480,6 @@
             // creating Bet, then Case, then UserBet
             var createdBet = BetService.CreateBet(newBet);
 
-            for (var i = 0; i < _dynamicInputs.Count; i++)
-            {
-                CaseService.CreateCase(new Case(createdBet.Id, _dynamicInputs[i]));
-            }
 
             UserBet userBet = new UserBet();
             userBet.Bet_Id = createdBet.Id;
@@ -492,6 +488,12 @@
             var creatorcaseId = CaseService.CreateCase(new Case(createdBet.Id, _formBetDetails.CaseBetCreator));
             userBet.Case_Id = creatorcaseId;
             UserBetService.CreateUserBet(userBet);
+            
+            // createing all other cases
+            for (var i = 0; i < _dynamicInputs.Count; i++)
+            {
+                CaseService.CreateCase(new Case(createdBet.Id, _dynamicInputs[i]));
+            }
         }
         catch (Exception)
         {
