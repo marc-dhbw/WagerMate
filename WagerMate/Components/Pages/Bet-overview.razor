@@ -229,19 +229,23 @@
                             <span class="detail-value">@_userbetPopup.Amount</span>
                         </div>
                     }
-
-                    <div class="winnerList">
-                        @* list of all winner names *@
-                        @if (_winnersList.Count > 0) {
+                    @if (_winnersList.Count > 0) {
+                        <div class="winnerList">
                             <div class="winner-header">
-                                <p>Winners </p>
+                                @if(_winnersList.Count == 1)
+                                {
+                                    <p>Winner</p>
+                                } else
+                                {
+                                    <p>Winners</p>
+                                }
                             </div>
-                            
-                        }
-                        @foreach (string winnerName in _winnerNameList) {
-                            <p>@winnerName</p>
-                        }
-                    </div>
+                            @foreach (string winnerName in _winnerNameList) {
+                                <p>@winnerName</p>
+                            }
+                        </div>
+                        
+                    }
                 }
                 
                 <div class="bet-detail">
