@@ -22,12 +22,11 @@ p {
 .field {
     display: flex;
     flex-direction: column;
-    margin-bottom: 1.5em;
     width: fit-content;
 }
 
 .field label {
-    margin-bottom: 0.5em;
+    margin-top: 5px;
 }
 
 
@@ -51,6 +50,7 @@ p {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-top: 15px;
 }
 
 #login {
@@ -75,6 +75,7 @@ p {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-top: 15px;
 }
 
 #register {
