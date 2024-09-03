@@ -201,6 +201,10 @@
                     <label class="detail-label">Description:</label>
                     <span class="detail-value">@_betPopup.Description</span>
                 </div>
+                <div class="bet-detail">
+                    <label class="detail-label">Selected Option:</label>
+                    <span class="detail-value">@_popupUserCase.Casetype</span>
+                </div>
                 @if (_betPopup.State != State.Closed)
                 {
                     <div class="bet-detail">
@@ -300,6 +304,7 @@
     private int _totalAmount { get; set; }
     private bool _isDetailsPopupVisible;
     private List<SelectedCase> _popupSelectedCases { get; set; } = new List<SelectedCase>();
+    private Case? _popupUserCase { get; set; }
     private Winner? _popupDetailsWinner { get; set; }
     private List<Winner>? _winnersList { get; set; }
     private List<string> _winnerNameList { get; set; } = new List<string>();
@@ -374,6 +379,10 @@
         {
             tempSelectedCase = new SelectedCase(betCase, true);
             _popupSelectedCases.Add(tempSelectedCase);
+            if (_userbetPopup.Case_Id == betCase.Id)
+            {
+                _popupUserCase = betCase;
+            }
         }
 
         var maybeWinner = WinnerService.GetWinnerByUserBetIdIfExists(_userbetPopup.Id);
