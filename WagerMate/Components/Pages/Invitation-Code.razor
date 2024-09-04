@@ -135,7 +135,7 @@
     {
 
         List<Bet> ParticipatingInBetWithId = BetService.GetBetsByUserId(_loggedInUser.Id);
-        if (ParticipatingInBetWithId.All(bet => bet.Id != _acceptedBet.Id) && _moneyValue >= 0)
+        if (ParticipatingInBetWithId.All(bet => bet.Id != _acceptedBet.Id) && _moneyValue > 0)
         {
             //create userbet
             UserBet tempUserBet = new UserBet();
@@ -154,10 +154,9 @@
         }
         else
         {
-            //check moneyValue >= 0
-            if (_moneyValue < 0) {
+            if (_moneyValue <= 0) {
                 HasNotificationMessage = true;
-                NotificationMessage = "The Amount has to be at least 0!";
+                NotificationMessage = "The Amount has to be more than 0!";
                 NotificationClass = "alert alert-danger";
             }
             else {
