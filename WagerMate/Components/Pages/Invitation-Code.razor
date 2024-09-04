@@ -109,11 +109,17 @@
     private string NotificationClass { get; set; }
     private int _selectedCaseId { get; set; }
     private List<Case> _betOptions { get; set; }
-    
-    
+
+    private string extractAfterSubstring(string input, string substring)
+    {
+        int index = input.IndexOf(substring);
+        if (index == -1) return input;
+        return input.Substring(index + substring.Length);
+    }
 
     private void SubmitCode()
     {
+        inviteCode = extractAfterSubstring(inviteCode, "invitation-code/");
         _acceptedBet = BetService.GetBetByInviteCode(inviteCode);
         if (_acceptedBet == null)
         {
