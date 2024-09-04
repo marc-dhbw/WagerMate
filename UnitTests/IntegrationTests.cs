@@ -1,5 +1,3 @@
-using Npgsql;
-
 namespace UnitTests;
 
 [TestFixture]
