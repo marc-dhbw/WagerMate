@@ -1,4 +1,6 @@
-using WagerMate.Data;
+using WagerMate.Data.bet;
+using WagerMate.Data.enums;
+using WagerMate.Data.user;
 
 namespace WagerMate.Services.betting;
 

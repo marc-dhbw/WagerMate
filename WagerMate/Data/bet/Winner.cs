@@ -1,4 +1,4 @@
-namespace WagerMate.Data;
+namespace WagerMate.Data.bet;
 
 public class Winner
 {

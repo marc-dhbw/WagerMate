@@ -1,4 +1,4 @@
-using WagerMate.Data;
+using WagerMate.Data.bet;
 using WagerMate.Services.betting;
 using WagerMate.Services.database;
 

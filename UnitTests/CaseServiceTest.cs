@@ -1,3 +1,6 @@
+using WagerMate.Data.bet;
+using WagerMate.Data.enums;
+
 namespace UnitTests;
 
 public class CaseServiceTest

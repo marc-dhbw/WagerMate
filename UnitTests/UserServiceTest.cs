@@ -1,3 +1,5 @@
+using WagerMate.Data.user;
+
 namespace UnitTests;
 
 [TestFixture]
