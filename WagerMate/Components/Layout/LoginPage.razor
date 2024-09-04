@@ -146,7 +146,6 @@
                 Console.WriteLine("Password: " + _correctLoginPassword);
                 if (_correctLoginPassword && _correctLoginEmail)
                 {
-                    Console.WriteLine("Login successful.");
                     await CookieService.SetCookieByNameAndValue("CookieID", user.Password, 7);
                     Navigation.NavigateTo("/");
                 }

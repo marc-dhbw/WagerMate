@@ -49,4 +49,12 @@ public class WinnerService : IWinnerService
         var result = _service.Delete<Winner>("DELETE FROM public.winner WHERE winner.Id = @Id", new { Id = winnerId });
         return result;
     }
+
+    public Winner? GetWinnerByUserBetIdIfExists(int userBetId)
+    {
+        var result =
+            _service.GetIfExists<Winner>("SELECT EXISTS ( SELECT 1 FROM public.winner where userbet_id = @key)",new{key = userBetId},"SELECT * FROM public.winner WHERE userbet_id = @Id", new { Id = userBetId });
+
+        return result.Item1 ? result.Item2 : null;
+    }
 }

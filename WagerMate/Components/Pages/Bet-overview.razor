@@ -1,6 +1,4 @@
 @page "/"
-@using Dapper
-@using WagerMate.Services.auth
 @using WagerMate.Services.betting
 @using WagerMate.Services.user
 @rendermode  InteractiveServer
@@ -14,6 +12,8 @@
 
 @inherits BasePage;
 
+@inject IBetSettlingService BetSettlingService
+@inject IWinnerService WinnerService
 
 <PageTitle>Bet Overview</PageTitle>
 
@@ -21,9 +21,106 @@
     <h1>Bet Overview</h1>
 </div>
 
+<!-- Popup Form Bet Details-->
+@if (_isDetailsPopupVisible)
+{
+<div id="popup-overlay" class="active">
+    <div id="popup-content" @onclick:stopPropagation="true">
+        <h2 id="h2PopUpBetDetails">Bet Details</h2>
+        <div class="bet-details-container">
+            <div class="bet-detail">
+                <label class="detail-label">Title:</label>
+                <span class="detail-value">@_betPopup.Title</span>
+            </div>
+            <div class="bet-detail">
+                <label class="detail-label">Description:</label>
+                <span class="detail-value detail-value-description">@_betPopup.Description</span>
+            </div>
+            <div class="bet-detail">
+                <label class="detail-label">Selected Option:</label>
+                <span class="detail-value">@_popupUserCase.Casetype</span>
+            </div>
+            @if (_betPopup.State != State.Closed)
+            {
+            <div class="bet-detail">
+                <label class="detail-label">Bet Amount:</label>
+                <span class="detail-value">@_userbetPopup.Amount</span>
+            </div>
+            }
+            else
+            {
+            // winning or losing amount
+            if (_popupDetailsWinner != null)
+            {
+                <div class="bet-detail">
+                    <label class="detail-label">Bet Amount:</label>
+                    <span class="detail-value">@_userbetPopup.Amount</span>
+                </div>
+                <div class="bet-detail">
+                    <label class="detail-label">Winning Amount:</label>
+                    <span class="detail-value">@_popupDetailsWinner.Amount</span>
+                </div>
+            }
+            else
+            {
+            <div class="bet-detail">
+                <label class="detail-label">Lost Amount:</label>
+                <span class="detail-value">@_userbetPopup.Amount</span>
+            </div>
+            }
+
+            @if (_winnersList.Count > 0) {
+            <div class="winnerList">
+                <div class="winner-header">
+                    @if(_winnersList.Count == 1)
+                    {
+                    <p>Winner</p>
+                    } else
+                    {
+                    <p>Winners</p>
+                    }
+                </div>
+                @foreach (string winnerName in _winnerNameList) {
+                <p>@winnerName</p>
+                }
+            </div>
+
+            }
+            }
+
+            <div class="bet-detail">
+                <label class="detail-label">Expiration Date:</label>
+                <span class="detail-value">@_betPopup.Expiration.ToShortDateString()</span>
+            </div>
+            @if(_popupSelectedCases.Count > 0)
+            {
+            <div class="bet-detail">
+                <label class="detail-label">Winning options: </label>
+                @foreach (SelectedCase popupSelectedCase in _popupSelectedCases)
+                {
+                <span class="detail-value">
+                                <input type="checkbox" @bind="popupSelectedCase.isSelected" disabled="@(_betPopup.State == State.Closed)" /> @popupSelectedCase._case.Casetype
+                            </span>
+                }
+            </div>
+            }
+            <button class="btn btn-secondary" @onclick="HideDetailsPopup">Exit</button>
+            @if (_betPopup.State != State.Closed)
+            {
+                <button class="btn btn-secondary" @onclick="SettleBet">Settle Bet</button>
+                <button class="btn btn-secondary" id="copyButton" @onclick="CopyLinkToClipboard">Copy Invite Link!</button>
+            <button class="btn btn-secondary" @onclick="CancelBet">Cancel Bet</button>
+            <button class="btn btn-secondary" @onclick="DeleteBet">Delete Bet</button>
+            }
+        </div>
+
+    </div>
+</div>
+}
+
 <div id="betOverviewPage">
     <div id="betsCount">
-        <h2>Total Bets: @(_bets.Count)</h2>
+        <h2>Total Bets: @(_filteredBets.Count)</h2>
     </div>
     <div id="creatNewBet">
         <h2>Create a new bet here</h2>
@@ -53,37 +150,89 @@
         <h2 class="bets-heading">Here are your bets:</h2>
 
         <div id="allBetsLayout">
-            @foreach (var bet in _bets)
+            @foreach (var bet in _filteredBets)
             {
-                @if ((bet.State == State.Active && DisplayAcceptedBets) ||
-                     (bet.State == State.Closed && DisplayClosedBets) ||
-                     (bet.State == State.Pending && DisplayPendingBets)
-                    )
-              {
-              <div id="individualBet" @onclick="() => ShowDetailsPopup(bet)">
-                  <div class="bet-header">
-                      <strong>Title:</strong> @bet.Title
-                  </div>
-                  <div class="bet-body">
-                      <strong>Description:</strong> @bet.Description <br/>
-                      <strong>State:</strong> @bet.State.ToString(); <br/>
-                      <strong>Total amount:</strong> @getTotalAmount(bet);
-                  </div>
-                  <div class="bet-footer">
-                      <span class="bet-date"><strong>Created:</strong> @bet.Created.ToShortDateString()</span>
-                      <span class="bet-date"><strong>Expires:</strong> @bet.Expiration.ToShortDateString()</span>
-                  </div>
-              </div>
-              }
+                BackgroundColorIndividualBet = string.Empty;
+                BetIcon = string.Empty;
+                if (bet.State == State.Active || bet.State == State.Pending) {
+                    BackgroundColorIndividualBet = "indiBet-Orange";
+                }
+
+                if (bet.State == State.Pending) {
+                    BetIcon = "icon-hourglass-split";
+                }
+                    
+                if (bet.State == State.Closed){
+                    BetResultText = string.Empty;
+                    _winnersList = WinnerService.GetWinnersByBetId(bet.Id);
+                    var loggedInUserBet = UserBetService.GetUserBetById(_loggedInUser.Id, bet.Id);
+
+                    if (_winnersList == null || !_winnersList.Any())
+                    {
+                        BetResultText = "No one won this bet.";
+                        BackgroundColorIndividualBet = "indiBet-Grey";
+                    }
+                    else if (_winnersList.Any(winner => winner.UserBet_Id == loggedInUserBet.Id))
+                    {
+                        BetResultText = $"Congratulations! {_loggedInUser.Name}! You are a Winner!";
+                        BackgroundColorIndividualBet = "indiBet-Green";
+                        BetIcon = "icon-trophy";
+                    }
+                    else
+                    {
+                        BetResultText = "You lost this bet.";
+                        BackgroundColorIndividualBet = "indiBet-Grey";
+                        BetIcon = "icon-lost-bet";
+                    }
+                }
+                    
+                <div id="individualBet" class=@BackgroundColorIndividualBet @onclick="() => ShowDetailsPopup(bet)">
+                    <div class="bet-header">
+                        @if (bet.State == State.Pending) {
+                            
+                            <strong class="detail-value">@bet.Title</strong><div class="icon-hourglass-split"></div>
+                        }
+                        
+                        else if (bet.State == State.Closed){
+                            var loggedInUserBet = UserBetService.GetUserBetById(_loggedInUser.Id, bet.Id);
+
+                            BetIcon = _winnersList.Any(winner => winner.UserBet_Id == loggedInUserBet.Id) ? "icon-trophy" : "icon-lost-bet";
+                            BetIcon = (_winnersList.Count == 0) ? "" : BetIcon;
+                            <strong class="detail-value">@bet.Title</strong><span class=@BetIcon></span>
+                        }
+                        else {
+                            <strong class="detail-value">@bet.Title</strong>
+                        }
+                    </div>
+                    @if (bet.State == State.Closed) {
+                        <strong><span class=@BetIcon></span> @BetResultText</strong>
+                        <div class="bet-body">
+                            <strong>Description:</strong> <div class="bet-body-value-description">@bet.Description</div>
+                            @* <strong>State:</strong> <div class="bet-body-value">@bet.State.ToString()</div> *@
+                            <strong>Total amount:</strong> <div class="bet-body-value">@getTotalAmount(bet)</div>
+                        </div>
+                    }
+                    else {
+                        <div class="bet-body">
+                            <strong>Description:</strong> <div class="bet-body-value-description">@bet.Description</div>
+                            <strong>Total amount:</strong> <div class="bet-body-value">@getTotalAmount(bet)</div>
+                        </div>
+                    }
+                    <footer class="bet-footer">
+                        <span class="bet-date"><strong>Created:</strong> @bet.Created.ToShortDateString()</span>
+                        <span class="bet-date"><strong>Expires:</strong> @bet.Expiration.ToShortDateString()</span>
+                    </footer>
+                </div>
+                
             }
         </div>
     </div>
 </div>
 
-<!-- Create Bet Popup Form -->
+<!-- Popup Form Creat New Bet-->
 @if (_isPopupVisible)
 {
-    <div id="popup-overlay" @onclick="HidePopup" class="active">
+    <div id="popup-overlay" class="active">
         <div id="popup-content" @onclick:stopPropagation="true">
             <h2 id="h2PopUpCreateNewBet">Create New Bet</h2>
             <div class="create-bet-container">
@@ -104,7 +253,7 @@
                     <input type="date" class="form-input" @bind="_formBetDetails.NewBetExpiration" min="@DateTime.Now.ToString("yyyy-MM-dd")"/>
                 </div>
                 <div class="form-group">
-                  <label>Your bet option</label><br/>
+                    <label>Your bet option</label><br/>
                     <input type="text" @bind="_formBetDetails.CaseBetCreator"/><br/><br/>
 
                     <label>Other possible bet options</label>
@@ -143,50 +292,55 @@
     </div>
 }
 
-@*Details of Bet Popup Form*@
-@if (_isDetailsPopupVisible)
-{
-    <div id="popup-overlay" @onclick="HidePopup" class="active">
-        <div id="popup-content" @onclick:stopPropagation="true">
-            <h2 id="h2PopUpBetDetails">Bet Details</h2>
-            <div class="bet-details-container">
-                <div class="bet-detail">
-                    <label class="detail-label">Title:</label>
-                    <span class="detail-value">@_betPopup.Title</span> 
-                </div>
-                <div class="bet-detail">
-                    <label class="detail-label">Description:</label>
-                    <span class="detail-value">@_betPopup.Description</span>
-                </div>
-                <div class="bet-detail">
-                    <label class="detail-label">Bet Amount:</label>
-                    <span class="detail-value">@_userbetPopup.Amount</span>
-                </div>
-                <div class="bet-detail">
-                    <label class="detail-label">Expiration Date:</label>
-                    <span class="detail-value">@_betPopup.Expiration</span>
-                </div>
-                <button class="btn btn-primary" id="copyButton" @onclick="CopyLinkToClipboard">Copy Invite Link!</button><br/>
-                <button class="btn btn-secondary cancel-button" @onclick="HideDetailsPopup">Cancel</button>
-            </div>
-        </div>
-    </div>
-}
 
 @code{
 
     private List<Bet> _bets = new();
     private bool _isPopupVisible;
     private bool _firstLogin = true;
-    private bool DisplayAcceptedBets { get; set; } = true;
-    private bool DisplayPendingBets { get; set; } = true;
-    private bool DisplayClosedBets { get; set; } = false;
+    private bool _displayAcceptedBets { get; set; } = true;
+    private bool DisplayAcceptedBets { get => _displayAcceptedBets;
+        set
+        {
+            _displayAcceptedBets = value;
+            FilterBets();
+        }
+    }
+    private bool _displayPendingBets { get; set; } = true;
+    private bool DisplayPendingBets
+    {
+        get => _displayPendingBets;
+        set
+        {
+            _displayPendingBets = value;
+            FilterBets();
+        }
+    }
+    private bool _displayClosedBets { get; set; } = false;
+    private bool DisplayClosedBets
+    {
+        get => _displayClosedBets;
+        set
+        {
+            _displayClosedBets = value;
+            FilterBets();
+        }
+    }
     private User? _loggedInUser = new();
     private FormBetDetails _formBetDetails = new();
     private string? ErrorMessage { get; set; }
     private int _totalAmount { get; set; }
     private bool _isDetailsPopupVisible;
     private string _inviteCode;
+    private List<SelectedCase> _popupSelectedCases { get; set; } = new List<SelectedCase>();
+    private Case? _popupUserCase { get; set; }
+    private Winner? _popupDetailsWinner { get; set; }
+    private List<Winner>? _winnersList { get; set; }
+    private List<string> _winnerNameList { get; set; } = new List<string>();
+    private string BetResultText { get; set; } 
+    private string BackgroundColorIndividualBet { get; set; }
+    private string BetIcon { get; set; }
+    private List<Bet> _filteredBets { get; set; } = new List<Bet>();
 
     // Define properties and fields
     private static int MaxFields { get; set; } = 5;
@@ -219,7 +373,6 @@
         }
     }
 
-
     private void ResetFields()
     {
         _dynamicInputs.Clear(); // Clears all input fields
@@ -248,6 +401,56 @@
         _userbetPopup = UserBetService.GetUserBetById(_loggedInUser!.Id, bet.Id);
         _betPopup = bet;
         _inviteCode = Navigation.Uri + "invitation-code/" + _betPopup.Invitation_Code;
+        _popupSelectedCases = new List<SelectedCase>();
+        
+        _winnersList = new List<Winner>();
+        _winnerNameList = new List<string>();
+        
+        SelectedCase tempSelectedCase;
+        List<Case> betCases = CaseService.GetCasesByBetId(_betPopup.Id);
+        foreach (Case betCase in betCases)
+        {
+            tempSelectedCase = new SelectedCase(betCase, false);
+            _popupSelectedCases.Add(tempSelectedCase);
+            if (_userbetPopup.Case_Id == betCase.Id)
+            {
+                _popupUserCase = betCase;
+            }
+        }
+
+        var maybeWinner = WinnerService.GetWinnerByUserBetIdIfExists(_userbetPopup.Id);
+        if (maybeWinner != null)
+        {
+            _popupDetailsWinner = maybeWinner;
+        }
+        else
+        {
+            _popupDetailsWinner = null;
+        }
+        _winnersList = WinnerService.GetWinnersByBetId(_betPopup.Id);
+        
+        if (_winnersList.Count > 0)
+        {
+            List<UserBet> winnerUserBets = new List<UserBet>();
+            _winnersList.ForEach(winner => { winnerUserBets.Add(UserBetService.GetUserBetById(winner.UserBet_Id)); });
+
+            List<int> winnerCaseIds = new List<int>();
+            List<User> users = new List<User>();
+            winnerUserBets.ForEach(userBet =>
+            {
+                users.Add(UserService.GetUserById(userBet.User_Id)); 
+                winnerCaseIds.Add(userBet.Case_Id);
+            });
+
+            users.ForEach(user => { _winnerNameList.Add(user.Name); });
+            
+            
+            foreach (var selectedCase in _popupSelectedCases)
+            {
+                selectedCase.isSelected = winnerCaseIds.Contains(selectedCase._case.Id);
+            }
+            
+        }
         _isDetailsPopupVisible = true;
         StateHasChanged();
     }
@@ -258,6 +461,7 @@
         StateHasChanged();
         ResetFields();
     }
+    
     private void HideDetailsPopup()
     {
         _isDetailsPopupVisible = false;
@@ -268,7 +472,6 @@
     private void CreateNewBet()
     {
         ErrorMessage = string.Empty;
-
 
         if (string.IsNullOrWhiteSpace(_formBetDetails.NewBetTitle) ||
             string.IsNullOrWhiteSpace(_formBetDetails.NewBetDescription) ||
@@ -301,10 +504,6 @@
             // creating Bet, then Case, then UserBet
             var createdBet = BetService.CreateBet(newBet);
 
-            for (var i = 0; i < _dynamicInputs.Count; i++)
-            {
-                CaseService.CreateCase(new Case(createdBet.Id, _dynamicInputs[i]));
-            }
 
             UserBet userBet = new UserBet();
             userBet.Bet_Id = createdBet.Id;
@@ -313,6 +512,12 @@
             var creatorcaseId = CaseService.CreateCase(new Case(createdBet.Id, _formBetDetails.CaseBetCreator));
             userBet.Case_Id = creatorcaseId;
             UserBetService.CreateUserBet(userBet);
+            
+            // creating all other cases
+            for (var i = 0; i < _dynamicInputs.Count; i++)
+            {
+                CaseService.CreateCase(new Case(createdBet.Id, _dynamicInputs[i]));
+            }
         }
         catch (Exception)
         {
@@ -322,7 +527,6 @@
         HidePopup();
         RenderData();
     }
-
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -345,6 +549,15 @@
         {
             if (_loggedInUser == null) return;
             _bets = BetService.GetBetsByUserId(_loggedInUser.Id);
+            _bets.ForEach(bet =>
+            {
+                if (bet.Expiration.Date < DateTime.Now.Date)
+                {
+                    bet.State = State.Closed;
+                    BetService.UpdateBet(bet);
+                }
+            });
+            FilterBets();
             StateHasChanged();
         }
         catch (Exception ex)
@@ -356,5 +569,59 @@
     private async Task CopyLinkToClipboard()
     {
         await JsRuntime.InvokeVoidAsync("copyToClipboard", _inviteCode);
+    }
+
+    public void SettleBet()
+    {
+        List<int> idsFromSelectedCases = new List<int>();
+        foreach (SelectedCase popupSelectedCase in _popupSelectedCases)
+        {
+            if(popupSelectedCase.isSelected) idsFromSelectedCases.Add(popupSelectedCase._case.Id);
+        }
+        BetSettlingService.SettleBet(_betPopup, idsFromSelectedCases.ToArray());
+        FilterBets();
+        _isDetailsPopupVisible = false;
+    }
+
+    public void CancelBet()
+    {
+        UserBet popupUserbet = UserBetService.GetUserBetById(_loggedInUser.Id, _betPopup.Id);
+        BetSettlingService.CloseBet(popupUserbet);
+        _isDetailsPopupVisible = false;
+        RenderData();
+    }
+
+    public void DeleteBet()
+    {
+        // delete winner, userbet, case and then bet
+        List<Winner> winnerOfBet = WinnerService.GetWinnersByBetId(_betPopup.Id);
+        winnerOfBet.ForEach(winner => { WinnerService.DeleteWinner(winner.Id);});
+        List<UserBet> userBetsOfBet = UserBetService.GetAllUserBetsFromBet(_betPopup);
+        userBetsOfBet.ForEach(userBet => { UserBetService.DeleteUserBet(userBet);});
+        CaseService.DeleteCasesOfBetId(_betPopup.Id);
+        BetService.DeleteBet(_betPopup.Id);
+        _isDetailsPopupVisible = false;
+        RenderData();
+    }
+
+    public class SelectedCase
+    {
+        public Case _case;
+        public bool isSelected = false;
+
+        public SelectedCase(Case selectedCase, bool selected)
+        {
+            _case = selectedCase;
+            isSelected = selected;
+        }
+    }
+
+    private void FilterBets()
+    {
+        _filteredBets = _bets.Where(bet =>
+            (bet.State == State.Active && DisplayAcceptedBets) ||
+            (bet.State == State.Closed && DisplayClosedBets) ||
+            (bet.State == State.Pending && DisplayPendingBets))
+            .ToList();
     }
 }

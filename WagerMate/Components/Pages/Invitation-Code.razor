@@ -143,6 +143,8 @@
             
             UserBetService.CreateUserBet(tempUserBet);
             CreatedNewUserBet = true;
+            _acceptedBet.State = State.Active;
+            BetService.UpdateBet(_acceptedBet);
             HasNotificationMessage = true;
             NotificationMessage = "You are now participating in this bet!";
             NotificationClass = "alert alert-success";
