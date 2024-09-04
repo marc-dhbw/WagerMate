@@ -1,7 +1,4 @@
 @page "/"
-@using Dapper
-@using WagerMate.Service_Implementation.betting
-@using WagerMate.Services.auth
 @using WagerMate.Services.betting
 @using WagerMate.Services.user
 @rendermode  InteractiveServer
@@ -11,6 +8,10 @@
 @inject ICookieService CookieService;
 @inject IUserBetService UserBetService;
 @inject NavigationManager Navigation
+@inject IJSRuntime JsRuntime
+
+@inherits BasePage;
+
 @inject IBetSettlingService BetSettlingService
 @inject IWinnerService WinnerService
 
@@ -51,10 +52,14 @@
             // winning or losing amount
             if (_popupDetailsWinner != null)
             {
-            <div class="bet-detail">
-                <label class="detail-label">Winning Amount:</label>
-                <span class="detail-value">@_popupDetailsWinner.Amount</span>
-            </div>
+                <div class="bet-detail">
+                    <label class="detail-label">Bet Amount:</label>
+                    <span class="detail-value">@_userbetPopup.Amount</span>
+                </div>
+                <div class="bet-detail">
+                    <label class="detail-label">Winning Amount:</label>
+                    <span class="detail-value">@_popupDetailsWinner.Amount</span>
+                </div>
             }
             else
             {
@@ -99,10 +104,11 @@
                 }
             </div>
             }
-            <button class="btn btn-secondary" @onclick="HideDetailsPopup">Cancel</button>
+            <button class="btn btn-secondary" @onclick="HideDetailsPopup">Exit</button>
             @if (_betPopup.State != State.Closed)
             {
-            <button class="btn btn-secondary" @onclick="SettleBet">Settle Bet</button>
+                <button class="btn btn-secondary" @onclick="SettleBet">Settle Bet</button>
+                <button class="btn btn-secondary" id="copyButton" @onclick="CopyLinkToClipboard">Copy Invite Link!</button>
             <button class="btn btn-secondary" @onclick="CancelBet">Cancel Bet</button>
             <button class="btn btn-secondary" @onclick="DeleteBet">Delete Bet</button>
             }
@@ -121,7 +127,7 @@
         <button class="new-bet-button" @onclick="ShowPopup">+ New Bet</button>
     </div>
 
-    @* hier sind schon die checkboxen aer die werden später erste gerendert?!??!? *@
+    @* hier sind schon die checkboxen aber die werden später erste gerendert?!??!? *@
     <div class="check-box-line">
         <div class="bet-state">
             <label for="Accepted">Accepted Bets</label>
@@ -209,13 +215,6 @@
                     else {
                         <div class="bet-body">
                             <strong>Description:</strong> <div class="bet-body-value-description">@bet.Description</div>
-                            @* @if (bet.State == State.Pending) { *@
-                            @*     <strong>State:</strong>  *@
-                            @*     <div class="bet-body-value">@bet.State.ToString() <span class=@BetIcon></span></div> *@
-                            @* } *@
-                            @* else { *@
-                            @*     <strong>State:</strong> <div class="bet-body-value">@bet.State.ToString()</div> *@
-                            @* } *@
                             <strong>Total amount:</strong> <div class="bet-body-value">@getTotalAmount(bet)</div>
                         </div>
                     }
@@ -294,7 +293,6 @@
 }
 
 
-
 @code{
 
     private List<Bet> _bets = new();
@@ -333,6 +331,7 @@
     private string? ErrorMessage { get; set; }
     private int _totalAmount { get; set; }
     private bool _isDetailsPopupVisible;
+    private string _inviteCode;
     private List<SelectedCase> _popupSelectedCases { get; set; } = new List<SelectedCase>();
     private Case? _popupUserCase { get; set; }
     private Winner? _popupDetailsWinner { get; set; }
@@ -399,8 +398,9 @@
     
     private void ShowDetailsPopup(Bet bet)
     {
-        _userbetPopup = UserBetService.GetUserBetById(_loggedInUser.Id, bet.Id);
+        _userbetPopup = UserBetService.GetUserBetById(_loggedInUser!.Id, bet.Id);
         _betPopup = bet;
+        _inviteCode = Navigation.Uri + "invitation-code/" + _betPopup.Invitation_Code;
         _popupSelectedCases = new List<SelectedCase>();
         
         _winnersList = new List<Winner>();
@@ -419,7 +419,14 @@
         }
 
         var maybeWinner = WinnerService.GetWinnerByUserBetIdIfExists(_userbetPopup.Id);
-        if (maybeWinner != null) _popupDetailsWinner = maybeWinner;
+        if (maybeWinner != null)
+        {
+            _popupDetailsWinner = maybeWinner;
+        }
+        else
+        {
+            _popupDetailsWinner = null;
+        }
         _winnersList = WinnerService.GetWinnersByBetId(_betPopup.Id);
         
         if (_winnersList.Count > 0)
@@ -484,7 +491,7 @@
         {
             Title = _formBetDetails.NewBetTitle,
             Description = _formBetDetails.NewBetDescription,
-            InvitationCode = Guid.NewGuid().ToString(),
+            Invitation_Code = Guid.NewGuid().ToString(),
             Created = DateTime.Now,
             Expiration = _formBetDetails.NewBetExpiration,
             Access = Access.Private,
@@ -506,7 +513,7 @@
             userBet.Case_Id = creatorcaseId;
             UserBetService.CreateUserBet(userBet);
             
-            // createing all other cases
+            // creating all other cases
             for (var i = 0; i < _dynamicInputs.Count; i++)
             {
                 CaseService.CreateCase(new Case(createdBet.Id, _dynamicInputs[i]));
@@ -523,7 +530,7 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await CookieService.RedirectToLogin("CookieID", Navigation);
+        await base.OnAfterRenderAsync(firstRender);
         var value = await CookieService.GetCookieByName("CookieID");
         if (_firstLogin)
         {
@@ -557,6 +564,11 @@
         {
             Console.WriteLine($"BetOverview: Error fetching bets - {ex.Message}");
         }
+    }
+    
+    private async Task CopyLinkToClipboard()
+    {
+        await JsRuntime.InvokeVoidAsync("copyToClipboard", _inviteCode);
     }
 
     public void SettleBet()

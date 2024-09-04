@@ -1,0 +1,15 @@
+@page "/logout"
+@rendermode InteractiveServer
+@inject ICookieService CookieService
+@inherits BasePage;
+
+<div>
+    <p>Logging out...</p>
+</div>
+
+@code {
+    protected override void OnInitialized()
+    {
+        CookieService.DeleteCookie("CookieID");
+    }
+}

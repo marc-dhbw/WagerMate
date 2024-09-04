@@ -439,6 +439,11 @@ p{
     padding: 5px;
 }
 
+button#copyButton {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}   
 @media (max-width: 960px) {
     #allBetsLayout {
         grid-template-columns: 1fr;  /* Single column */

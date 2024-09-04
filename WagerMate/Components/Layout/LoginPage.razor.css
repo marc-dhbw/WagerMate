@@ -22,12 +22,11 @@ p {
 .field {
     display: flex;
     flex-direction: column;
-    margin-bottom: 1.5em;
     width: fit-content;
 }
 
 .field label {
-    margin-bottom: 0.5em;
+    margin-top: 5px;
 }
 
 
@@ -51,6 +50,7 @@ p {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-top: 15px;
 }
 
 #login {
@@ -75,10 +75,26 @@ p {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-top: 15px;
 }
 
 #register {
     background: white;
     width: 100px;
+}
+
+.warnings{
+    color: #721c24;
+    background-color: #f8d7da;
+    padding: 15px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    height: 1em;
+    font-size: 1em;
+    line-height: 1em;
+    display: flex;
+    align-items: center;
 }
 
