@@ -1,4 +1,4 @@
-using WagerMate.Data;
+using WagerMate.Data.bet;
 
 namespace WagerMate.Services.betting;
 

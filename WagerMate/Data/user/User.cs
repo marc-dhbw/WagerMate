@@ -1,4 +1,4 @@
-﻿namespace WagerMate.Data;
+﻿namespace WagerMate.Data.user;
 
 public class User
 {

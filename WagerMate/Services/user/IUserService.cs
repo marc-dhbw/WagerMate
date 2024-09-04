@@ -1,4 +1,4 @@
-﻿using WagerMate.Data;
+﻿using WagerMate.Data.user;
 
 namespace WagerMate.Services.user;
 

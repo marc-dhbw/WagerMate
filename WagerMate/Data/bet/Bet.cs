@@ -1,4 +1,6 @@
-namespace WagerMate.Data;
+using WagerMate.Data.enums;
+
+namespace WagerMate.Data.bet;
 
 public class Bet
 {

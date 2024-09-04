@@ -1,10 +1,9 @@
-namespace WagerMate.Data;
+namespace WagerMate.Data.bet;
 
 public class Case
 {
     public Case()
-    {
-    }
+    { }
 
     public Case(int betId, string? casetype)
     {
