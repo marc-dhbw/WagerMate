@@ -438,14 +438,27 @@ p{
     padding: 5px;
 }
 
-button#copyButton {
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-}   
 @media (max-width: 960px) {
     #allBetsLayout {
         grid-template-columns: 1fr;  /* Single column */
         grid-template-rows: 1fr;     /* Single row */
     }
+}
+
+/*buttons in bet details*/
+.button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.first-row, .second-row {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.first-row {
+    margin-bottom: 1rem;
 }
