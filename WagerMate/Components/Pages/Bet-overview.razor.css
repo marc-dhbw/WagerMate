@@ -58,6 +58,8 @@ p{
     font-size: 1.5em; 
     font-weight: bold;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); 
+    vertical-align: center;
+    align-content: center;
 }
 
 #betsCount h2 {
@@ -73,24 +75,35 @@ p{
     text-align: center;
 }
 
-#check-box-line{
+.check-box-line{
     padding: 10px;
-    align-content: center; 
+    justify-self: center;
+    align-content: space-evenly;
+    align-self: center;
     grid-row: 2;
-    grid-column: 1 / span 4;
-    border-left: 2px solid black;
-    height: 100px;
-    margin: 20px;
+    grid-column: 1 / span 2;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .bet-state{
-    float: left;
-    width: 33.33%;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    align-content: center;
-    justify-content: center;
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+
+.bet-state label{
+    font-size: 1.5em;
+}
+
+.bet-state input[type="checkbox"]{
+    width: 1.5em;
+    height: 1.5em;
+    margin-left: 1.5em;
+    margin-right: 3em;
+    accent-color: #2e8b57;
 }
 
 .new-bet-button {
