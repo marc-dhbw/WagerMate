@@ -241,15 +241,15 @@
             <div class="create-bet-container">
                 <div class="form-group">
                     <label class="form-label">Title:</label>
-                    <input type="text" class="form-input" @bind="_formBetDetails.NewBetTitle" placeholder="Enter bet title" />
+                    <input type="text" class="form-input" @bind="_formBetDetails.NewBetTitle" placeholder="Enter bet title" maxlength="@maxlengthTitle"/>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Description:</label>
-                    <input type="text" class="form-input" @bind="_formBetDetails.NewBetDescription" placeholder="Enter bet description" />
+                    <input type="text" class="form-input" @bind="_formBetDetails.NewBetDescription" placeholder="Enter bet description" maxlength="@maxlengthDescription"/>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Bet Amount:</label>
-                    <input type="number" class="form-input" @bind="_formBetDetails.NewBetMoney" placeholder="Enter amount" />
+                    <input type="number" class="form-input" @bind="_formBetDetails.NewBetMoney" placeholder="Enter amount"/>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Set Expiration Date:</label>
@@ -257,7 +257,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Your bet option</label>
-                    <input type="text" class="form-input" @bind="_formBetDetails.CaseBetCreator" placeholder="e.g., Dice Roll is 1"/>
+                    <input type="text" class="form-input" @bind="_formBetDetails.CaseBetCreator" placeholder="e.g., Dice Roll is 1" maxlength="@maxlengthBetOption"/>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Other possible bet options</label>
@@ -265,7 +265,7 @@
                     {
                         int index = i;
                         string tempValue = "e.g., Dice Roll is " + (i + 2).ToString();
-                        <input type="text" class="form-input" @oninput="(e) => UpdateInputValue(index, e.Value.ToString())" placeholder=@tempValue/>
+                        <input type="text" class="form-input" @oninput="(e) => UpdateInputValue(index, e.Value.ToString())" placeholder=@tempValue maxlength="@maxlengthBetOption"/>
                     }
                     @if (_dynamicInputs.Count != MaxFields)
                     {
@@ -292,7 +292,12 @@
 
 
 @code{
-
+    
+    // static values for max input length
+    private static int maxlengthTitle = 100;
+    private static int maxlengthDescription = 1000;
+    private static int maxlengthBetOption = 100;
+    
     private List<Bet> _bets = new();
     private bool _isPopupVisible;
     private bool _firstLogin = true;
@@ -327,7 +332,6 @@
     private User? _loggedInUser = new();
     private FormBetDetails _formBetDetails = new();
     private string? ErrorMessage { get; set; }
-    private int _totalAmount { get; set; }
     private bool _isDetailsPopupVisible;
     private string _inviteCode;
     private List<SelectedCase> _popupSelectedCases { get; set; } = new List<SelectedCase>();
@@ -391,6 +395,7 @@
     {
         _isPopupVisible = true;
         _formBetDetails = new FormBetDetails();
+        _formBetDetails.NewBetExpiration = DateTime.Now.AddYears(1);
         StateHasChanged();
     }
     
