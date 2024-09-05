@@ -107,14 +107,25 @@
                 }
             </div>
             }
-            <button class="btn btn-secondary" @onclick="HideDetailsPopup">Exit</button>
-            @if (_betPopup.State != State.Closed)
-            {
-                <button class="btn btn-secondary" @onclick="SettleBet">Settle Bet</button>
-                <button class="btn btn-secondary" id="copyButton" @onclick="CopyLinkToClipboard">Copy Invite Link!</button>
-            <button class="btn btn-secondary" @onclick="CancelBet">Cancel Bet</button>
-            <button class="btn btn-secondary" @onclick="DeleteBet">Delete Bet</button>
-            }
+            <div class="button-container">
+
+                @if (_betPopup.State != State.Closed)
+                {
+                <div class="first-row">
+                    <button class="btn btn-secondary" @onclick="DeleteBet">Delete Bet</button>
+                    <button class="btn btn-secondary" @onclick="CancelBet">Cancel Bet</button>
+                    <button class="btn btn-secondary" @onclick="SettleBet">Settle Bet</button>
+                </div>
+                <div class="second-row">
+                    <button class="btn btn-secondary" @onclick="CopyLinkToClipboard">Copy Invite Link</button>
+                    <button class="btn btn-secondary" @onclick="HideDetailsPopup">Exit</button>
+                </div>
+                }
+                else
+                {
+                    <button class="btn btn-secondary" @onclick="HideDetailsPopup">Exit</button>   
+                }
+            </div>
         </div>
 
     </div>
