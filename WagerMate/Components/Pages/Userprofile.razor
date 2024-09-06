@@ -74,7 +74,7 @@ else
             <div class="space-between-lines">
                 <label>Confirm with password:</label>
             </div>
-            <InputText type="password" @bind-Value="_editedUserData.Password"/>
+            <InputText type="password" @bind-Value="_editedUserData.EMailPassword"/>
             @if (!_validPassword)
             {
                 <p class="alert alert-danger">Incorrect password!</p>
@@ -152,6 +152,7 @@ else
     {
         public string? Username { get; set; }
         public string? EMail { get; set; }
+        public string? EMailPassword { get; set; }
         public string? Password { get; set; }
         public string? PasswordRepeat { get; set; }
     }
@@ -170,7 +171,7 @@ else
     {
         _editingEMail = true;
         _editedUserData.EMail = null;
-        _editedUserData.Password = null;
+        _editedUserData.EMailPassword = null;
     }
 
     private void EnableEditingPassword()
@@ -234,10 +235,10 @@ else
         
         var user = UserService.GetUserByEmail(_loggedInUser.Email!);
         _emailExists = UserService.EmailIsRegistered(_editedUserData.EMail);
-        _validPassword = HashService.CreateHash(_loggedInUser.Email!, _editedUserData.Password!).Equals(user.Password);
+        _validPassword = HashService.CreateHash(_loggedInUser.Email!, _editedUserData.EMailPassword!).Equals(user.Password);
         if (_validPassword && !_emailExists)
         {
-            var hashed = HashService.CreateHash(_editedUserData.EMail!, _editedUserData.Password!);
+            var hashed = HashService.CreateHash(_editedUserData.EMail!, _editedUserData.EMailPassword!);
             var tempUser = new User(_loggedInUser.Id, _loggedInUser.Name!, _editedUserData.EMail, hashed);
             var updateSuccessful = UserService.UpdateUser(tempUser);
             if (updateSuccessful)
