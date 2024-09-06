@@ -200,6 +200,18 @@ p{
     border-radius: 30px;
     width: 60%;
     max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+/* Hide scrollbar for Chrome and Safari */
+#popup-content::-webkit-scrollbar {
+    width: 0px; 
+    background: transparent; 
+}
+/* Hide scrollbar for Firefox */
+#popup-content {
+    scrollbar-width: none;
 }
 
 .indiBet-Green {
