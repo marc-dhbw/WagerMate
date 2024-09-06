@@ -500,6 +500,12 @@
             return;
         }
 
+        if (string.IsNullOrEmpty(_formBetDetails.CaseBetCreator))
+        {
+            ErrorMessage = "You need to enter your bet option.";
+            return;
+        }
+
         var newBet = new Bet
         {
             Title = _formBetDetails.NewBetTitle,
