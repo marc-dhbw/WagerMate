@@ -529,7 +529,10 @@
             // creating all other cases
             for (var i = 0; i < _dynamicInputs.Count; i++)
             {
-                CaseService.CreateCase(new Case(createdBet.Id, _dynamicInputs[i]));
+                if (!string.IsNullOrEmpty(_dynamicInputs[i]))
+                {
+                    CaseService.CreateCase(new Case(createdBet.Id, _dynamicInputs[i]));
+                }
             }
         }
         catch (Exception)
