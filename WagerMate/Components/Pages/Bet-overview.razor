@@ -41,41 +41,41 @@
             </div>
             <div class="bet-detail">
                 <label class="detail-label">Selected Option:</label>
-                <span class="detail-value">@_popupUserCase.Casetype</span>
+                <span class="detail-value">@PopupUserCase!.Casetype</span>
             </div>
             @if (_betPopup.State != State.Closed)
             {
             <div class="bet-detail">
                 <label class="detail-label">Bet Amount:</label>
-                <span class="detail-value">@_userbetPopup.Amount</span>
+                <span class="detail-value">@_userBetPopup.Amount</span>
             </div>
             }
             else
             {
             // winning or losing amount
-            if (_popupDetailsWinner != null)
+            if (PopupDetailsWinner != null)
             {
                 <div class="bet-detail">
                     <label class="detail-label">Bet Amount:</label>
-                    <span class="detail-value">@_userbetPopup.Amount</span>
+                    <span class="detail-value">@_userBetPopup.Amount</span>
                 </div>
                 <div class="bet-detail">
                     <label class="detail-label">Winning Amount:</label>
-                    <span class="detail-value">@_popupDetailsWinner.Amount</span>
+                    <span class="detail-value">@PopupDetailsWinner.Amount</span>
                 </div>
             }
             else
             {
             <div class="bet-detail">
                 <label class="detail-label">Lost Amount:</label>
-                <span class="detail-value">@_userbetPopup.Amount</span>
+                <span class="detail-value">@_userBetPopup.Amount</span>
             </div>
             }
 
-            @if (_winnersList.Count > 0) {
+            @if (WinnersList!.Count > 0) {
             <div class="winnerList">
                 <div class="winner-header">
-                    @if(_winnersList.Count == 1)
+                    @if(WinnersList.Count == 1)
                     {
                     <p>Winner</p>
                     } else
@@ -83,7 +83,7 @@
                     <p>Winners</p>
                     }
                 </div>
-                @foreach (string winnerName in _winnerNameList) {
+                @foreach (string winnerName in WinnerNameList) {
                 <p>@winnerName</p>
                 }
             </div>
@@ -95,14 +95,14 @@
                 <label class="detail-label">Expiration Date:</label>
                 <span class="detail-value">@_betPopup.Expiration.ToShortDateString()</span>
             </div>
-            @if(_popupSelectedCases.Count > 0)
+            @if(PopupSelectedCases.Count > 0)
             {
             <div class="bet-detail">
                 <label class="detail-label">Winning options: </label>
-                @foreach (SelectedCase popupSelectedCase in _popupSelectedCases)
+                @foreach (SelectedCase popupSelectedCase in PopupSelectedCases)
                 {
                 <span class="detail-value">
-                                <input type="checkbox" @bind="popupSelectedCase.isSelected" disabled="@(_betPopup.State == State.Closed)" /> @popupSelectedCase._case.Casetype
+                                <input type="checkbox" @bind="popupSelectedCase.IsSelected" disabled="@(_betPopup.State == State.Closed)" /> @popupSelectedCase.Case.Casetype
                             </span>
                 }
             </div>
@@ -134,7 +134,7 @@
 
 <div id="betOverviewPage">
     <div id="betsCount">
-        <h2>Total Bets: @(_filteredBets.Count)</h2>
+        <h2>Total Bets: @(FilteredBets.Count)</h2>
     </div>
     <div id="creatNewBet">
         <h2>Create a new bet here</h2>
@@ -163,7 +163,7 @@
         <h2 class="bets-heading">Here are your bets:</h2>
 
         <div id="allBetsLayout">
-            @foreach (var bet in _filteredBets)
+            @foreach (var bet in FilteredBets)
             {
                 BackgroundColorIndividualBet = string.Empty;
                 BetIcon = string.Empty;
@@ -177,15 +177,15 @@
                     
                 if (bet.State == State.Closed){
                     BetResultText = string.Empty;
-                    _winnersList = WinnerService.GetWinnersByBetId(bet.Id);
-                    var loggedInUserBet = UserBetService.GetUserBetById(_loggedInUser.Id, bet.Id);
+                    WinnersList = WinnerService.GetWinnersByBetId(bet.Id);
+                    var loggedInUserBet = UserBetService.GetUserBetById(_loggedInUser!.Id, bet.Id);
 
-                    if (_winnersList == null || !_winnersList.Any())
+                    if (WinnersList == null || !WinnersList.Any())
                     {
                         BetResultText = "No one won this bet.";
                         BackgroundColorIndividualBet = "indiBet-Grey";
                     }
-                    else if (_winnersList.Any(winner => winner.UserBet_Id == loggedInUserBet.Id))
+                    else if (WinnersList.Any(winner => winner.UserBet_Id == loggedInUserBet.Id))
                     {
                         BetResultText = $"Congratulations! {_loggedInUser.Name}! You are a Winner!";
                         BackgroundColorIndividualBet = "indiBet-Green";
@@ -207,10 +207,10 @@
                         }
                         
                         else if (bet.State == State.Closed){
-                            var loggedInUserBet = UserBetService.GetUserBetById(_loggedInUser.Id, bet.Id);
+                            var loggedInUserBet = UserBetService.GetUserBetById(_loggedInUser!.Id, bet.Id);
 
-                            BetIcon = _winnersList.Any(winner => winner.UserBet_Id == loggedInUserBet.Id) ? "icon-trophy" : "icon-lost-bet";
-                            BetIcon = (_winnersList.Count == 0) ? "" : BetIcon;
+                            BetIcon = WinnersList!.Any(winner => winner.UserBet_Id == loggedInUserBet.Id) ? "icon-trophy" : "icon-lost-bet";
+                            BetIcon = (WinnersList!.Count == 0) ? "" : BetIcon;
                             <strong class="detail-value">@bet.Title</strong><span class=@BetIcon></span>
                         }
                         else {
@@ -222,13 +222,13 @@
                         <div class="bet-body">
                             <strong>Description:</strong> <div class="bet-body-value-description">@bet.Description</div>
                             @* <strong>State:</strong> <div class="bet-body-value">@bet.State.ToString()</div> *@
-                            <strong>Total amount:</strong> <div class="bet-body-value">@getTotalAmount(bet)</div>
+                            <strong>Total amount:</strong> <div class="bet-body-value">@GetTotalAmount(bet)</div>
                         </div>
                     }
                     else {
                         <div class="bet-body">
                             <strong>Description:</strong> <div class="bet-body-value-description">@bet.Description</div>
-                            <strong>Total amount:</strong> <div class="bet-body-value">@getTotalAmount(bet)</div>
+                            <strong>Total amount:</strong> <div class="bet-body-value">@GetTotalAmount(bet)</div>
                         </div>
                     }
                     <footer class="bet-footer">
@@ -251,11 +251,11 @@
             <div class="create-bet-container">
                 <div class="form-group">
                     <label class="form-label">Title:</label>
-                    <input type="text" class="form-input" @bind="_formBetDetails.NewBetTitle" placeholder="Enter bet title" maxlength="@maxlengthTitle"/>
+                    <input type="text" class="form-input" @bind="_formBetDetails.NewBetTitle" placeholder="Enter bet title" maxlength="@MaxlengthTitle"/>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Description:</label>
-                    <input type="text" class="form-input" @bind="_formBetDetails.NewBetDescription" placeholder="Enter bet description" maxlength="@maxlengthDescription"/>
+                    <input type="text" class="form-input" @bind="_formBetDetails.NewBetDescription" placeholder="Enter bet description" maxlength="@MaxlengthDescription"/>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Bet Amount:</label>
@@ -267,7 +267,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Your bet option</label>
-                    <input type="text" class="form-input" @bind="_formBetDetails.CaseBetCreator" placeholder="e.g., Dice Roll is 1" maxlength="@maxlengthBetOption"/>
+                    <input type="text" class="form-input" @bind="_formBetDetails.CaseBetCreator" placeholder="e.g., Dice Roll is 1" maxlength="@MaxlengthBetOption"/>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Other possible bet options</label>
@@ -275,7 +275,7 @@
                     {
                         int index = i;
                         string tempValue = "e.g., Dice Roll is " + (i + 2).ToString();
-                        <input type="text" class="form-input" @oninput="(e) => UpdateInputValue(index, e.Value.ToString())" placeholder=@tempValue maxlength="@maxlengthBetOption"/>
+                        <input type="text" class="form-input" @oninput="(e) => UpdateInputValue(index, e.Value!.ToString()!)" placeholder=@tempValue maxlength="@MaxlengthBetOption"/>
                     }
                     @if (_dynamicInputs.Count != MaxFields)
                     {
@@ -304,10 +304,10 @@
 @code{
     
     // static values for max input length
-    private static int maxlengthTitle = 100;
-    private static int maxlengthDescription = 1000;
-    private static int maxlengthBetOption = 100;
-    
+    private const int MaxlengthTitle = 100;
+    private const int MaxlengthDescription = 1000;
+    private const int MaxlengthBetOption = 100;
+
     private List<Bet> _bets = new();
     private bool _isPopupVisible;
     private bool _firstLogin = true;
@@ -343,22 +343,22 @@
     private FormBetDetails _formBetDetails = new();
     private string? ErrorMessage { get; set; }
     private bool _isDetailsPopupVisible;
-    private string _inviteCode;
-    private List<SelectedCase> _popupSelectedCases { get; set; } = new List<SelectedCase>();
-    private Case? _popupUserCase { get; set; }
-    private Winner? _popupDetailsWinner { get; set; }
-    private List<Winner>? _winnersList { get; set; }
-    private List<string> _winnerNameList { get; set; } = new List<string>();
-    private string BetResultText { get; set; } 
-    private string BackgroundColorIndividualBet { get; set; }
-    private string BetIcon { get; set; }
-    private List<Bet> _filteredBets { get; set; } = new List<Bet>();
+    private string _inviteCode = "";
+    private List<SelectedCase> PopupSelectedCases { get; set; } = new List<SelectedCase>();
+    private Case? PopupUserCase { get; set; }
+    private Winner? PopupDetailsWinner { get; set; }
+    private List<Winner>? WinnersList { get; set; }
+    private List<string> WinnerNameList { get; set; } = new List<string>();
+    private string BetResultText { get; set; } = "";
+    private string BackgroundColorIndividualBet { get; set; } = "";
+    private string BetIcon { get; set; } = "";
+    private List<Bet> FilteredBets { get; set; } = new List<Bet>();
 
     // Define properties and fields
     private static int MaxFields { get; set; } = 5;
-    private List<string> _dynamicInputs = new List<string>(MaxFields);
+    private readonly List<string> _dynamicInputs = new List<string>(MaxFields);
 
-    public double getTotalAmount(Bet bet)
+    private double GetTotalAmount(Bet bet)
     {
         return UserBetService.GetAllUserBetsFromBet(bet).Sum(userBet => userBet.Amount);
     }
@@ -392,7 +392,7 @@
     }
 
     private Bet _betPopup = new();
-    private UserBet _userbetPopup = new();
+    private UserBet _userBetPopup = new();
     public class FormBetDetails
     {
         public string NewBetTitle { get; set; } = null!;
@@ -405,48 +405,42 @@
     private void ShowPopup()
     {
         _isPopupVisible = true;
-        _formBetDetails = new FormBetDetails();
-        _formBetDetails.NewBetExpiration = DateTime.Now.AddYears(1);
+        _formBetDetails = new FormBetDetails
+        {
+            NewBetExpiration = DateTime.Now.AddYears(1)
+        };
         StateHasChanged();
     }
     
     private void ShowDetailsPopup(Bet bet)
     {
-        _userbetPopup = UserBetService.GetUserBetById(_loggedInUser!.Id, bet.Id);
+        _userBetPopup = UserBetService.GetUserBetById(_loggedInUser!.Id, bet.Id);
         _betPopup = bet;
         _inviteCode = Navigation.Uri + "invitation-code/" + _betPopup.Invitation_Code;
-        _popupSelectedCases = new List<SelectedCase>();
+        PopupSelectedCases = new List<SelectedCase>();
         
-        _winnersList = new List<Winner>();
-        _winnerNameList = new List<string>();
-        
-        SelectedCase tempSelectedCase;
+        WinnersList = new List<Winner>();
+        WinnerNameList = new List<string>();
+
         List<Case> betCases = CaseService.GetCasesByBetId(_betPopup.Id);
         foreach (Case betCase in betCases)
         {
-            tempSelectedCase = new SelectedCase(betCase, false);
-            _popupSelectedCases.Add(tempSelectedCase);
-            if (_userbetPopup.Case_Id == betCase.Id)
+            var tempSelectedCase = new SelectedCase(betCase, false);
+            PopupSelectedCases.Add(tempSelectedCase);
+            if (_userBetPopup.Case_Id == betCase.Id)
             {
-                _popupUserCase = betCase;
+                PopupUserCase = betCase;
             }
         }
 
-        var maybeWinner = WinnerService.GetWinnerByUserBetIdIfExists(_userbetPopup.Id);
-        if (maybeWinner != null)
-        {
-            _popupDetailsWinner = maybeWinner;
-        }
-        else
-        {
-            _popupDetailsWinner = null;
-        }
-        _winnersList = WinnerService.GetWinnersByBetId(_betPopup.Id);
+        var maybeWinner = WinnerService.GetWinnerByUserBetIdIfExists(_userBetPopup.Id);
+        PopupDetailsWinner = maybeWinner ?? null;
+        WinnersList = WinnerService.GetWinnersByBetId(_betPopup.Id);
         
-        if (_winnersList.Count > 0)
+        if (WinnersList.Count > 0)
         {
             List<UserBet> winnerUserBets = new List<UserBet>();
-            _winnersList.ForEach(winner => { winnerUserBets.Add(UserBetService.GetUserBetById(winner.UserBet_Id)); });
+            WinnersList.ForEach(winner => { winnerUserBets.Add(UserBetService.GetUserBetById(winner.UserBet_Id)); });
 
             List<int> winnerCaseIds = new List<int>();
             List<User> users = new List<User>();
@@ -456,12 +450,12 @@
                 winnerCaseIds.Add(userBet.Case_Id);
             });
 
-            users.ForEach(user => { _winnerNameList.Add(user.Name); });
+            users.ForEach(user => { WinnerNameList.Add(user.Name!); });
             
             
-            foreach (var selectedCase in _popupSelectedCases)
+            foreach (var selectedCase in PopupSelectedCases)
             {
-                selectedCase.isSelected = winnerCaseIds.Contains(selectedCase._case.Id);
+                selectedCase.IsSelected = winnerCaseIds.Contains(selectedCase.Case.Id);
             }
             
         }
@@ -525,20 +519,22 @@
             var createdBet = BetService.CreateBet(newBet);
 
 
-            UserBet userBet = new UserBet();
-            userBet.Bet_Id = createdBet.Id;
-            userBet.User_Id = _loggedInUser.Id;
-            userBet.Amount = _formBetDetails.NewBetMoney;
-            var creatorcaseId = CaseService.CreateCase(new Case(createdBet.Id, _formBetDetails.CaseBetCreator));
-            userBet.Case_Id = creatorcaseId;
+            UserBet userBet = new UserBet
+            {
+                Bet_Id = createdBet.Id,
+                User_Id = _loggedInUser.Id,
+                Amount = _formBetDetails.NewBetMoney
+            };
+            var creatorCaseId = CaseService.CreateCase(new Case(createdBet.Id, _formBetDetails.CaseBetCreator));
+            userBet.Case_Id = creatorCaseId;
             UserBetService.CreateUserBet(userBet);
             
             // creating all other cases
-            for (var i = 0; i < _dynamicInputs.Count; i++)
+            foreach (var dynamicInput in _dynamicInputs)
             {
-                if (!string.IsNullOrEmpty(_dynamicInputs[i]))
+                if (!string.IsNullOrEmpty(dynamicInput))
                 {
-                    CaseService.CreateCase(new Case(createdBet.Id, _dynamicInputs[i]));
+                    CaseService.CreateCase(new Case(createdBet.Id, dynamicInput));
                 }
             }
         }
@@ -594,29 +590,29 @@
         await JsRuntime.InvokeVoidAsync("copyToClipboard", _inviteCode);
     }
 
-    public void SettleBet()
+    private void SettleBet()
     {
         List<int> idsFromSelectedCases = new List<int>();
-        foreach (SelectedCase popupSelectedCase in _popupSelectedCases)
+        foreach (SelectedCase popupSelectedCase in PopupSelectedCases)
         {
-            if(popupSelectedCase.isSelected) idsFromSelectedCases.Add(popupSelectedCase._case.Id);
+            if(popupSelectedCase.IsSelected) idsFromSelectedCases.Add(popupSelectedCase.Case.Id);
         }
         BetSettlingService.SettleBet(_betPopup, idsFromSelectedCases.ToArray());
         FilterBets();
         _isDetailsPopupVisible = false;
     }
 
-    public void CancelBet()
+    private void CancelBet()
     {
-        UserBet popupUserbet = UserBetService.GetUserBetById(_loggedInUser.Id, _betPopup.Id);
-        BetSettlingService.CloseBet(popupUserbet);
+        UserBet popupUserBet = UserBetService.GetUserBetById(_loggedInUser!.Id, _betPopup.Id);
+        BetSettlingService.CloseBet(popupUserBet);
         _isDetailsPopupVisible = false;
         RenderData();
     }
 
-    public void DeleteBet()
+    private void DeleteBet()
     {
-        // delete winner, userbet, case and then bet
+        // delete Winner, UserBet, Case and then Bet
         List<Winner> winnerOfBet = WinnerService.GetWinnersByBetId(_betPopup.Id);
         winnerOfBet.ForEach(winner => { WinnerService.DeleteWinner(winner.Id);});
         List<UserBet> userBetsOfBet = UserBetService.GetAllUserBetsFromBet(_betPopup);
@@ -627,21 +623,15 @@
         RenderData();
     }
 
-    public class SelectedCase
+    public class SelectedCase(Case selectedCase, bool selected)
     {
-        public Case _case;
-        public bool isSelected = false;
-
-        public SelectedCase(Case selectedCase, bool selected)
-        {
-            _case = selectedCase;
-            isSelected = selected;
-        }
+        public readonly Case Case = selectedCase;
+        public bool IsSelected = selected;
     }
 
     private void FilterBets()
     {
-        _filteredBets = _bets.Where(bet =>
+        FilteredBets = _bets.Where(bet =>
             (bet.State == State.Active && DisplayAcceptedBets) ||
             (bet.State == State.Closed && DisplayClosedBets) ||
             (bet.State == State.Pending && DisplayPendingBets))

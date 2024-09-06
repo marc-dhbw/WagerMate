@@ -1,5 +1,4 @@
 @page "/user"
-@using System.ComponentModel.DataAnnotations
 @using WagerMate.Data.user
 @using WagerMate.Services.user
 @inject ICookieService CookieService;
@@ -36,7 +35,7 @@ else
                 <p class="alert alert-danger">Username is required!</p>
             }
         </div>
-        <div class="buttons-container, space-between-lines" id="registerspace">
+        <div class="buttons-container, space-between-lines" id="register-space">
             <input class="submit-btn" type="button" value="Cancel" @onclick="@CancelEditingUsername"/>
             <input class="submit-btn" type="submit" value="Save"/>
         </div>
@@ -80,7 +79,7 @@ else
                 <p class="alert alert-danger">Incorrect password!</p>
             }
         </div>
-        <div class="buttons-container, space-between-lines" id="registerspace">
+        <div class="buttons-container, space-between-lines" id="register-space">
             <input class="submit-btn" type="button" value="Cancel" @onclick="@CancelEditingEMail"/>
             <input class="submit-btn" type="submit" value="Save"/>
         </div>
@@ -119,7 +118,7 @@ else
                 <p class="alert alert-danger">Both fields are required!</p>
             }
         </div>
-        <div class="buttons-container, space-between-lines" id="registerspace">
+        <div class="buttons-container, space-between-lines" id="register-space">
             <input class="submit-btn" type="button" value="Cancel" @onclick="@CancelEditingPassword"/>
             <input class="submit-btn" type="submit" value="Save"/>
         </div>

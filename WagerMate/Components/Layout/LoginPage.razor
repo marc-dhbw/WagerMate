@@ -1,10 +1,6 @@
 @page "/login"
-@using System.ComponentModel.DataAnnotations
-@using Microsoft.AspNetCore.Mvc.Infrastructure
 @using WagerMate.Data.user
-@using WagerMate.Services.auth
 @using WagerMate.Services.user
-
 @layout LoginLayout
 @rendermode InteractiveServer
 @inject IUserService UserService;
@@ -42,7 +38,7 @@
                     <p class="warnings">All fields are required!</p>
                 }
             </div>
-            <div id="loginspace">
+            <div id="login-space">
                 <input id="login" type="submit" value="Log in"/>
             </div>
         </EditForm>
@@ -101,7 +97,7 @@
                     <p class="warnings">All fields are required!</p>
                 }
             </div>
-            <div id="registerspace">
+            <div id="register-space">
                 <input id="register" type="submit" value="Register">
             </div>
         </EditForm>
@@ -147,7 +143,7 @@
                 Console.WriteLine("Password: " + _correctLoginPassword);
                 if (_correctLoginPassword && _correctLoginEmail)
                 {
-                    await CookieService.SetCookieByNameAndValue("CookieID", user.Password, 7);
+                    await CookieService.SetCookieByNameAndValue("CookieID", user.Password!, 7);
                     Navigation.NavigateTo("/");
                 }
                 else
@@ -177,7 +173,7 @@
         if (_newRegisterEmail && _registerRequiredElements && !_passwordTypo && _correctInviteCode)
         {
             var registeredUser = RegisterUser();
-            if (registeredUser!= null && registeredUser.Password != null)
+            if (registeredUser is { Password: not null })
             {
                 await CookieService.SetCookieByNameAndValue("CookieID", registeredUser.Password, 7);
                 Navigation.NavigateTo("/");

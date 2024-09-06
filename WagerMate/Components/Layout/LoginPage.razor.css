@@ -45,7 +45,7 @@ p {
     align-items: center;
 }
 
-#loginspace {
+#login-space {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -70,7 +70,7 @@ p {
     text-align: left;
 }
 
-#registerspace {
+#register-space {
     display: flex;
     flex-direction: column;
     justify-content: center;
