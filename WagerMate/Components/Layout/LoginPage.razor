@@ -140,7 +140,6 @@
             {
                 var user = UserService.GetUserByEmail(_existingUserData.EMail!);
                 _correctLoginPassword = HashService.CreateHash(_existingUserData.EMail!, _existingUserData.Password!).Equals(user.Password);
-                Console.WriteLine("Password: " + _correctLoginPassword);
                 if (_correctLoginPassword && _correctLoginEmail)
                 {
                     await CookieService.SetCookieByNameAndValue("CookieID", user.Password!, 7);
