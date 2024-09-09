@@ -1,15 +1,16 @@
 @page "/logout"
 @rendermode InteractiveServer
 @inject ICookieService CookieService
-@inherits BasePage;
+@inject NavigationManager Navigation;
 
 <div>
     <p>Logging out...</p>
 </div>
 
 @code {
-    protected override void OnInitialized()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        CookieService.DeleteCookie("CookieID");
+        await CookieService.DeleteCookie("CookieID");
+        Navigation.NavigateTo("/login");
     }
 }
