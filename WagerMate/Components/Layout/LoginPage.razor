@@ -89,12 +89,12 @@
             </div>
             <div class="field">
                 <div>
-                    <label>Enter Invite Code:</label>
+                    <label>Enter Access Code:</label>
                 </div>
-                <InputText class="input" @bind-Value="_newUserData.InviteCode"/>
-                @if (!_correctInviteCode)
+                <InputText class="input" @bind-Value="_newUserData.AccessCode"/>
+                @if (!_correctAccessCode)
                 {
-                    <p class="warnings">Invite code is incorrect!</p>
+                    <p class="warnings">Access code is incorrect!</p>
                 }
                 @if (!_registerRequiredElements)
                 {
@@ -127,7 +127,7 @@
         public string? Username { get; set; }
         public string? Password { get; set; }
         public string? PasswordRepeat { get; set; }
-        public string? InviteCode { get; set; }
+        public string? AccessCode { get; set; }
     }
 
     private bool _loginRequiredElements = true;
@@ -166,15 +166,15 @@
     private bool _registerRequiredElements = true;
     private bool _newRegisterEmail = true;
     private bool _passwordTypo;
-    private bool _correctInviteCode = true;
+    private bool _correctAccessCode = true;
     
     public async Task HandleRegister()
     {
-        _registerRequiredElements = (!String.IsNullOrEmpty(_newUserData.EMail)) && (!String.IsNullOrEmpty(_newUserData.Username)) && (!String.IsNullOrEmpty(_newUserData.Password)) && (!String.IsNullOrEmpty(_newUserData.PasswordRepeat)) && (!String.IsNullOrEmpty(_newUserData.InviteCode));
+        _registerRequiredElements = (!String.IsNullOrEmpty(_newUserData.EMail)) && (!String.IsNullOrEmpty(_newUserData.Username)) && (!String.IsNullOrEmpty(_newUserData.Password)) && (!String.IsNullOrEmpty(_newUserData.PasswordRepeat)) && (!String.IsNullOrEmpty(_newUserData.AccessCode));
         _newRegisterEmail = !UserService.EmailIsRegistered(_newUserData.EMail!);
         _passwordTypo = _newUserData.Password != _newUserData.PasswordRepeat;
-        _correctInviteCode = _newUserData.InviteCode == "42";
-        if (_newRegisterEmail && _registerRequiredElements && !_passwordTypo && _correctInviteCode)
+        _correctAccessCode = _newUserData.AccessCode == "42";
+        if (_newRegisterEmail && _registerRequiredElements && !_passwordTypo && _correctAccessCode)
         {
             var registeredUser = RegisterUser();
             if (registeredUser!= null && registeredUser.Password != null)
